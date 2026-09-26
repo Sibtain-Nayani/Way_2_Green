@@ -1,7 +1,7 @@
 ========================================================================
 Way2Green - Quick Hosting Guide (InfinityFree / cPanel / Apache)
 ========================================================================
-
+Mahdi edition
 1. CREATE DATABASE
    - In your hosting control panel, create a new MySQL database.
    - Open phpMyAdmin for that database.

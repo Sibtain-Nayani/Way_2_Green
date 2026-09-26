@@ -1,11 +1,70 @@
 <?php
-// travel.php - Phase 1: Transit & Carbon Footprint Calculation
+// travel.php - Phase 1: Trip Search Foundation
 require_once 'db.php';
 require_once 'user_auth.php';
 
 // Must be logged in to access the booking flow
 require_user_login('travel.php');
 $user = get_logged_in_user();
+
+// Handle form submission
+$errors = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $origin = trim($_POST['origin'] ?? '');
+    $destination = trim($_POST['destination'] ?? '');
+    $departure_date = trim($_POST['departure_date'] ?? '');
+    $return_date = trim($_POST['return_date'] ?? '');
+    $trip_type = trim($_POST['trip_type'] ?? 'one-way');
+    $travellers = (int)($_POST['travellers'] ?? 1);
+    $preference = trim($_POST['preference'] ?? 'Way2Green Pick');
+
+    $today = date('Y-m-d');
+
+    if (empty($origin)) {
+        $errors[] = "Origin is required.";
+    }
+    if (empty($destination)) {
+        $errors[] = "Destination is required.";
+    }
+    if (strtolower($origin) === strtolower($destination) && !empty($origin)) {
+        $errors[] = "Origin and destination cannot be the same.";
+    }
+    if (empty($departure_date)) {
+        $errors[] = "Departure date is required.";
+    } elseif ($departure_date < $today) {
+        $errors[] = "Departure date cannot be in the past.";
+    }
+    
+    if ($trip_type === 'round-trip') {
+        if (empty($return_date)) {
+            $errors[] = "Return date is required for round trips.";
+        } elseif ($return_date < $departure_date) {
+            $errors[] = "Return date must be on or after the departure date.";
+        }
+    }
+
+    if ($travellers < 1) {
+        $errors[] = "At least 1 traveller is required.";
+    }
+
+    if (empty($errors)) {
+        $_SESSION['trip_search'] = [
+            'origin' => $origin,
+            'destination' => $destination,
+            'departure_date' => $departure_date,
+            'return_date' => $return_date,
+            'trip_type' => $trip_type,
+            'travellers' => $travellers,
+            'preference' => $preference
+        ];
+
+        // FUTURE API INTEGRATION — PHASE 7
+        // Save search history and trigger partner API pre-fetch
+
+        header("Location: journey.php");
+        exit;
+    }
+}
 
 // Fetch destinations
 $destinations = [];
@@ -83,12 +142,12 @@ $preselectedDest = $_GET['dest'] ?? '';
         <div class="step-progress-bar">
             <div class="step-bubble active">
                 <span class="step-num">1</span>
-                <span>Green Transit</span>
+                <span>Trip Search</span>
             </div>
             <span style="color: var(--text-muted);">➔</span>
             <div class="step-bubble">
                 <span class="step-num">2</span>
-                <span>Select Eco-Stay</span>
+                <span>Select Journey</span>
             </div>
             <span style="color: var(--text-muted);">➔</span>
             <div class="step-bubble">
@@ -99,151 +158,88 @@ $preselectedDest = $_GET['dest'] ?? '';
 
         <div class="card-box card-3d reveal-on-scroll">
             <span class="section-tag">Step 1 of 3</span>
-            <h1 style="color: var(--primary); font-size: 1.8rem; margin: 4px 0 6px;">Plan Your Low-Carbon Transit</h1>
+            <h1 style="color: var(--primary); font-size: 1.8rem; margin: 4px 0 6px;">Plan Your Trip</h1>
             <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.8rem;">
-                Hi <strong><?= htmlspecialchars($user['name']) ?></strong>! Enter your travel route to calculate carbon emissions and receive smart travel tips.
+                Hi <strong><?= htmlspecialchars($user['name']) ?></strong>! Enter your travel details to find the best routes.
             </p>
 
-            <form id="transitForm" onsubmit="event.preventDefault(); computeImpact();">
-                <div class="transit-input-grid">
+            <?php if (!empty($errors)): ?>
+                <div style="background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; border: 1px solid #f87171;">
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <?php foreach ($errors as $err): ?>
+                            <li><?= htmlspecialchars($err) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <form id="transitForm" method="POST" action="travel.php" onsubmit="return validateForm()">
+                <div class="transit-input-grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    
+                    <!-- Trip Type -->
+                    <div style="grid-column: span 2;">
+                        <label class="field-label">Trip Type</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <label><input type="radio" name="trip_type" value="one-way" <?= (empty($_POST['trip_type']) || $_POST['trip_type'] === 'one-way') ? 'checked' : '' ?> onchange="toggleReturnDate()"> One-way</label>
+                            <label><input type="radio" name="trip_type" value="round-trip" <?= (isset($_POST['trip_type']) && $_POST['trip_type'] === 'round-trip') ? 'checked' : '' ?> onchange="toggleReturnDate()"> Round-trip</label>
+                        </div>
+                    </div>
+
                     <!-- Origin -->
                     <div>
-                        <label class="field-label" for="sourceInput">Starting Point (Your Location)</label>
-                        <div style="position: relative; display: flex; align-items: center;">
-                            <input type="text" id="sourceInput" class="field-input" placeholder="e.g. Mumbai, Bengaluru, Delhi" value="Mumbai" required>
-                            <button type="button" class="btn-locate" onclick="useGeolocation()" style="position: absolute; right: 10px; background: #e8f5e9; color: var(--primary); border: none; border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
-                                GPS
-                            </button>
-                        </div>
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
-                            <span class="chip" onclick="setOrigin('Mumbai')">Mumbai</span>
-                            <span class="chip" onclick="setOrigin('Bengaluru')">Bengaluru</span>
-                            <span class="chip" onclick="setOrigin('Delhi')">Delhi</span>
-                            <span class="chip" onclick="setOrigin('Kochi')">Kochi</span>
-                        </div>
+                        <label class="field-label" for="origin">Origin</label>
+                        <input type="text" id="origin" name="origin" class="field-input" placeholder="e.g. Mumbai" value="<?= htmlspecialchars($_POST['origin'] ?? '') ?>" required>
                     </div>
 
                     <!-- Destination -->
                     <div>
-                        <label class="field-label" for="destinationSelect">Eco-Destination</label>
-                        <select id="destinationSelect" class="field-select" required onchange="computeImpact()">
+                        <label class="field-label" for="destination">Destination</label>
+                        <select id="destination" name="destination" class="field-select" required>
+                            <option value="">Select Destination...</option>
                             <?php foreach ($destinations as $d): ?>
                                 <option value="<?= htmlspecialchars($d['name']) ?>" 
-                                        data-id="<?= $d['id'] ?>"
-                                        <?= (!empty($preselectedDest) && stripos($d['name'], $preselectedDest) !== false) ? 'selected' : '' ?>>
+                                        <?= ((isset($_POST['destination']) && $_POST['destination'] === $d['name']) || (!empty($preselectedDest) && stripos($d['name'], $preselectedDest) !== false)) ? 'selected' : '' ?>>
                                     📍 <?= htmlspecialchars($d['name']) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-                </div>
 
-                <!-- Mode Cards -->
-                <div style="margin-bottom: 1.8rem;">
-                    <label class="field-label">Select How You Will Travel:</label>
-                    <div class="modes-row">
-                        <div class="mode-pill selected" data-mode="train" onclick="selectMode('train')">
-                            <div class="m-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M12 3v8"/><path d="m8 19-2 3"/><path d="m18 22-2-3"/><circle cx="8" cy="15" r="1"/><circle cx="16" cy="15" r="1"/></svg>
-                            </div>
-                            <div class="m-title">Electric Rail</div>
-                            <div class="m-sub">82% Cleaner</div>
-                        </div>
-                        <div class="mode-pill" data-mode="ev" onclick="selectMode('ev')">
-                            <div class="m-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                            </div>
-                            <div class="m-title">Electric Car</div>
-                            <div class="m-sub">Zero Tailpipe</div>
-                        </div>
-                        <div class="mode-pill" data-mode="bus" onclick="selectMode('bus')">
-                            <div class="m-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/></svg>
-                            </div>
-                            <div class="m-title">Shared Coach</div>
-                            <div class="m-sub">High Efficiency</div>
-                        </div>
-                        <div class="mode-pill" data-mode="car" onclick="selectMode('car')">
-                            <div class="m-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.7 2 11 2 11.4V16c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
-                            </div>
-                            <div class="m-title">Petrol Car</div>
-                            <div class="m-sub">Baseline Driving</div>
-                        </div>
-                        <div class="mode-pill" data-mode="flight" onclick="selectMode('flight')">
-                            <div class="m-icon">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
-                            </div>
-                            <div class="m-title">Short Flight</div>
-                            <div class="m-sub">Max Footprint</div>
-                        </div>
+                    <!-- Departure Date -->
+                    <div>
+                        <label class="field-label" for="departure_date">Departure Date</label>
+                        <input type="date" id="departure_date" name="departure_date" class="field-input" value="<?= htmlspecialchars($_POST['departure_date'] ?? date('Y-m-d')) ?>" required>
                     </div>
+
+                    <!-- Return Date -->
+                    <div>
+                        <label class="field-label" for="return_date">Return Date</label>
+                        <input type="date" id="return_date" name="return_date" class="field-input" value="<?= htmlspecialchars($_POST['return_date'] ?? '') ?>" <?= (empty($_POST['trip_type']) || $_POST['trip_type'] === 'one-way') ? 'disabled' : 'required' ?>>
+                    </div>
+
+                    <!-- Travellers -->
+                    <div>
+                        <label class="field-label" for="travellers">Travellers</label>
+                        <input type="number" id="travellers" name="travellers" class="field-input" min="1" value="<?= htmlspecialchars($_POST['travellers'] ?? 1) ?>" required>
+                    </div>
+
+                    <!-- Preference -->
+                    <div>
+                        <label class="field-label" for="preference">Preference</label>
+                        <select id="preference" name="preference" class="field-select">
+                            <option value="Way2Green Pick" <?= (isset($_POST['preference']) && $_POST['preference'] === 'Way2Green Pick') ? 'selected' : '' ?>>Way2Green Pick</option>
+                            <option value="Lowest Price" <?= (isset($_POST['preference']) && $_POST['preference'] === 'Lowest Price') ? 'selected' : '' ?>>Lowest Price</option>
+                            <option value="Fastest" <?= (isset($_POST['preference']) && $_POST['preference'] === 'Fastest') ? 'selected' : '' ?>>Fastest</option>
+                            <option value="Lower Impact" <?= (isset($_POST['preference']) && $_POST['preference'] === 'Lower Impact') ? 'selected' : '' ?>>Lower Impact</option>
+                        </select>
+                    </div>
+
                 </div>
 
                 <button type="submit" class="btn-nature-primary" style="width: 100%; justify-content: center; padding: 15px;">
-                    Calculate Carbon Impact ➔
+                    Search Journeys ➔
                 </button>
             </form>
-
-            <!-- Results Card -->
-            <div id="resultsCard" style="display: none; margin-top: 2rem; border-top: 1px dashed var(--border-subtle); padding-top: 2rem;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                    
-                    <!-- Carbon Score Box -->
-                    <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: #ffffff; border-radius: var(--radius-lg); padding: 1.8rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Trip Footprint</span>
-                            <span style="background: rgba(82, 183, 136, 0.3); color: var(--leaf); padding: 3px 8px; border-radius: 99px; font-size: 0.75rem; font-weight: 800;" id="reductionBadge">82% LESS CO₂</span>
-                        </div>
-                        <div style="font-size: 2.5rem; font-weight: 800; line-height: 1;" id="co2Val">
-                            18.9 <span style="font-size: 1rem; font-weight: 500;">kg CO₂</span>
-                        </div>
-                        <p style="font-size: 0.82rem; color: rgba(255, 255, 255, 0.8); margin-top: 6px;" id="tripDetailText">
-                            Distance: ~540 km via Electric Train
-                        </p>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1.5rem;">
-                            <div style="background: rgba(255,255,255,0.12); padding: 10px; border-radius: 8px;">
-                                <div style="font-size: 1.15rem; font-weight: 800; color: var(--leaf);" id="co2SavedVal">84.8 kg</div>
-                                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.85);">CO₂ Avoided</div>
-                            </div>
-                            <div style="background: rgba(255,255,255,0.12); padding: 10px; border-radius: 8px;">
-                                <div style="font-size: 1.15rem; font-weight: 800; color: var(--leaf);" id="treesVal">3.9 Trees</div>
-                                <div style="font-size: 0.72rem; color: rgba(255,255,255,0.85);">Equiv. Absorbed</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Gemini AI Advisor Box -->
-                    <div style="background: #ffffff; border: 1.5px solid #d1e7dd; border-radius: var(--radius-lg); padding: 1.8rem; display: flex; flex-direction: column; justify-content: space-between;">
-                        <div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <span style="font-weight: 800; color: var(--primary); font-size: 1rem;">✨ Gemini AI Travel Insights</span>
-                                <span style="background: #e0f2fe; color: #0369a1; font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 99px;">Smart Advice</span>
-                            </div>
-                            <div style="margin-bottom: 12px;">
-                                <div style="font-weight: 700; font-size: 0.85rem; color: var(--primary);">🚆 Route Tip:</div>
-                                <p id="aiTransit" style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.45;">Loading transit suggestions...</p>
-                            </div>
-                            <div style="margin-bottom: 12px;">
-                                <div style="font-weight: 700; font-size: 0.85rem; color: var(--primary);">🌿 Destination Stewardship:</div>
-                                <p id="aiHotel" style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.45;">Loading local guidelines...</p>
-                            </div>
-                            <div>
-                                <div style="font-weight: 700; font-size: 0.85rem; color: var(--primary);">♿ Accessible Travel:</div>
-                                <p id="aiAccess" style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.45;">Loading accessibility tips...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Connect Phase 1 to Phase 2 -->
-                <div style="text-align: center;">
-                    <a href="#" id="continueToHotelsBtn" class="btn-nature-primary" style="padding: 16px 36px; font-size: 1.05rem;">
-                        Continue to Step 2: Choose Eco-Stay in <span id="btnDestName">Munnar</span> ➔
-                    </a>
-                </div>
-            </div>
         </div>
     </main>
 
@@ -301,104 +297,51 @@ $preselectedDest = $_GET['dest'] ?? '';
 
     <script src="js/effects.js"></script>
     <script>
-        let currentMode = 'train';
-        let lastCalculation = null;
-
         function toggleDrawer() {
             document.getElementById('mobileDrawer').classList.toggle('open');
             document.getElementById('drawerOverlay').classList.toggle('active');
         }
 
-        function setOrigin(city) {
-            document.getElementById('sourceInput').value = city;
-            computeImpact();
-        }
-
-        function selectMode(mode) {
-            currentMode = mode;
-            document.querySelectorAll('.mode-pill').forEach(p => {
-                p.classList.toggle('selected', p.getAttribute('data-mode') === mode);
-            });
-            computeImpact();
-        }
-
-        function useGeolocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(() => {
-                    document.getElementById('sourceInput').value = "My Current GPS Location";
-                    computeImpact();
-                }, () => alert("Location access was denied."));
+        function toggleReturnDate() {
+            const isRoundTrip = document.querySelector('input[name="trip_type"][value="round-trip"]').checked;
+            const returnDateInput = document.getElementById('return_date');
+            returnDateInput.disabled = !isRoundTrip;
+            if (isRoundTrip) {
+                returnDateInput.required = true;
+            } else {
+                returnDateInput.required = false;
+                returnDateInput.value = '';
             }
         }
 
-        function getApproxDistance(source, destination) {
-            const map = {
-                'mumbai_munnar': 1380,
-                'bengaluru_munnar': 475,
-                'delhi_manali': 535,
-                'mumbai_goa': 580,
-                'bengaluru_wayanad': 280,
-                'delhi_rishikesh': 240,
-                'chennai_ooty': 540
-            };
-            const key = (source.toLowerCase().split(/[\s,]+/)[0] + '_' + destination.toLowerCase().split(/[\s,]+/)[0]);
-            return map[key] || 480;
-        }
+        function validateForm() {
+            const origin = document.getElementById('origin').value.trim();
+            const destination = document.getElementById('destination').value.trim();
+            const departureDate = document.getElementById('departure_date').value;
+            const returnDate = document.getElementById('return_date').value;
+            const isRoundTrip = document.querySelector('input[name="trip_type"][value="round-trip"]').checked;
+            const today = new Date().toISOString().split('T')[0];
 
-        async function computeImpact() {
-            const source = document.getElementById('sourceInput').value.trim() || 'Mumbai';
-            const destSelect = document.getElementById('destinationSelect');
-            const destOpt = destSelect.selectedOptions[0];
-            const destination = destSelect.value;
-            const destId = destOpt ? destOpt.getAttribute('data-id') : 1;
-            const distance = getApproxDistance(source, destination);
-
-            document.getElementById('resultsCard').style.display = 'block';
-            document.getElementById('tripDetailText').innerText = `Distance: ~${distance} km via ${currentMode.toUpperCase()}`;
-            document.getElementById('btnDestName').innerText = destination.split(',')[0];
-
-            try {
-                const res = await fetch('api/get_suggestions.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        source: source,
-                        destination: destination,
-                        mode: currentMode,
-                        distance_km: distance
-                    })
-                });
-                const data = await res.json();
-                if (data.status === 'success') {
-                    lastCalculation = data;
-                    document.getElementById('co2Val').innerHTML = `${data.emissions.chosen_co2_kg} <span style="font-size: 1rem; font-weight: 500;">kg CO₂</span>`;
-                    document.getElementById('co2SavedVal').innerText = `${data.emissions.co2_saved_kg} kg`;
-                    document.getElementById('treesVal').innerText = `${data.emissions.trees_equivalent} Trees`;
-                    document.getElementById('reductionBadge').innerText = `${data.emissions.percent_reduction}% LESS CO₂`;
-
-                    document.getElementById('aiTransit').innerHTML = data.ai_insights.transit_advice;
-                    document.getElementById('aiHotel').innerHTML = data.ai_insights.hotel_advice;
-                    document.getElementById('aiAccess').innerHTML = data.ai_insights.accessibility_advice;
-
-                    // Build link to Phase 2 (hotels.php)
-                    const params = new URLSearchParams({
-                        dest_id: destId,
-                        dest_name: destination,
-                        origin: source,
-                        mode: currentMode,
-                        distance: distance,
-                        co2_saved: data.emissions.co2_saved_kg
-                    });
-                    document.getElementById('continueToHotelsBtn').href = `hotels.php?${params.toString()}`;
+            if (origin.toLowerCase() === destination.toLowerCase() && origin !== '') {
+                alert("Origin and destination cannot be the same.");
+                return false;
+            }
+            if (departureDate < today) {
+                alert("Departure date cannot be in the past.");
+                return false;
+            }
+            if (isRoundTrip) {
+                if (!returnDate) {
+                    alert("Return date is required for round trips.");
+                    return false;
                 }
-            } catch (err) {
-                console.error(err);
+                if (returnDate < departureDate) {
+                    alert("Return date must be on or after the departure date.");
+                    return false;
+                }
             }
+            return true;
         }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            computeImpact();
-        });
     </script>
 </body>
 </html>

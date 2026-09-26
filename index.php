@@ -601,14 +601,14 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         .search-widget-wrapper {
             position: relative;
             margin-top: 1rem;
-            padding-bottom: 24px; /* Space for overlapping button */
+            padding-bottom: 0;
         }
 
         .search-widget-card {
             background: var(--alice-blue-card);
             border: 2px solid rgba(240, 248, 255, 0.9);
             border-radius: var(--radius-lg);
-            padding: 1.8rem 1.8rem 2.8rem;
+            padding: 1.8rem;
             box-shadow: 0 20px 45px -8px rgba(4, 22, 13, 0.35), 0 0 20px rgba(34, 197, 94, 0.12);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -842,14 +842,64 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             cursor: pointer;
         }
 
-        /* Large Overlapping "SEARCH" Button */
-        .search-btn-container {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translate(-50%, 50%);
+        /* ==========================================================================
+           BUTTON AREA: VERTICAL STACK (NO OVERLAP, SPACIOUS BREATHING ROOM)
+           ========================================================================== */
+        .search-actions-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1.6rem;
+            width: 100%;
+            position: relative;
             z-index: 15;
-            width: auto;
+        }
+
+        .search-secondary-action {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin: 0;
+            text-align: center;
+        }
+
+        .link-transit-calc {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--alice-blue);
+            font-size: 0.92rem;
+            font-weight: 700;
+            background: rgba(11, 59, 36, 0.55);
+            border: 1.5px solid rgba(240, 248, 255, 0.35);
+            padding: 9px 22px;
+            border-radius: var(--radius-full);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: var(--transition);
+            text-align: center;
+            max-width: 100%;
+            box-shadow: 0 4px 14px rgba(7, 36, 22, 0.2);
+        }
+
+        .link-transit-calc:hover {
+            background: var(--seaweed-primary);
+            border-color: var(--seaweed-accent);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(11, 59, 36, 0.35);
+        }
+
+        .search-btn-container {
+            position: static;
+            transform: none;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 0;
         }
 
         .btn-search-large {
@@ -873,7 +923,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         .btn-search-large:hover {
-            transform: scale(1.04) translateY(-3px);
+            transform: scale(1.03) translateY(-2px);
             background: linear-gradient(135deg, var(--seaweed-light) 0%, var(--seaweed-primary) 100%);
             box-shadow: 0 20px 40px rgba(7, 36, 22, 0.45), 0 0 30px rgba(34, 197, 94, 0.5);
             color: #ffffff;
@@ -899,34 +949,6 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             transform: translateX(4px);
             background: var(--seaweed-mint);
             color: var(--seaweed-dark);
-        }
-
-        /* Fast Secondary Transit Route Shortcut Under Search */
-        .search-secondary-action {
-            margin-top: 1.8rem;
-            text-align: center;
-        }
-
-        .link-transit-calc {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--alice-blue);
-            font-size: 0.92rem;
-            font-weight: 700;
-            background: rgba(11, 59, 36, 0.4);
-            border: 1px solid rgba(240, 248, 255, 0.25);
-            padding: 6px 16px;
-            border-radius: var(--radius-full);
-            backdrop-filter: blur(8px);
-            transition: var(--transition);
-        }
-
-        .link-transit-calc:hover {
-            background: var(--seaweed-primary);
-            border-color: var(--seaweed-accent);
-            color: #ffffff;
-            transform: translateY(-2px);
         }
 
         /* ==========================================================================
@@ -1910,10 +1932,22 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 grid-template-columns: 1fr;
             }
 
+            .search-actions-group {
+                gap: 16px;
+                margin-top: 1.3rem;
+            }
+
+            .link-transit-calc {
+                font-size: 0.82rem;
+                padding: 8px 14px;
+                width: 100%;
+            }
+
             .btn-search-large {
-                width: 92%;
-                padding: 1rem 1.6rem;
-                font-size: 1rem;
+                width: 100%;
+                padding: 1rem 1.4rem;
+                font-size: 0.98rem;
+                white-space: normal;
             }
 
             .footer-inner {
@@ -2156,21 +2190,24 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                             </div>
                         </div>
 
-                        <!-- CRITICAL REQUIREMENT: Large Overlapping "SEARCH" Button Submitting to hotels.php -->
-                        <div class="search-btn-container">
-                            <button type="submit" class="btn-search-large" id="mainSearchBtn">
-                                <span>Search Eco-Stays</span>
-                                <span class="search-btn-icon">➔</span>
-                            </button>
+                        <!-- Action Buttons Group: Vertically Stacked with Breathing Room & No Overlap -->
+                        <div class="search-actions-group">
+                            <!-- Top Transit Calculator Pill -->
+                            <div class="search-secondary-action">
+                                <a href="travel.php?dest=Agra" id="transitPlannerHeroLink" class="link-transit-calc">
+                                    <span>🚆 Want route emissions first? Open Phase 1 Transit Calculator ➔</span>
+                                </a>
+                            </div>
+
+                            <!-- Main Search Button Submitting to hotels.php -->
+                            <div class="search-btn-container">
+                                <button type="submit" class="btn-search-large" id="mainSearchBtn">
+                                    <span>Search Eco-Stays</span>
+                                    <span class="search-btn-icon">➔</span>
+                                </button>
+                            </div>
                         </div>
                     </form>
-
-                    <!-- Alternative Direct Link to Phase 1 Transit Calculator -->
-                    <div class="search-secondary-action">
-                        <a href="travel.php?dest=Agra" id="transitPlannerHeroLink" class="link-transit-calc">
-                            <span>🚆 Want route emissions first? Open Phase 1 Transit Calculator ➔</span>
-                        </a>
-                    </div>
                 </div>
             </div>
 

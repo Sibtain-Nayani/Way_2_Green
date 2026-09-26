@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Way2Green — Sustainable & Accessible Travel Platform</title>
+    <meta name="description" content="Way2Green: Smart sustainable travel booking, barrier-free hospitality, vertical eco boarding pass, and carbon offset passports.">
+    
+    <!-- Google Fonts: Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           COLOR PALETTE & DESIGN TOKENS
+           Strict Color Palette: Seaweed Green & Alice Blue Dominance
+           ========================================================================== */
+        :root {
+            /* Seaweed Green Family */
+            --seaweed-deepest: #04160d;
+            --seaweed-dark: #072416;
+            --seaweed-primary: #0b3b24;
+            --seaweed-mid: #134e35;
+            --seaweed-light: #1b633d;
+            --seaweed-accent: #22c55e;
+            --seaweed-mint: #34d399;
+            --seaweed-glow: rgba(34, 197, 94, 0.4);
+
+            /* Alice Blue Family */
+            --alice-blue: #F0F8FF;
+            --alice-blue-light: #f7fbff;
+            --alice-blue-dark: #e1effc;
+            --alice-blue-deep: #cae3fb;
+            --alice-blue-card: rgba(240, 248, 255, 0.94);
+            --alice-blue-glass: rgba(240, 248, 255, 0.88);
+            --alice-blue-border: rgba(190, 220, 248, 0.65);
+
+            /* Text & UI Semantics */
+            --text-on-seaweed: #F0F8FF;
+            --text-on-alice: #072416;
+            --text-muted: #4d6d5d;
+            --text-light-subtle: rgba(240, 248, 255, 0.78);
+
+            /* Elevation & Shadows */
+            --shadow-sm: 0 4px 14px rgba(7, 36, 22, 0.08);
+            --shadow-md: 0 12px 32px rgba(7, 36, 22, 0.14);
+            --shadow-lg: 0 24px 50px rgba(7, 36, 22, 0.22);
+            --shadow-boarding-pass: 0 30px 60px -12px rgba(4, 22, 13, 0.45), 0 0 40px rgba(34, 197, 94, 0.15);
+            --shadow-search-btn: 0 14px 28px rgba(7, 36, 22, 0.35), 0 0 25px rgba(34, 211, 153, 0.3);
+
+            /* Layout */
+            --radius-sm: 10px;
+            --radius-md: 18px;
+            --radius-lg: 26px;
+            --radius-full: 9999px;
+            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Global Reset */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--alice-blue);
+            color: var(--text-on-alice);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        a {
+            color: var(--seaweed-primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        button, input, select {
+            font-family: inherit;
+        }
+
+        /* Ambient Glowing Background Elements */
+        .ambient-glow-1 {
+            position: fixed;
+            top: -120px;
+            right: -100px;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.12) 0%, rgba(240, 248, 255, 0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .ambient-glow-2 {
+            position: fixed;
+            bottom: -150px;
+            left: -100px;
+            width: 520px;
+            height: 520px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(11, 59, 36, 0.1) 0%, rgba(240, 248, 255, 0) 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ==========================================================================
+           TOP NAVIGATION BAR
+           ========================================================================== */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(240, 248, 255, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--alice-blue-border);
+            padding: 0.9rem 2rem;
+            transition: var(--transition);
+        }
+
+        .nav-inner {
+            max-width: 1320px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--seaweed-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .brand-icon-box {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--seaweed-primary), var(--seaweed-light));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--alice-blue);
+            font-size: 1.25rem;
+            box-shadow: 0 4px 12px rgba(11, 59, 36, 0.25);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--seaweed-mid);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--seaweed-primary);
+            background: var(--alice-blue-dark);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .eco-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(11, 59, 36, 0.08);
+            border: 1px solid rgba(11, 59, 36, 0.18);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--seaweed-primary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--seaweed-accent);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px var(--seaweed-accent);
+            animation: pulse-dot 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(0.85); }
+        }
+
+        .btn-nav-action {
+            background: linear-gradient(135deg, var(--seaweed-primary), var(--seaweed-light));
+            color: var(--alice-blue);
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(11, 59, 36, 0.25);
+            transition: var(--transition);
+        }
+
+        .btn-nav-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(11, 59, 36, 0.35);
+        }
+
+        /* ==========================================================================
+           MAIN HERO SECTION WITH DYNAMIC LOCATION BACKGROUND
+           Strict UI Constraint: Semi-transparent Seaweed Green / Alice Blue Gradient Overlay
+           ========================================================================== */
+        .hero-section {
+            position: relative;
+            min-height: 92vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1.5rem 6.5rem;
+            overflow: hidden;
+            background-color: var(--seaweed-dark);
+            transition: background 0.6s ease-in-out;
+        }
+
+        /* Dynamic Background Layer with Smooth Image Crossfading */
+        .hero-bg-layer {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            opacity: 1;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(1.02);
+            z-index: 1;
+        }
+
+        /* Gradient Overlay: Semi-transparent Seaweed Green + Alice Blue */
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            /* Precise blending of Seaweed Green and Alice Blue */
+            background: linear-gradient(
+                135deg,
+                rgba(7, 36, 22, 0.92) 0%,
+                rgba(11, 59, 36, 0.85) 45%,
+                rgba(19, 78, 53, 0.76) 75%,
+                rgba(240, 248, 255, 0.32) 100%
+            );
+            backdrop-filter: blur(1.5px);
+            -webkit-backdrop-filter: blur(1.5px);
+            z-index: 2;
+        }
+
+        /* Secondary subtle ambient glow layer */
+        .hero-ambient-mesh {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 80% 25%, rgba(52, 211, 153, 0.18) 0%, transparent 50%),
+                        radial-gradient(circle at 20% 85%, rgba(240, 248, 255, 0.15) 0%, transparent 45%);
+            mix-blend-mode: overlay;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .hero-container {
+            position: relative;
+            z-index: 10;
+            max-width: 1320px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 3.5rem;
+            align-items: center;
+        }
+
+        /* Hero Left Content */
+        .hero-left {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .hero-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge-eco-pill {
+            background: rgba(240, 248, 255, 0.15);
+            border: 1px solid rgba(240, 248, 255, 0.3);
+            color: var(--alice-blue);
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.84rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(8px);
+        }
+
+        .badge-destination-indicator {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid var(--seaweed-accent);
+            color: #d1fae5;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.84rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .hero-title {
+            font-size: clamp(2.3rem, 4.2vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.12;
+            color: var(--alice-blue);
+            letter-spacing: -0.03em;
+            text-shadow: 0 3px 18px rgba(4, 22, 13, 0.4);
+        }
+
+        .hero-title .highlight {
+            background: linear-gradient(120deg, #6ee7b7, #a7f3d0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .hero-subtitle {
+            font-size: 1.08rem;
+            color: var(--text-light-subtle);
+            line-height: 1.65;
+            max-width: 580px;
+        }
+
+        /* ==========================================================================
+           THE COMPLEX SEARCH WIDGET
+           Features: Location, Check-in/out, Guests dropdown, Filters, and
+           Large Overlapping "SEARCH" Button
+           ========================================================================== */
+        .search-widget-wrapper {
+            position: relative;
+            margin-top: 1rem;
+            padding-bottom: 24px; /* Space for overlapping button */
+        }
+
+        .search-widget-card {
+            background: var(--alice-blue-card);
+            border: 2px solid rgba(240, 248, 255, 0.9);
+            border-radius: var(--radius-lg);
+            padding: 1.8rem 1.8rem 2.8rem; /* Extra bottom padding for button overlap */
+            box-shadow: 0 20px 45px -8px rgba(4, 22, 13, 0.35), 0 0 20px rgba(34, 197, 94, 0.12);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: relative;
+            z-index: 5;
+        }
+
+        .search-fields-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .search-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+        }
+
+        .field-label {
+            font-size: 0.76rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--seaweed-primary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .field-input-box {
+            position: relative;
+            background: #ffffff;
+            border: 1.5px solid var(--alice-blue-deep);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            gap: 8px;
+            transition: var(--transition);
+            box-shadow: 0 2px 6px rgba(7, 36, 22, 0.04);
+        }
+
+        .field-input-box:focus-within {
+            border-color: var(--seaweed-light);
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+            background: #ffffff;
+        }
+
+        .field-icon {
+            font-size: 1.15rem;
+            color: var(--seaweed-mid);
+            flex-shrink: 0;
+        }
+
+        .field-input-box input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--seaweed-dark);
+        }
+
+        .field-input-box input::placeholder {
+            color: #8fa79b;
+            font-weight: 500;
+        }
+
+        /* Quick Destination Chips for Fast Selection */
+        .quick-destinations-row {
+            margin-top: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .quick-dest-label {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--seaweed-mid);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-right: 4px;
+        }
+
+        .dest-chip {
+            background: #ffffff;
+            border: 1px solid var(--alice-blue-deep);
+            color: var(--seaweed-primary);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dest-chip:hover, .dest-chip.active {
+            background: var(--seaweed-primary);
+            color: var(--alice-blue);
+            border-color: var(--seaweed-primary);
+            transform: translateY(-1px);
+        }
+
+        /* Custom Interactive Guest Selector Dropdown */
+        .guest-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 1.5px solid var(--alice-blue-deep);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            box-shadow: var(--shadow-md);
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .guest-dropdown-menu.show {
+            display: flex;
+            animation: fadeInMenu 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInMenu {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .guest-counter-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .counter-info h4 {
+            font-size: 0.88rem;
+            color: var(--seaweed-dark);
+            font-weight: 700;
+        }
+
+        .counter-info p {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+        }
+
+        .counter-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-counter {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--alice-blue-deep);
+            background: var(--alice-blue);
+            color: var(--seaweed-primary);
+            font-size: 1rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-counter:hover:not(:disabled) {
+            background: var(--seaweed-primary);
+            color: var(--alice-blue);
+        }
+
+        .btn-counter:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .counter-val {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--seaweed-dark);
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* Accessibility & Eco Toggles Bar */
+        .search-amenities-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.1rem;
+            padding-top: 0.9rem;
+            border-top: 1px dashed rgba(11, 59, 36, 0.16);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .eco-filters-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--seaweed-mid);
+            user-select: none;
+        }
+
+        .checkbox-pill input[type="checkbox"] {
+            accent-color: var(--seaweed-primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        /* ==========================================================================
+           LARGE OVERLAPPING "SEARCH" BUTTON
+           Crucial Requirement: Overlaps the search card boundary with commanding elevation
+           ========================================================================== */
+        .search-btn-container {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            z-index: 15;
+            width: auto;
+        }
+
+        .btn-search-large {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            background: linear-gradient(135deg, var(--seaweed-primary) 0%, var(--seaweed-dark) 100%);
+            color: var(--alice-blue);
+            font-size: 1.12rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            padding: 1.1rem 3.4rem;
+            border-radius: var(--radius-full);
+            border: 3px solid var(--alice-blue);
+            box-shadow: var(--shadow-search-btn);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+        }
+
+        .btn-search-large:hover {
+            transform: scale(1.04) translateY(-3px);
+            background: linear-gradient(135deg, var(--seaweed-light) 0%, var(--seaweed-primary) 100%);
+            box-shadow: 0 20px 40px rgba(7, 36, 22, 0.45), 0 0 30px rgba(34, 197, 94, 0.5);
+            color: #ffffff;
+        }
+
+        .btn-search-large:active {
+            transform: scale(0.98) translateY(0);
+        }
+
+        .search-btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(240, 248, 255, 0.18);
+            color: var(--alice-blue);
+            transition: var(--transition);
+        }
+
+        .btn-search-large:hover .search-btn-icon {
+            transform: translateX(4px);
+            background: var(--seaweed-mint);
+            color: var(--seaweed-dark);
+        }
+
+        /* ==========================================================================
+           ECO-FRIENDLY VERTICAL BOARDING PASS DESIGN
+           Features: Perforated tear notches, flight/train route, seat, barcode,
+           verification stamp, and live synchronization with destination input!
+           ========================================================================== */
+        .hero-right {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .boarding-pass-card {
+            width: 100%;
+            max-width: 410px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: var(--shadow-boarding-pass);
+            position: relative;
+            overflow: visible;
+            border: 2px solid rgba(240, 248, 255, 0.85);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+
+        .boarding-pass-card:hover {
+            transform: translateY(-6px) rotate(0.5deg);
+        }
+
+        /* Pass Header - Dark Seaweed Top Bar */
+        .pass-header {
+            background: linear-gradient(135deg, var(--seaweed-dark) 0%, var(--seaweed-primary) 100%);
+            color: var(--alice-blue);
+            padding: 1.4rem 1.6rem 1.2rem;
+            border-radius: 22px 22px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .pass-airline-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: var(--alice-blue);
+        }
+
+        .pass-type-badge {
+            background: rgba(34, 197, 94, 0.22);
+            border: 1px solid var(--seaweed-accent);
+            color: #bbf7d0;
+            font-size: 0.72rem;
+            font-weight: 800;
+            padding: 3px 9px;
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Pass Body Content */
+        .pass-main-body {
+            padding: 1.5rem 1.8rem;
+            background: #ffffff;
+        }
+
+        /* Transit Departure -> Destination Large Display */
+        .pass-route-block {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(11, 59, 36, 0.1);
+        }
+
+        .route-stop {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stop-code {
+            font-family: var(--font-mono);
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--seaweed-primary);
+            line-height: 1;
+        }
+
+        .stop-city {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .route-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex-grow: 1;
+            padding: 0 1rem;
+        }
+
+        .route-transport-mode {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--seaweed-mid);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .connector-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--seaweed-accent), var(--seaweed-primary));
+            position: relative;
+        }
+
+        .connector-line::after {
+            content: '🚆';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.95rem;
+            background: #ffffff;
+            padding: 0 4px;
+        }
+
+        /* Pass Metadata Grid */
+        .pass-details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem 1.2rem;
+            margin-top: 1.2rem;
+        }
+
+        .pass-meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #7b998a;
+            letter-spacing: 0.05em;
+        }
+
+        .meta-value {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--seaweed-dark);
+            margin-top: 2px;
+        }
+
+        .meta-value.mono {
+            font-family: var(--font-mono);
+            letter-spacing: -0.02em;
+        }
+
+        /* Verified Carbon Footprint Strip */
+        .pass-carbon-strip {
+            margin-top: 1.3rem;
+            background: rgba(240, 248, 255, 0.85);
+            border: 1px solid var(--alice-blue-deep);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .carbon-strip-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--seaweed-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .carbon-savings-badge {
+            background: var(--seaweed-primary);
+            color: var(--alice-blue);
+            font-size: 0.74rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            letter-spacing: 0.02em;
+        }
+
+        /* Perforated Notches & Tear Line */
+        .pass-perforation-divider {
+            position: relative;
+            height: 28px;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+        }
+
+        .tear-dashed-line {
+            width: 100%;
+            border-top: 2px dashed rgba(11, 59, 36, 0.24);
+        }
+
+        /* Left and Right Ticket Hole Notches */
+        .notch-left, .notch-right {
+            position: absolute;
+            top: 50%;
+            width: 26px;
+            height: 26px;
+            background: var(--seaweed-dark); /* Blends into hero dark background */
+            border-radius: 50%;
+            transform: translateY(-50%);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .notch-left {
+            left: -13px;
+        }
+
+        .notch-right {
+            right: -13px;
+        }
+
+        /* Pass Stub (Bottom Segment) */
+        .pass-stub {
+            background: var(--alice-blue);
+            padding: 1.4rem 1.8rem 1.6rem;
+            border-radius: 0 0 22px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .stub-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stub-seal-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .seal-stamp {
+            width: 36px;
+            height: 36px;
+            border: 2px dashed var(--seaweed-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: var(--seaweed-primary);
+        }
+
+        .seal-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .seal-title {
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: var(--seaweed-primary);
+            text-transform: uppercase;
+        }
+
+        .seal-subtitle {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* Barcode & QR Display */
+        .pass-barcode-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: #ffffff;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--alice-blue-deep);
+        }
+
+        .barcode-strip {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 38px;
+            flex-grow: 1;
+        }
+
+        .barcode-line {
+            background-color: var(--seaweed-dark);
+            height: 100%;
+            border-radius: 1px;
+        }
+
+        .qr-placeholder {
+            width: 44px;
+            height: 44px;
+            background: var(--alice-blue-dark);
+            border: 1.5px solid var(--seaweed-primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.4rem;
+        }
+
+        .pass-serial {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-align: center;
+            letter-spacing: 0.1em;
+        }
+
+        /* ==========================================================================
+           SECTION 2: POPULAR GREEN CORRIDORS & SEARCH RESULTS PREVIEW
+           ========================================================================== */
+        .section-container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 5rem 1.5rem;
+        }
+
+        .section-header-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 2.8rem;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .section-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--seaweed-primary);
+            background: var(--alice-blue-dark);
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            margin-bottom: 8px;
+        }
+
+        .section-heading {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800;
+            color: var(--seaweed-dark);
+            letter-spacing: -0.02em;
+        }
+
+        .section-subtext {
+            color: var(--text-muted);
+            font-size: 1.02rem;
+            max-width: 620px;
+            margin-top: 6px;
+        }
+
+        /* Curated Stays Grid */
+        .stays-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .stay-card {
+            background: #ffffff;
+            border: 1.5px solid var(--alice-blue-deep);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stay-card:hover {
+            transform: translateY(-7px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--seaweed-accent);
+        }
+
+        .stay-thumb-box {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+
+        .stay-thumb-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .stay-card:hover .stay-thumb-box img {
+            transform: scale(1.06);
+        }
+
+        .stay-rating-tag {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(7, 36, 22, 0.88);
+            color: var(--alice-blue);
+            backdrop-filter: blur(8px);
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stay-eco-badge {
+            position: absolute;
+            bottom: 14px;
+            left: 14px;
+            background: rgba(240, 248, 255, 0.95);
+            color: var(--seaweed-primary);
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.76rem;
+            font-weight: 800;
+        }
+
+        .stay-card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .stay-loc {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--seaweed-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 6px;
+        }
+
+        .stay-title {
+            font-size: 1.22rem;
+            font-weight: 800;
+            color: var(--seaweed-dark);
+            margin-bottom: 8px;
+        }
+
+        .stay-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-bottom: 1.2rem;
+            flex-grow: 1;
+        }
+
+        .stay-tags-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 1.3rem;
+        }
+
+        .eco-tag {
+            font-size: 0.74rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            background: var(--alice-blue);
+            color: var(--seaweed-primary);
+            border: 1px solid var(--alice-blue-deep);
+        }
+
+        .stay-card-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.1rem;
+            border-top: 1px solid var(--alice-blue-dark);
+        }
+
+        .stay-price-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .price-val {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--seaweed-primary);
+        }
+
+        .btn-view-stay {
+            background: var(--seaweed-primary);
+            color: var(--alice-blue);
+            padding: 8px 18px;
+            border-radius: var(--radius-full);
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-view-stay:hover {
+            background: var(--seaweed-light);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================================
+           SECTION 3: SUSTAINABILITY & ACCESSIBILITY IMPACT METRICS
+           ========================================================================== */
+        .metrics-banner {
+            background: linear-gradient(135deg, var(--seaweed-primary) 0%, var(--seaweed-dark) 100%);
+            color: var(--alice-blue);
+            border-radius: var(--radius-lg);
+            padding: 3.5rem 2.5rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metrics-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 15% 30%, rgba(34, 197, 94, 0.22) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .metric-col {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .metric-number {
+            font-family: var(--font-mono);
+            font-size: clamp(2.2rem, 3.5vw, 3rem);
+            font-weight: 800;
+            color: #6ee7b7;
+            line-height: 1;
+        }
+
+        .metric-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--alice-blue);
+        }
+
+        .metric-desc {
+            font-size: 0.88rem;
+            color: var(--text-light-subtle);
+            line-height: 1.5;
+        }
+
+        /* Toast Notifications */
+        .toast-notification {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--seaweed-dark);
+            color: var(--alice-blue);
+            padding: 14px 22px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--seaweed-accent);
+            box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 0.94rem;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+        }
+
+        .toast-notification.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: var(--seaweed-deepest);
+            color: var(--alice-blue);
+            padding: 4rem 1.5rem 2.5rem;
+            border-top: 1px solid rgba(240, 248, 255, 0.1);
+        }
+
+        .footer-inner {
+            max-width: 1320px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--alice-blue);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand p {
+            color: var(--text-light-subtle);
+            font-size: 0.92rem;
+            line-height: 1.6;
+            max-width: 380px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--alice-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-links a {
+            color: var(--text-light-subtle);
+            font-size: 0.88rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--seaweed-mint);
+            transform: translateX(3px);
+        }
+
+        .footer-bottom {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(240, 248, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.84rem;
+            color: rgba(240, 248, 255, 0.55);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        /* ==========================================================================
+           RESPONSIVE DESIGN BREAKPOINTS
+           ========================================================================== */
+        @media (max-width: 1100px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 4rem;
+            }
+
+            .hero-right {
+                order: 2;
+            }
+
+            .boarding-pass-card {
+                max-width: 460px;
+            }
+
+            .search-fields-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-section {
+                padding: 3rem 1rem 5.5rem;
+            }
+
+            .search-fields-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-search-large {
+                width: 90%;
+                padding: 1rem 1.8rem;
+                font-size: 1rem;
+            }
+
+            .pass-route-block {
+                flex-direction: row;
+            }
+
+            .footer-inner {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Ambient Glowing Backdrop -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Navigation Header -->
+    <header class="site-header">
+        <div class="nav-inner">
+            <a href="#" class="brand-logo">
+                <div class="brand-icon-box">🌱</div>
+                <span>Way_2_Green</span>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="#heroSection" class="nav-link active">Boarding Pass</a></li>
+                <li><a href="#staysSection" class="nav-link">Eco-Stays</a></li>
+                <li><a href="#impactSection" class="nav-link">Zero Impact Metrics</a></li>
+            </ul>
+
+            <div class="header-actions">
+                <div class="eco-status-pill">
+                    <span class="status-dot"></span>
+                    <span>100% Carbon Verified</span>
+                </div>
+                <button class="btn-nav-action" onclick="scrollToSearch()">Book Journey</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Hero Section with Dynamic Location Backgrounds -->
+    <section class="hero-section" id="heroSection">
+        <!-- Dynamic Background Layer (Manipulated by Inline JS) -->
+        <div class="hero-bg-layer" id="heroBgLayer"></div>
+
+        <!-- Strict UI Constraint: Semi-transparent Seaweed Green / Alice Blue Gradient Overlay -->
+        <div class="hero-overlay"></div>
+        <div class="hero-ambient-mesh"></div>
+
+        <div class="hero-container">
+            <!-- Left Hero Content & The Complex Search Widget -->
+            <div class="hero-left">
+                <div class="hero-badge-row">
+                    <span class="badge-eco-pill">🌍 Sustainable & Barrier-Free Hospitality</span>
+                    <span class="badge-destination-indicator" id="heroDestIndicator">
+                        📍 Viewing: <strong id="heroDestIndicatorName" style="margin-left: 4px;">Agra • Taj Mahal Corridor</strong>
+                    </span>
+                </div>
+
+                <h1 class="hero-title">
+                    Travel Light. <br>
+                    <span class="highlight">Your Ticket</span> to a Greener Planet.
+                </h1>
+
+                <p class="hero-subtitle">
+                    Select your low-emission corridor, pick verified wheelchair-accessible solar sanctuaries, and generate your instant verified eco-boarding pass.
+                </p>
+
+                <!-- THE COMPLEX SEARCH WIDGET -->
+                <div class="search-widget-wrapper">
+                    <div class="search-widget-card">
+                        <div class="search-fields-grid">
+                            
+                            <!-- Field 1: Destination / Location (Monitored by JS) -->
+                            <div class="search-field-group">
+                                <label class="field-label" for="locationInput">
+                                    <span>📍</span> Destination
+                                </label>
+                                <div class="field-input-box">
+                                    <span class="field-icon">🗺️</span>
+                                    <input 
+                                        type="text" 
+                                        id="locationInput" 
+                                        placeholder="Agra, Goa, Mumbai, Singapore..." 
+                                        value="Agra"
+                                        autocomplete="off"
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Field 2: Check-in Date -->
+                            <div class="search-field-group">
+                                <label class="field-label" for="checkInInput">
+                                    <span>📅</span> Check-In
+                                </label>
+                                <div class="field-input-box">
+                                    <input type="date" id="checkInInput">
+                                </div>
+                            </div>
+
+                            <!-- Field 3: Check-out Date -->
+                            <div class="search-field-group">
+                                <label class="field-label" for="checkOutInput">
+                                    <span>📅</span> Check-Out
+                                </label>
+                                <div class="field-input-box">
+                                    <input type="date" id="checkOutInput">
+                                </div>
+                            </div>
+
+                            <!-- Field 4: Guests & Rooms Selector -->
+                            <div class="search-field-group">
+                                <label class="field-label" for="guestTriggerBtn">
+                                    <span>👥</span> Guests & Rooms
+                                </label>
+                                <div class="field-input-box" id="guestTriggerBtn" style="cursor: pointer;">
+                                    <span class="field-icon">🧳</span>
+                                    <input 
+                                        type="text" 
+                                        id="guestSummaryInput" 
+                                        value="2 Adults, 1 Room" 
+                                        readonly 
+                                        style="cursor: pointer;"
+                                    >
+                                </div>
+
+                                <!-- Interactive Guest Counter Popover -->
+                                <div class="guest-dropdown-menu" id="guestDropdownMenu">
+                                    <div class="guest-counter-row">
+                                        <div class="counter-info">
+                                            <h4>Adults</h4>
+                                            <p>Ages 13 and above</p>
+                                        </div>
+                                        <div class="counter-controls">
+                                            <button class="btn-counter" type="button" onclick="adjustGuest('adults', -1)">−</button>
+                                            <span class="counter-val" id="valAdults">2</span>
+                                            <button class="btn-counter" type="button" onclick="adjustGuest('adults', 1)">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="guest-counter-row">
+                                        <div class="counter-info">
+                                            <h4>Children</h4>
+                                            <p>Ages 0 to 12</p>
+                                        </div>
+                                        <div class="counter-controls">
+                                            <button class="btn-counter" type="button" onclick="adjustGuest('children', -1)" id="btnMinusChildren" disabled>−</button>
+                                            <span class="counter-val" id="valChildren">0</span>
+                                            <button class="btn-counter" type="button" onclick="adjustGuest('children', 1)">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="guest-counter-row">
+                                        <div class="counter-info">
+                                            <h4>Rooms</h4>
+                                            <p>Eco-certified units</p>
+                                        </div>
+                                        <div class="counter-controls">
+                                            <button class="btn-counter" type="button" onclick="adjustGuest('rooms', -1)" id="btnMinusRooms" disabled>−</button>
+                                            <span class="counter-val" id="valRooms">1</span>
+                                            <button class="btn-counter" type="button" onclick="adjustGuest('rooms', 1)">+</button>
+                                        </div>
+                                    </div>
+                                    <button class="btn-nav-action" type="button" style="width: 100%; margin-top: 6px;" onclick="closeGuestDropdown()">
+                                        Done
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Popular Destination Filter Chips -->
+                        <div class="quick-destinations-row">
+                            <span class="quick-dest-label">Popular Corridors:</span>
+                            <button class="dest-chip active" type="button" onclick="selectDestination('Agra')">🕌 Agra</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Goa')">🏖️ Goa</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Mumbai')">🏛️ Mumbai</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Singapore')">🏙️ Singapore</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Kerala')">🌿 Kerala</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Bali')">🌺 Bali</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Kyoto')">🎋 Kyoto</button>
+                        </div>
+
+                        <!-- Amenities & Accessibility Toggles -->
+                        <div class="search-amenities-row">
+                            <div class="eco-filters-group">
+                                <label class="checkbox-pill">
+                                    <input type="checkbox" id="checkWheelchair" checked>
+                                    <span>♿ Wheelchair Accessible</span>
+                                </label>
+                                <label class="checkbox-pill">
+                                    <input type="checkbox" id="checkSolar" checked>
+                                    <span>☀️ 100% Solar Powered</span>
+                                </label>
+                                <label class="checkbox-pill">
+                                    <input type="checkbox" id="checkPlasticFree" checked>
+                                    <span>🌱 Zero Single-Use Plastics</span>
+                                </label>
+                            </div>
+                            <span style="font-size: 0.78rem; font-weight: 700; color: var(--seaweed-mid);">
+                                ⚡ Real-Time Emission Matching
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- CRITICAL REQUIREMENT: Large Overlapping "SEARCH" Button -->
+                    <div class="search-btn-container">
+                        <button class="btn-search-large" id="mainSearchBtn" onclick="handleSearchClick()">
+                            <span>Search Eco-Stays</span>
+                            <span class="search-btn-icon">➔</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Hero Content: ECO-FRIENDLY VERTICAL BOARDING PASS -->
+            <div class="hero-right">
+                <div class="boarding-pass-card" id="boardingPassCard">
+                    <!-- Boarding Pass Header -->
+                    <div class="pass-header">
+                        <div class="pass-airline-brand">
+                            <span style="font-size: 1.3rem;">🌱</span>
+                            <div>
+                                <div style="line-height: 1.1;">WAY2GREEN</div>
+                                <span style="font-size: 0.65rem; opacity: 0.85; font-weight: 600; text-transform: uppercase;">Bio-Transit Network</span>
+                            </div>
+                        </div>
+                        <span class="pass-type-badge">First Class Eco</span>
+                    </div>
+
+                    <!-- Boarding Pass Main Body -->
+                    <div class="pass-main-body">
+                        <!-- Origin ➔ Destination Route Block (Dynamically Synchronized) -->
+                        <div class="pass-route-block">
+                            <div class="route-stop">
+                                <span class="stop-code">DEL</span>
+                                <span class="stop-city">New Delhi</span>
+                            </div>
+
+                            <div class="route-connector">
+                                <span class="route-transport-mode" id="passTransitMode">⚡ Solar High-Speed</span>
+                                <div class="connector-line"></div>
+                                <span style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);" id="passDistance">195 km • 0kg CO₂</span>
+                            </div>
+
+                            <div class="route-stop" style="text-align: right;">
+                                <span class="stop-code" id="passDestCode">AGR</span>
+                                <span class="stop-city" id="passDestCity">Agra</span>
+                            </div>
+                        </div>
+
+                        <!-- Passenger & Flight Metadata Grid -->
+                        <div class="pass-details-grid">
+                            <div class="pass-meta-item">
+                                <span class="meta-label">Passenger Name</span>
+                                <span class="meta-value">A. Vance / Voyager</span>
+                            </div>
+                            <div class="pass-meta-item">
+                                <span class="meta-label">Seat / Unit</span>
+                                <span class="meta-value mono">04A (Quiet Zone)</span>
+                            </div>
+                            <div class="pass-meta-item">
+                                <span class="meta-label">Departure Date</span>
+                                <span class="meta-value mono" id="passDepartDate">28 Sep 2026</span>
+                            </div>
+                            <div class="pass-meta-item">
+                                <span class="meta-label">Boarding Gate</span>
+                                <span class="meta-value mono">G-12 (Solar Wing)</span>
+                            </div>
+                        </div>
+
+                        <!-- Carbon Savings Live Strip -->
+                        <div class="pass-carbon-strip">
+                            <div class="carbon-strip-title">
+                                <span>🌿 Avoided Footprint:</span>
+                            </div>
+                            <span class="carbon-savings-badge" id="passSavingsBadge">-84% CO₂ Emissions</span>
+                        </div>
+                    </div>
+
+                    <!-- Perforation Notches & Tear Dashed Line -->
+                    <div class="pass-perforation-divider">
+                        <div class="notch-left"></div>
+                        <div class="tear-dashed-line"></div>
+                        <div class="notch-right"></div>
+                    </div>
+
+                    <!-- Boarding Pass Stub (Bottom Segment) -->
+                    <div class="pass-stub">
+                        <div class="stub-row">
+                            <div class="stub-seal-badge">
+                                <div class="seal-stamp">✓</div>
+                                <div class="seal-text">
+                                    <span class="seal-title">Verified Green Passport</span>
+                                    <span class="seal-subtitle" id="passLandmarkText">Taj Mahal Sanctuary</span>
+                                </div>
+                            </div>
+                            <span style="font-size: 0.8rem; font-weight: 800; color: var(--seaweed-primary);">
+                                ACCESSIBLE ♿
+                            </span>
+                        </div>
+
+                        <!-- Barcode & QR Simulation -->
+                        <div class="pass-barcode-container">
+                            <div class="barcode-strip" id="barcodeStrip">
+                                <!-- Dynamic barcode lines generated by CSS -->
+                                <div class="barcode-line" style="width: 3px;"></div>
+                                <div class="barcode-line" style="width: 1px;"></div>
+                                <div class="barcode-line" style="width: 4px;"></div>
+                                <div class="barcode-line" style="width: 2px;"></div>
+                                <div class="barcode-line" style="width: 1px;"></div>
+                                <div class="barcode-line" style="width: 3px;"></div>
+                                <div class="barcode-line" style="width: 5px;"></div>
+                                <div class="barcode-line" style="width: 2px;"></div>
+                                <div class="barcode-line" style="width: 1px;"></div>
+                                <div class="barcode-line" style="width: 3px;"></div>
+                                <div class="barcode-line" style="width: 2px;"></div>
+                                <div class="barcode-line" style="width: 4px;"></div>
+                                <div class="barcode-line" style="width: 1px;"></div>
+                                <div class="barcode-line" style="width: 3px;"></div>
+                                <div class="barcode-line" style="width: 2px;"></div>
+                                <div class="barcode-line" style="width: 5px;"></div>
+                                <div class="barcode-line" style="width: 1px;"></div>
+                                <div class="barcode-line" style="width: 2px;"></div>
+                            </div>
+                            <div class="qr-placeholder" title="Digital Passport Token">
+                                📱
+                            </div>
+                        </div>
+
+                        <div class="pass-serial" id="passSerialCode">
+                            PASS #W2G-9842-AGR-2026 • CARBON NEUTRAL TICKET
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: MATCHING ECO-STAYS PREVIEW -->
+    <section class="section-container" id="staysSection">
+        <div class="section-header-row">
+            <div>
+                <span class="section-tag">Featured Stays</span>
+                <h2 class="section-heading" id="staysHeading">Verified Eco-Resorts in Agra</h2>
+                <p class="section-subtext" id="staysSubtext">
+                    Solar-powered, barrier-free certified accommodations matching your sustainable boarding pass.
+                </p>
+            </div>
+            <div>
+                <span class="eco-status-pill" style="font-size: 0.9rem; padding: 8px 16px;">
+                    🌱 Universal Accessibility Standard Certified
+                </span>
+            </div>
+        </div>
+
+        <div class="stays-grid" id="staysGrid">
+            <!-- Dynamic stays loaded by JS based on selected location -->
+        </div>
+    </section>
+
+    <!-- SECTION 3: SUSTAINABILITY & ACCESSIBILITY IMPACT METRICS -->
+    <section class="section-container" id="impactSection" style="padding-top: 1rem;">
+        <div class="metrics-banner">
+            <div class="metrics-grid">
+                <div class="metric-col">
+                    <span class="metric-number">1,420,000L</span>
+                    <h3 class="metric-title">Clean Water Conserved</h3>
+                    <p class="metric-desc">Rainwater harvesting and greywater wetland filtration at certified resorts.</p>
+                </div>
+                <div class="metric-col">
+                    <span class="metric-number">94,500 kWh</span>
+                    <h3 class="metric-title">Solar Energy Generated</h3>
+                    <p class="metric-desc">Decarbonized stays operating on 100% on-site solar and micro-hydro power.</p>
+                </div>
+                <div class="metric-col">
+                    <span class="metric-number">100%</span>
+                    <h3 class="metric-title">Barrier-Free Access</h3>
+                    <p class="metric-desc">Physical step-free verification, tactile corridors, and sensory quiet rooms.</p>
+                </div>
+                <div class="metric-col">
+                    <span class="metric-number">0 kg</span>
+                    <h3 class="metric-title">Single-Use Plastics</h3>
+                    <p class="metric-desc">Glass refill stations, organic bamboo amenities, and zero-waste dining.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <h3>🌱 Way_2_Green</h3>
+                <p>
+                    A conscious travel ecosystem designed to eliminate environmental degradation and create barrier-free travel for everyone.
+                </p>
+                <div style="margin-top: 14px; font-size: 0.82rem; color: rgba(240, 248, 255, 0.65);">
+                    Palette: Strict Seaweed Green (#0b3b24) & Alice Blue (#F0F8FF).
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Navigation</h4>
+                <ul class="footer-links">
+                    <li><a href="#heroSection">Vertical Boarding Pass</a></li>
+                    <li><a href="#staysSection">Search Eco-Stays</a></li>
+                    <li><a href="#impactSection">Impact Metrics</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Destinations</h4>
+                <ul class="footer-links">
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Agra')">Agra Heritage</a></li>
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Goa')">Goa Coastal</a></li>
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Mumbai')">Mumbai Skyline</a></li>
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Singapore')">Singapore Supertrees</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Standards</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Wheelchair Auditing</a></li>
+                    <li><a href="#">Solar Grid Verification</a></li>
+                    <li><a href="#">Digital Green Passports</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>© 2026 Way_2_Green Platform • Green & Inclusive Travel Hackathon</span>
+            <span>Single-File Standalone Architecture • Zero External JS Dependencies</span>
+        </div>
+    </footer>
+
+    <!-- Interactive Toast Notification -->
+    <div class="toast-notification" id="toastNotification">
+        <span style="font-size: 1.3rem;">🌱</span>
+        <span id="toastMsg">Searching low-carbon stays...</span>
+    </div>
+
+    <!-- ==========================================================================
+       INLINE JAVASCRIPT: Dynamic Location Backgrounds & Search Interactivity
+       Strict Requirement: Ready-to-run inline script without external dependencies
+       ========================================================================== -->
+    <script>
+        // 1. JS Dictionary/Mapping of popular destinations to high-quality placeholder image URLs
+        const destinationsCatalog = {
+            "agra": {
+                name: "Agra",
+                fullName: "Agra, Uttar Pradesh",
+                code: "AGR",
+                landmark: "Taj Mahal Eco Sanctuary",
+                imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1920&q=80",
+                savings: "-84% CO₂ Emissions",
+                distance: "195 km • Solar Express",
+                stays: [
+                    {
+                        name: "The Solar Lotus Sanctuary",
+                        loc: "Agra • 1.5 km from Taj East Gate",
+                        rating: "4.9 ★",
+                        badge: "100% Solar Powered",
+                        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+                        desc: "Electric shuttle to monuments, zero plastic policy, and step-free wheelchair gardens.",
+                        tags: ["Wheelchair Ramps", "Organic Kitchen", "Solar AC"],
+                        price: "₹4,200"
+                    },
+                    {
+                        name: "Yamuna Heritage Eco-Lodge",
+                        loc: "Agra • Riverfront Reserve",
+                        rating: "4.8 ★",
+                        badge: "Rainwater Harvesting",
+                        image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80",
+                        desc: "Traditional adobe terracotta insulation, native flora canopy, and braille trail markings.",
+                        tags: ["Step-Free Access", "Bio-Septic", "Quiet Hours"],
+                        price: "₹3,600"
+                    },
+                    {
+                        name: "Mughal Green Haven",
+                        loc: "Agra • Fatehabad Road",
+                        rating: "4.95 ★",
+                        badge: "Zero Waste Certified",
+                        image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80",
+                        desc: "100% greywater recycling, organic fruit orchard, and sensory-friendly rooms.",
+                        tags: ["Tactile Corridors", "EV Charging", "Solar Heated"],
+                        price: "₹5,100"
+                    }
+                ]
+            },
+            "goa": {
+                name: "Goa",
+                fullName: "South & North Goa",
+                code: "GOI",
+                landmark: "Palolem & Mandrem Eco-Beaches",
+                imageUrl: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1920&q=80",
+                savings: "-88% CO₂ Emissions",
+                distance: "580 km • Coastal Electric",
+                stays: [
+                    {
+                        name: "Palolem Dune Bio-Cabins",
+                        loc: "South Goa • Beachfront Boardwalk",
+                        rating: "4.9 ★",
+                        badge: "Marine Conservation",
+                        image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80",
+                        desc: "Reclaimed bamboo cottages with elevated wheelchair beach mats and solar showers.",
+                        tags: ["Beach Wheelchair", "Solar Microgrid", "Zero Plastic"],
+                        price: "₹4,800"
+                    },
+                    {
+                        name: "Turtle Nest Sanctuary Resort",
+                        loc: "Morjim • Protected Olive Ridley Zone",
+                        rating: "4.85 ★",
+                        badge: "Dark Sky Certified",
+                        image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+                        desc: "Shielded warm lighting for nesting turtles, solar water, and organic vegan dining.",
+                        tags: ["Ramped Suites", "Wetland Recycling", "Electric Scooters"],
+                        price: "₹5,400"
+                    }
+                ]
+            },
+            "mumbai": {
+                name: "Mumbai",
+                fullName: "Mumbai, Maharashtra",
+                code: "BOM",
+                landmark: "Gateway of India & Marine Drive",
+                imageUrl: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1920&q=80",
+                savings: "-76% CO₂ Emissions",
+                distance: "320 km • High-Speed Electric",
+                stays: [
+                    {
+                        name: "The Urban Mangrove Retreat",
+                        loc: "Mumbai • Bandra West",
+                        rating: "4.8 ★",
+                        badge: "LEED Platinum Stay",
+                        image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80",
+                        desc: "Rooftop urban solar farm, vertical botanical walls, and fully accessible elevators.",
+                        tags: ["Braille Signs", "Metro Connected", "100% Greywater"],
+                        price: "₹6,800"
+                    },
+                    {
+                        name: "Sanjay Gandhi Green Haven",
+                        loc: "Mumbai • Borivali Edge",
+                        rating: "4.75 ★",
+                        badge: "Forest Buffer Zone",
+                        image: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=800&q=80",
+                        desc: "Tranquil retreat nestled near the national park with electric buggy transfers.",
+                        tags: ["Roll-in Showers", "Solar Powered", "No Single-Use Plastic"],
+                        price: "₹4,100"
+                    }
+                ]
+            },
+            "singapore": {
+                name: "Singapore",
+                fullName: "Singapore Garden City",
+                code: "SIN",
+                landmark: "Marina Bay & Supertrees",
+                imageUrl: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80",
+                savings: "-92% CO₂ Emissions",
+                distance: "Global Corridor • Carbon Offset",
+                stays: [
+                    {
+                        name: "Marina Biophilic Sanctuary",
+                        loc: "Singapore • Marina Bay",
+                        rating: "4.98 ★",
+                        badge: "BCA Green Mark Platinum",
+                        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+                        desc: "World-class universal accessibility, smart rainwater cooling, and net-zero energy towers.",
+                        tags: ["Full Accessibility", "100% Renewable", "Urban Garden"],
+                        price: "₹14,500"
+                    },
+                    {
+                        name: "Sentosa Heritage Nature Stay",
+                        loc: "Singapore • Sentosa Island",
+                        rating: "4.9 ★",
+                        badge: "Certified Carbon Neutral",
+                        image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80",
+                        desc: "Low-density forest eco-villas with sensory audio trails and solar buggy transport.",
+                        tags: ["Wheelchair Accessible", "Rainwater Harvesting", "Farm-to-Table"],
+                        price: "₹12,200"
+                    }
+                ]
+            },
+            "kerala": {
+                name: "Kerala",
+                fullName: "Kerala Backwaters & Munnar",
+                code: "KER",
+                landmark: "Western Ghats Tea Hills",
+                imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
+                savings: "-89% CO₂ Emissions",
+                distance: "450 km • Electric Transit",
+                stays: [
+                    {
+                        name: "Munnar Cloud Forest Sanctuary",
+                        loc: "Munnar • 1,600m Altitude",
+                        rating: "4.95 ★",
+                        badge: "100% Hydro & Solar",
+                        image: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80",
+                        desc: "Micro-hydro powered tea lodge with wheelchair accessible forest skywalk.",
+                        tags: ["Boardwalk Ramps", "Zero Plastics", "Organic Spices"],
+                        price: "₹4,900"
+                    },
+                    {
+                        name: "Kumarakom Solar Houseboats",
+                        loc: "Vembanad Lake • Backwaters",
+                        rating: "4.9 ★",
+                        badge: "Electric Propulsion",
+                        image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80",
+                        desc: "Quiet electric motors that do not disturb migratory birds. Wheelchair boarding gangway.",
+                        tags: ["Solar Roof", "Barrier-Free Entry", "Bio-Toilets"],
+                        price: "₹6,200"
+                    }
+                ]
+            },
+            "bali": {
+                name: "Bali",
+                fullName: "Ubud & Canggu Eco Sanctuary",
+                code: "DPS",
+                landmark: "Ubud Rice Terraces",
+                imageUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=80",
+                savings: "-83% CO₂ Emissions",
+                distance: "Island Biosphere Reserve",
+                stays: [
+                    {
+                        name: "Ubud Bamboo Forest Eco-Retreat",
+                        loc: "Ubud • Ayung River Valley",
+                        rating: "4.92 ★",
+                        badge: "Natural Architecture",
+                        image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
+                        desc: "Engineered curved bamboo pavilions, zero chemical pools, and accessible pathways.",
+                        tags: ["Ramp Accessible", "Permaculture Farm", "Zero Waste"],
+                        price: "₹7,200"
+                    }
+                ]
+            },
+            "kyoto": {
+                name: "Kyoto",
+                fullName: "Kyoto Heritage Sanctuary",
+                code: "UKY",
+                landmark: "Arashiyama Bamboo Grove",
+                imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=80",
+                savings: "-90% CO₂ Emissions",
+                distance: "Bullet Train Shinkansen Eco-Link",
+                stays: [
+                    {
+                        name: "Arashiyama Cedar Ryokan",
+                        loc: "Kyoto • Sagano Bamboo Path",
+                        rating: "4.97 ★",
+                        badge: "Preservation Certified",
+                        image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80",
+                        desc: "Geothermal heated spring baths with wheelchair hoists and zero carbon footprint.",
+                        tags: ["Universal Ryokan", "Solar Timber", "Sensory Garden"],
+                        price: "₹11,000"
+                    }
+                ]
+            }
+        };
+
+        // DOM Element Cache
+        const heroBgLayer = document.getElementById('heroBgLayer');
+        const locationInput = document.getElementById('locationInput');
+        const heroDestIndicatorName = document.getElementById('heroDestIndicatorName');
+        const passDestCode = document.getElementById('passDestCode');
+        const passDestCity = document.getElementById('passDestCity');
+        const passSavingsBadge = document.getElementById('passSavingsBadge');
+        const passDistance = document.getElementById('passDistance');
+        const passLandmarkText = document.getElementById('passLandmarkText');
+        const passSerialCode = document.getElementById('passSerialCode');
+        const staysHeading = document.getElementById('staysHeading');
+        const staysSubtext = document.getElementById('staysSubtext');
+        const staysGrid = document.getElementById('staysGrid');
+        const checkInInput = document.getElementById('checkInInput');
+        const checkOutInput = document.getElementById('checkOutInput');
+        const guestTriggerBtn = document.getElementById('guestTriggerBtn');
+        const guestDropdownMenu = document.getElementById('guestDropdownMenu');
+        const guestSummaryInput = document.getElementById('guestSummaryInput');
+        const toastNotification = document.getElementById('toastNotification');
+        const toastMsg = document.getElementById('toastMsg');
+
+        // State variables
+        let currentDestKey = 'agra';
+        let guests = { adults: 2, children: 0, rooms: 1 };
+
+        // 2. Function to change background image with Seaweed Green / Alice Blue Gradient Overlay & sync Boarding Pass
+        function updateLocationTheme(key) {
+            const dest = destinationsCatalog[key];
+            if (!dest) return;
+
+            currentDestKey = key;
+
+            // Smooth crossfade dynamic background image
+            heroBgLayer.style.opacity = '0';
+            setTimeout(() => {
+                heroBgLayer.style.backgroundImage = `url('${dest.imageUrl}')`;
+                heroBgLayer.style.opacity = '1';
+            }, 180);
+
+            // Update Hero Destination Indicator
+            if (heroDestIndicatorName) {
+                heroDestIndicatorName.textContent = `${dest.name} • ${dest.landmark}`;
+            }
+
+            // Sync Vertical Boarding Pass Fields
+            if (passDestCode) passDestCode.textContent = dest.code;
+            if (passDestCity) passDestCity.textContent = dest.name;
+            if (passSavingsBadge) passSavingsBadge.textContent = dest.savings;
+            if (passDistance) passDistance.textContent = dest.distance;
+            if (passLandmarkText) passLandmarkText.textContent = dest.landmark;
+            if (passSerialCode) passSerialCode.textContent = `PASS #W2G-${Math.floor(1000 + Math.random()*9000)}-${dest.code}-2026 • CARBON NEUTRAL TICKET`;
+
+            // Update Active Chip
+            document.querySelectorAll('.dest-chip').forEach(chip => {
+                if (chip.textContent.toLowerCase().includes(key)) {
+                    chip.classList.add('active');
+                } else {
+                    chip.classList.remove('active');
+                }
+            });
+
+            // Update matching stays catalog preview
+            renderStays(dest);
+        }
+
+        // Render Stays in Section 2
+        function renderStays(dest) {
+            staysHeading.textContent = `Verified Eco-Resorts in ${dest.name}`;
+            staysSubtext.textContent = `Solar-powered, barrier-free certified accommodations in ${dest.fullName} matching your zero-emission boarding pass.`;
+
+            staysGrid.innerHTML = '';
+            dest.stays.forEach(stay => {
+                const card = document.createElement('div');
+                card.className = 'stay-card';
+                card.innerHTML = `
+                    <div class="stay-thumb-box">
+                        <img src="${stay.image}" alt="${stay.name}" loading="lazy">
+                        <div class="stay-rating-tag">${stay.rating}</div>
+                        <div class="stay-eco-badge">🌱 ${stay.badge}</div>
+                    </div>
+                    <div class="stay-card-body">
+                        <div class="stay-loc">📍 ${stay.loc}</div>
+                        <h3 class="stay-title">${stay.name}</h3>
+                        <p class="stay-description">${stay.desc}</p>
+                        <div class="stay-tags-row">
+                            ${stay.tags.map(t => `<span class="eco-tag">✓ ${t}</span>`).join('')}
+                        </div>
+                        <div class="stay-card-bottom">
+                            <div class="stay-price-box">
+                                <span class="price-label">Eco-Certified Rate</span>
+                                <span class="price-val">${stay.price} <span style="font-size:0.8rem; font-weight:500;">/ night</span></span>
+                            </div>
+                            <button class="btn-view-stay" onclick="bookStayConfirmation('${stay.name}')">Book Stay ➔</button>
+                        </div>
+                    </div>
+                `;
+                staysGrid.appendChild(card);
+            });
+        }
+
+        // 3. Listen for input changes in the "Location" field of the search widget
+        function findMatchingDestination(query) {
+            const cleaned = query.trim().toLowerCase();
+            if (!cleaned) return null;
+
+            // Direct key match or substring match
+            for (const key in destinationsCatalog) {
+                if (key.includes(cleaned) || cleaned.includes(key) || destinationsCatalog[key].name.toLowerCase().includes(cleaned)) {
+                    return key;
+                }
+            }
+            return null;
+        }
+
+        locationInput.addEventListener('input', function(e) {
+            const match = findMatchingDestination(e.target.value);
+            if (match && match !== currentDestKey) {
+                updateLocationTheme(match);
+            }
+        });
+
+        locationInput.addEventListener('change', function(e) {
+            const match = findMatchingDestination(e.target.value);
+            if (match) {
+                updateLocationTheme(match);
+            }
+        });
+
+        // Quick chip click handler
+        function selectDestination(name) {
+            const key = name.toLowerCase();
+            locationInput.value = name;
+            updateLocationTheme(key);
+            showToast(`Selected destination: ${name}`);
+        }
+
+        // 4. Guest Stepper Logic
+        function toggleGuestDropdown(e) {
+            if (e) e.stopPropagation();
+            guestDropdownMenu.classList.toggle('show');
+        }
+
+        function closeGuestDropdown() {
+            guestDropdownMenu.classList.remove('show');
+        }
+
+        guestTriggerBtn.addEventListener('click', toggleGuestDropdown);
+        document.addEventListener('click', function(e) {
+            if (!guestTriggerBtn.contains(e.target) && !guestDropdownMenu.contains(e.target)) {
+                closeGuestDropdown();
+            }
+        });
+
+        function adjustGuest(type, delta) {
+            if (type === 'adults') {
+                guests.adults = Math.max(1, Math.min(10, guests.adults + delta));
+                document.getElementById('valAdults').textContent = guests.adults;
+            } else if (type === 'children') {
+                guests.children = Math.max(0, Math.min(8, guests.children + delta));
+                document.getElementById('valChildren').textContent = guests.children;
+                document.getElementById('btnMinusChildren').disabled = guests.children === 0;
+            } else if (type === 'rooms') {
+                guests.rooms = Math.max(1, Math.min(6, guests.rooms + delta));
+                document.getElementById('valRooms').textContent = guests.rooms;
+                document.getElementById('btnMinusRooms').disabled = guests.rooms === 1;
+            }
+
+            let text = `${guests.adults} Adult${guests.adults > 1 ? 's' : ''}`;
+            if (guests.children > 0) {
+                text += `, ${guests.children} Child${guests.children > 1 ? 'ren' : ''}`;
+            }
+            text += `, ${guests.rooms} Room${guests.rooms > 1 ? 's' : ''}`;
+            guestSummaryInput.value = text;
+        }
+
+        // 5. Large Overlapping Search Button Click Handler
+        function handleSearchClick() {
+            const dest = destinationsCatalog[currentDestKey];
+            const checkIn = checkInInput.value || 'Today';
+            const checkOut = checkOutInput.value || 'Next Day';
+            const wheelchair = document.getElementById('checkWheelchair').checked;
+            const solar = document.getElementById('checkSolar').checked;
+
+            // Trigger button animation
+            const btn = document.getElementById('mainSearchBtn');
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => { btn.style.transform = ''; }, 200);
+
+            showToast(`Found ${dest.stays.length} Eco-Stays in ${dest.name} • ${guests.rooms} Room(s)`);
+
+            // Smooth scroll down to Stays section
+            document.getElementById('staysSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToSearch() {
+            document.getElementById('locationInput').focus();
+            document.getElementById('heroSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function bookStayConfirmation(stayName) {
+            showToast(`Voucher generated for "${stayName}". Green Passport attached!`);
+        }
+
+        // Toast Helper
+        let toastTimeout = null;
+        function showToast(msg) {
+            toastMsg.textContent = msg;
+            toastNotification.classList.add('active');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toastNotification.classList.remove('active');
+            }, 3200);
+        }
+
+        // 6. Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set default dates (today and day after tomorrow)
+            const today = new Date();
+            const afterTomorrow = new Date();
+            afterTomorrow.setDate(today.getDate() + 2);
+
+            const formatYMD = d => d.toISOString().split('T')[0];
+            checkInInput.min = formatYMD(today);
+            checkInInput.value = formatYMD(today);
+
+            checkOutInput.min = formatYMD(today);
+            checkOutInput.value = formatYMD(afterTomorrow);
+
+            // Format date string for the boarding pass
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            const passDateEl = document.getElementById('passDepartDate');
+            if (passDateEl) {
+                passDateEl.textContent = today.toLocaleDateString('en-GB', options);
+            }
+
+            // Set initial Agra theme
+            updateLocationTheme('agra');
+        });
+    </script>
+</body>
+</html>

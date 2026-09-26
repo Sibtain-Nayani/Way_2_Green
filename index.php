@@ -618,9 +618,101 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 
         .search-fields-grid {
             display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+            grid-template-columns: 1fr;
             gap: 1rem;
             align-items: start;
+        }
+
+        /* Split Location Row: Origin + Swap + Destination */
+        .location-split-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0.75rem;
+            align-items: end;
+        }
+
+        .secondary-fields-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        /* Enlarged location input blocks */
+        .field-input-box-xl {
+            position: relative;
+            background: #ffffff;
+            border: 2px solid var(--alice-blue-deep);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 3px 10px rgba(7, 36, 22, 0.06);
+            min-height: 58px;
+        }
+
+        .field-input-box-xl:focus-within {
+            border-color: var(--seaweed-accent);
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18), 0 6px 18px rgba(7, 36, 22, 0.08);
+            background: #ffffff;
+        }
+
+        .field-input-box-xl input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--seaweed-dark);
+        }
+
+        .field-input-box-xl input::placeholder {
+            color: #8fa79b;
+            font-weight: 500;
+        }
+
+        .field-input-box-xl .field-icon {
+            font-size: 1.35rem;
+        }
+
+        .field-label-xl {
+            font-size: 0.82rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--seaweed-primary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Swap Button between Origin & Destination */
+        .swap-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--seaweed-primary), var(--seaweed-light));
+            color: var(--alice-blue);
+            border: 3px solid var(--alice-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 800;
+            box-shadow: 0 4px 14px rgba(11, 59, 36, 0.2);
+            transition: var(--transition);
+            margin-bottom: 4px;
+            flex-shrink: 0;
+            align-self: end;
+        }
+
+        .swap-btn:hover {
+            transform: rotate(180deg) scale(1.08);
+            box-shadow: 0 6px 20px rgba(11, 59, 36, 0.35);
         }
 
         .search-field-group {
@@ -1905,7 +1997,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 max-width: 460px;
             }
 
-            .search-fields-grid {
+            .secondary-fields-row {
                 grid-template-columns: 1fr 1fr;
             }
 
@@ -1928,7 +2020,22 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 padding: 3rem 1rem 5.5rem;
             }
 
-            .search-fields-grid {
+            .location-split-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .swap-btn {
+                align-self: center;
+                transform: rotate(90deg);
+                margin: 0 auto;
+            }
+
+            .swap-btn:hover {
+                transform: rotate(270deg) scale(1.08);
+            }
+
+            .secondary-fields-row {
                 grid-template-columns: 1fr;
             }
 
@@ -2058,25 +2165,53 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                         <div class="search-widget-card">
                             <div class="search-fields-grid">
                                 
-                                <!-- Field 1: Destination / Location (Monitored by JS) -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="locationInput">
-                                        <span>📍</span> Destination
-                                    </label>
-                                    <div class="field-input-box">
-                                        <span class="field-icon">🗺️</span>
-                                        <input 
-                                            type="text" 
-                                            name="dest" 
-                                            id="locationInput" 
-                                            placeholder="Agra, Goa, Mumbai, Singapore, Munnar..." 
-                                            value="Agra"
-                                            autocomplete="off"
-                                            required
-                                        >
+                                <!-- Split Location Fields: Starting Place + Swap + Destination -->
+                                <div class="location-split-row">
+                                    <!-- Field 1A: Starting Place (Origin) -->
+                                    <div class="search-field-group">
+                                        <label class="field-label-xl" for="originInput">
+                                            <span>🚉</span> Starting Place
+                                        </label>
+                                        <div class="field-input-box-xl">
+                                            <span class="field-icon">📍</span>
+                                            <input 
+                                                type="text" 
+                                                name="origin" 
+                                                id="originInput" 
+                                                placeholder="e.g. New Delhi, Mumbai, Bangalore..." 
+                                                value="New Delhi"
+                                                autocomplete="off"
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <!-- Swap Button -->
+                                    <button type="button" class="swap-btn" id="swapLocationsBtn" title="Swap origin and destination" onclick="swapLocations()">
+                                        ⇄
+                                    </button>
+
+                                    <!-- Field 1B: Destination (Monitored by JS for background change) -->
+                                    <div class="search-field-group">
+                                        <label class="field-label-xl" for="locationInput">
+                                            <span>🏁</span> Destination
+                                        </label>
+                                        <div class="field-input-box-xl">
+                                            <span class="field-icon">🗺️</span>
+                                            <input 
+                                                type="text" 
+                                                name="dest" 
+                                                id="locationInput" 
+                                                placeholder="Agra, Goa, Mumbai, Singapore, Munnar..." 
+                                                value="Agra"
+                                                autocomplete="off"
+                                                required
+                                            >
+                                        </div>
                                     </div>
                                 </div>
 
+                                <!-- Secondary Fields Row: Check-in, Check-out, Guests -->
+                                <div class="secondary-fields-row">
                                 <!-- Field 2: Check-in Date -->
                                 <div class="search-field-group">
                                     <label class="field-label" for="checkInInput">
@@ -2154,6 +2289,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                         </button>
                                     </div>
                                 </div>
+                                </div><!-- end .secondary-fields-row -->
                             </div>
 
                             <!-- Quick Popular Destination Filter Chips -->
@@ -2821,6 +2957,23 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             text += `, ${guests.rooms} Room${guests.rooms > 1 ? 's' : ''}`;
             guestSummaryInput.value = text;
             guestsHiddenInput.value = guests.adults + guests.children;
+        }
+
+        // Swap Origin ↔ Destination
+        function swapLocations() {
+            const originInput = document.getElementById('originInput');
+            const destInput = document.getElementById('locationInput');
+            const tempVal = originInput.value;
+            originInput.value = destInput.value;
+            destInput.value = tempVal;
+
+            // Trigger destination background update
+            const match = findMatchingDestination(destInput.value);
+            if (match && match !== currentDestKey) {
+                updateLocationTheme(match);
+            }
+
+            showToast(`Swapped: ${originInput.value} ⇄ ${destInput.value}`);
         }
 
         // Mobile drawer toggle

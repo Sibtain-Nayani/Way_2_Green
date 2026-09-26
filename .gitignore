@@ -27,6 +27,10 @@ Desktop.ini
 *.log
 error_log
 
+# Archives
+*.zip
+*.tar.gz
+
 # Dependency caches (if ever used)
 /vendor/
 /node_modules/

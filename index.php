@@ -2186,106 +2186,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 </head>
 <body>
 
-    <!-- Mobile Drawer Overlay -->
-    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
-
-    <!-- Off-Canvas Mobile Drawer (No emojis — SVG icons inline) -->
-    <div class="mobile-drawer" id="mobileDrawer">
-        <button class="drawer-close" onclick="toggleDrawer()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <div style="font-weight: 800; font-size: 1.3rem; color: var(--seaweed-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--seaweed-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
-            Way2Green
-        </div>
-        <a href="index.php" class="drawer-link active">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
-            Home
-        </a>
-        <a href="travel.php" class="drawer-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22"/></svg>
-            Plan Transit
-        </a>
-        <a href="hotels.php" class="drawer-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 7v14M21 7v14M6 11h4v4H6zM14 11h4v4h-4zM9 3h6v4H9z"/></svg>
-            Eco-Stays
-        </a>
-        <a href="digital_twin.php" class="drawer-link" style="color:var(--seaweed-primary);font-weight:800;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-            Digital Twin
-        </a>
-        <a href="about.php" class="drawer-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
-            Our Mission
-        </a>
-        <?php if ($user): ?>
-            <a href="my-trips.php" class="drawer-link">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                My Passports
-            </a>
-            <a href="logout.php" class="drawer-link" style="color: #dc2626;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-                Sign Out (<?= htmlspecialchars($user['name']) ?>)
-            </a>
-        <?php else: ?>
-            <a href="login.php" class="drawer-link">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                Traveler Sign In
-            </a>
-            <a href="register.php" class="drawer-link" style="color: var(--seaweed-light);">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-                Create Account
-            </a>
-        <?php endif; ?>
-        <hr style="border: none; border-top: 1px solid var(--alice-blue-deep); margin: 0.5rem 0;">
-        <a href="admin/login.php" class="drawer-link" style="font-size: 0.9rem; color: var(--text-muted);">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-            Admin Portal
-        </a>
-    </div>
-
-    <!-- Navigation Header -->
-    <header class="site-header">
-        <div class="nav-inner">
-            <a href="index.php" class="brand-logo">
-                <div class="brand-icon-box">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-                </div>
-                <span>Way_2_Green</span>
-            </a>
-
-            <!-- Desktop Nav Menu Connecting Whole Website -->
-            <nav class="desktop-nav">
-                <a href="index.php" class="nav-link active">Home</a>
-                <a href="travel.php" class="nav-link">Plan Transit</a>
-                <a href="hotels.php" class="nav-link">Eco-Stays</a>
-                <a href="digital_twin.php" class="nav-link" style="color:var(--seaweed-primary);font-weight:800;">Digital Twin</a>
-                <a href="about.php" class="nav-link">Our Mission</a>
-                <?php if ($user): ?>
-                    <a href="my-trips.php" class="nav-link">My Passports</a>
-                    <a href="logout.php" class="nav-link" style="color: #dc2626;">Sign Out</a>
-                <?php else: ?>
-                    <a href="login.php" class="nav-link">Sign In</a>
-                    <a href="register.php" class="btn-nav-primary">Get Started
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                    </a>
-                <?php endif; ?>
-            </nav>
-
-            <div class="header-actions">
-                <div class="eco-status-pill">
-                    <span class="status-dot"></span>
-                    <span><?= $user ? 'Logged in: ' . htmlspecialchars($user['name']) : '100% Carbon Verified' ?></span>
-                </div>
-                <!-- Mobile Hamburger Button -->
-                <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </header>
+    <?php include 'components/navbar.php'; ?>
 
     <!-- Main Hero Section with STATIC Tropical Beach Background (Unmodified Original Colors) -->
     <section class="hero-section" id="heroSection">
@@ -2426,6 +2327,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                                 autocomplete="off"
                                                 required
                                             >
+                                            <button type="button" onclick="openMapPicker('locationInput')" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:#29AB87; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.8rem; font-weight:bold;">Map</button>
                                             <span class="location-corner-label" id="destCornerLabel">Agra</span>
                                         </div>
                                         <!-- Destination Dropdown Menu -->
@@ -3080,6 +2982,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
        INLINE JAVASCRIPT: Dynamic Inline Input Backgrounds, GPS Dropdown, Synchronized Boarding Pass
        NO global background changing JS — beach is permanently locked via CSS.
        ========================================================================== -->
+    <?php include 'components/map_picker.php'; ?>
     <script>
         // 1. JS Dictionary of popular cities to high-quality image URLs
         const destinationsCatalog = {

@@ -320,105 +320,52 @@ $hotelDatabase = [
         <div class="orb orb-3"></div>
     </div>
 
-    <!-- Drawer Overlay & Mobile Drawer -->
-    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
-    <div class="mobile-drawer" id="mobileDrawer">
-        <button class="drawer-close" onclick="toggleDrawer()">✕</button>
-        <div style="font-weight: 800; font-size: 1.3rem; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.4rem;">🌱</span> Way2Green
-        </div>
-        <a href="index.php" class="drawer-link">Home</a>
-        <a href="travel.php" class="drawer-link">Plan Transit</a>
-        <a href="eco-stays.php" class="drawer-link" style="color: var(--primary);">Eco-Stays</a>
-        <a href="about.php" class="drawer-link">Our Mission</a>
-        <a href="my-trips.php" class="drawer-link">My Passports</a>
-        <?php if ($user): ?>
-            <a href="logout.php" class="drawer-link" style="color: #dc2626;">Sign Out (<?= htmlspecialchars($user['name'] ?? 'User') ?>)</a>
-        <?php else: ?>
-            <a href="login.php" class="drawer-link">Sign In</a>
-        <?php endif; ?>
-        <hr style="border: none; border-top: 1px solid var(--border-subtle); margin: 0.5rem 0;">
-        <a href="admin/login.php" class="drawer-link" style="font-size: 0.9rem; color: var(--text-muted);">Admin Portal</a>
-    </div>
-
-    <!-- Header Navigation -->
-    <header class="header-top">
-        <a href="index.php" class="brand">
-            <span class="brand-leaf">🌱</span>
-            <span>Way2Green</span>
-        </a>
-        <nav class="desktop-nav">
-            <a href="index.php">Home</a>
-            <a href="travel.php">Plan Transit</a>
-            <a href="eco-stays.php" class="active">Eco-Stays</a>
-            <a href="about.php">About Us</a>
-            <a href="my-trips.php">My Passports</a>
-            <?php if ($user): ?>
-                <a href="logout.php" style="color: #dc2626;">Sign Out</a>
-            <?php else: ?>
-                <a href="login.php">Sign In</a>
-            <?php endif; ?>
-        </nav>
-        <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
+    <?php include 'components/navbar.php'; ?>
 
     <main class="page-container" style="max-width: 1140px;">
         <!-- Visual Multi-Step Tracker -->
-        <div class="step-progress-bar">
-            <div class="step-bubble">
-                <span class="step-num">1</span>
-                <span>Green Transit</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble active">
-                <span class="step-num">2</span>
-                <span>Select Eco-Stay</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble">
-                <span class="step-num">3</span>
-                <span>Eco-Passport</span>
-            </div>
-        </div>
+        
 
-        <!-- Selected Route Glassmorphic Context Bar -->
-        <div class="trip-context-bar">
-            <div class="trip-route-info">
-                <span class="route-badge">
-                    Chosen Route
-                </span>
-                <span class="route-cities">
-                    <span id="route-origin-text"><?= htmlspecialchars($originDisplay) ?></span>
-                    <span style="margin: 0 6px; opacity: 0.7;">➔</span>
-                    <span id="currentDestLabel"><?= htmlspecialchars($destDisplay) ?></span>
-                </span>
-                <span class="route-meta" id="route-meta-text">
-                    • LOW-CARBON CORRIDOR • <strong>VERIFIED SOLAR &amp; WATER AUDITED</strong>
-                </span>
+        <!-- Roadmap Builder Component -->
+        <div class="trip-context-bar" style="flex-direction: column; align-items: stretch; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.2rem; color: var(--primary); margin: 0;">🗺️ Your Green Roadmap</h2>
             </div>
+            
+            <form action="travel.php" method="GET" id="roadmapForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Source -->
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div style="font-weight: bold; width: 60px; color: var(--text-muted);">Source</div>
+                    <div style="position: relative; flex: 1;">
+                        <input type="text" name="origin" id="rmOrigin" value="<?= htmlspecialchars($originDisplay) ?>" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+                        <button type="button" onclick="openMapPicker('rmOrigin')" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: var(--primary); color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Map</button>
+                    </div>
+                </div>
 
-            <!-- Switch Destination Dropdown (Direct Native GET Selection) -->
-            <div class="trip-dest-picker">
-                <label for="destinationFilterSelect" style="font-size: 0.88rem; font-weight: 700; color: var(--primary);">Change Region:</label>
-                <select id="destinationFilterSelect" class="dest-select-input" onchange="window.location.href='eco-stays.php?origin=<?= urlencode($origin) ?>&dest=' + this.value">
-                    <option value="agra" <?= $dest === 'agra' ? 'selected' : '' ?>>📍 Agra</option>
-                    <option value="goa" <?= $dest === 'goa' ? 'selected' : '' ?>>📍 Goa</option>
-                    <option value="manali" <?= $dest === 'manali' ? 'selected' : '' ?>>📍 Manali</option>
-                    <option value="mumbai" <?= $dest === 'mumbai' ? 'selected' : '' ?>>📍 Mumbai</option>
-                    <option value="munnar" <?= $dest === 'munnar' ? 'selected' : '' ?>>📍 Munnar</option>
-                    <option value="jaipur" <?= $dest === 'jaipur' ? 'selected' : '' ?>>📍 Jaipur</option>
-                    <option value="rishikesh" <?= $dest === 'rishikesh' ? 'selected' : '' ?>>📍 Rishikesh</option>
-                </select>
-            </div>
+                <!-- Stops Container -->
+                <div id="stopsContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
+
+                <div style="display: flex; margin-left: 70px;">
+                    <button type="button" onclick="addStop()" style="background: transparent; color: var(--primary); border: 1px dashed var(--primary); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">+ Add Stop</button>
+                </div>
+
+                <!-- Destination -->
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div style="font-weight: bold; width: 60px; color: var(--text-muted);">Dest</div>
+                    <div style="position: relative; flex: 1;">
+                        <input type="text" name="dest" id="rmDest" value="<?= htmlspecialchars($destDisplay) ?>" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+                        <button type="button" onclick="openMapPicker('rmDest')" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: var(--primary); color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Map</button>
+                    </div>
+                </div>
+
+                <div style="text-align: right; margin-top: 10px;">
+                    <button type="submit" style="background: var(--primary); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 1rem; font-weight: bold; cursor: pointer;">Calculate Transit Route ➔</button>
+                </div>
+            </form>
         </div>
 
         <!-- Inclusivity & Accessibility Filters -->
         <div class="section-head reveal-on-scroll" style="margin-bottom: 1.5rem;">
-            <span class="section-tag">Step 2 of 3</span>
             <h1 class="section-title">Verified Sustainable &amp; Accessible Stays</h1>
             <p class="section-desc">Showing verified sanctuaries for <strong><?= htmlspecialchars($destDisplay) ?></strong> evaluated for zero waste, water conservation, and certified barrier-free accessibility.</p>
         </div>
@@ -581,6 +528,31 @@ $hotelDatabase = [
             });
         }
     </script>
+    <?php include 'components/map_picker.php'; ?>
+    <script>
+        let stopCount = 0;
+        function addStop() {
+            stopCount++;
+            const container = document.getElementById('stopsContainer');
+            const stopId = 'stop_' + stopCount;
+            const div = document.createElement('div');
+            div.style.display = 'flex';
+            div.style.gap = '10px';
+            div.style.alignItems = 'center';
+            div.id = 'stop_row_' + stopCount;
+            div.innerHTML = `
+                <div style="font-weight: bold; width: 60px; color: var(--text-muted); font-size: 0.9rem;">Stop</div>
+                <div style="position: relative; flex: 1;">
+                    <input type="text" name="stops[]" id="${stopId}" placeholder="Add a city or tourist spot" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc;">
+                    <button type="button" onclick="openMapPicker('${stopId}')" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: var(--primary); color: #fff; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">Map</button>
+                </div>
+                <button type="button" onclick="document.getElementById('stop_row_${stopCount}').remove()" style="background: transparent; border: none; color: #dc2626; font-size: 1.2rem; cursor: pointer; padding: 0 5px;">&times;</button>
+            `;
+            container.appendChild(div);
+        }
+    </script>
     <script src="js/effects.js"></script>
 </body>
 </html>
+
+

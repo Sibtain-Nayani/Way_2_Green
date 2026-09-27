@@ -16,7 +16,17 @@ try {
     $destinations = [];
 }
 
-$preselectedDest = $_GET['dest'] ?? '';
+$preselectedDest = $_GET['dest'] ?? 'Destination';
+$origin = $_GET['origin'] ?? 'Origin';
+$stops = $_GET['stops'] ?? [];
+
+// Create a unified route array for display
+$fullRoute = [$origin];
+foreach ($stops as $stop) {
+    if (!empty(trim($stop))) $fullRoute[] = trim($stop);
+}
+$fullRoute[] = $preselectedDest;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,22 +79,7 @@ $preselectedDest = $_GET['dest'] ?? '';
 
     <main class="page-container" style="max-width: 980px;">
         <!-- Visual Multi-Step Tracker -->
-        <div class="step-progress-bar">
-            <div class="step-bubble active">
-                <span class="step-num">1</span>
-                <span>Green Transit</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble">
-                <span class="step-num">2</span>
-                <span>Select Eco-Stay</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble">
-                <span class="step-num">3</span>
-                <span>Eco-Passport</span>
-            </div>
-        </div>
+        
 
         <div class="card-box card-3d reveal-on-scroll">
             <span class="section-tag">Step 1 of 3</span>
@@ -102,30 +97,24 @@ $preselectedDest = $_GET['dest'] ?? '';
                         <div style="position: relative; display: flex; align-items: center;">
                             <input type="text" id="sourceInput" class="field-input"
                                 placeholder="e.g. Mumbai, Bengaluru, Delhi" value="Mumbai" required>
-                            <button type="button" class="btn-locate" onclick="useGeolocation()"
-                                style="position: absolute; right: 10px; background: #e8f5e9; color: var(--primary); border: none; border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
-                                GPS
-                            </button>
-                        </div>
-                        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
-                            <span class="chip" onclick="setOrigin('Mumbai')">Mumbai</span>
-                            <span class="chip" onclick="setOrigin('Bengaluru')">Bengaluru</span>
-                            <span class="chip" onclick="setOrigin('Delhi')">Delhi</span>
-                            <span class="chip" onclick="setOrigin('Kochi')">Kochi</span>
-                        </div>
-                    </div>
-
-                    <!-- Destination -->
-                    <div>
-                        <label class="field-label" for="destinationSelect">Eco-Destination</label>
-                        <select id="destinationSelect" class="field-select" required onchange="computeImpact()">
-                            <?php foreach ($destinations as $d): ?>
-                                <option value="<?= htmlspecialchars($d['name']) ?>" data-id="<?= $d['id'] ?>"
-                                    <?= (!empty($preselectedDest) && stripos($d['name'], $preselectedDest) !== false) ? 'selected' : '' ?>>
-                                    📍 <?= htmlspecialchars($d['name']) ?>
-                                </option>
+                    <!-- Unified Route Itinerary Display -->
+                    <div style="width: 100%;">
+                        <label class="field-label">Your Sustainable Roadmap:</label>
+                        <div style="background: rgba(255,255,255,0.8); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 15px;">
+                            <?php foreach ($fullRoute as $index => $location): ?>
+                                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: <?= ($index === count($fullRoute)-1) ? '0' : '10px' ?>;">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: <?= ($index === 0) ? '#073B2A' : (($index === count($fullRoute)-1) ? '#29AB87' : '#9ca3af') ?>; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold;">
+                                        <?= $index + 1 ?>
+                                    </div>
+                                    <div style="font-weight: 700; color: var(--text-dark); font-size: 1.1rem; flex: 1;">
+                                        <?= htmlspecialchars($location) ?>
+                                    </div>
+                                </div>
+                                <?php if ($index < count($fullRoute)-1): ?>
+                                    <div style="margin-left: 11px; padding: 4px 0; border-left: 2px dashed #cbd5e1; height: 20px;"></div>
+                                <?php endif; ?>
                             <?php endforeach; ?>
-                        </select>
+                        </div>
                     </div>
                 </div>
 
@@ -289,9 +278,9 @@ $preselectedDest = $_GET['dest'] ?? '';
 
                 <!-- Connect Phase 1 to Phase 2 -->
                 <div style="text-align: center;">
-                    <a href="#" id="continueToHotelsBtn" class="btn-nature-primary"
+                    <a href="passport.php?dest_name=<?= urlencode($preselectedDest) ?>" id="continueToHotelsBtn" class="btn-nature-primary"
                         style="padding: 16px 36px; font-size: 1.05rem;">
-                        Continue to Step 2: Choose Eco-Stay in <span id="btnDestName">Munnar</span> ➔
+                        Generate Eco-Passport ➔
                     </a>
                 </div>
             </div>
@@ -382,6 +371,8 @@ $preselectedDest = $_GET['dest'] ?? '';
             }
         }
 
+        const fullRoute = <?= json_encode($fullRoute) ?>;
+
         function getApproxDistance(source, destination) {
             const map = {
                 'mumbai_munnar': 1380,
@@ -390,23 +381,27 @@ $preselectedDest = $_GET['dest'] ?? '';
                 'mumbai_goa': 580,
                 'bengaluru_wayanad': 280,
                 'delhi_rishikesh': 240,
-                'chennai_ooty': 540
+                'chennai_ooty': 540,
+                'delhi_agra': 233,
+                'agra_jaipur': 240,
+                'jaipur_delhi': 280
             };
             const key = (source.toLowerCase().split(/[\s,]+/)[0] + '_' + destination.toLowerCase().split(/[\s,]+/)[0]);
-            return map[key] || 480;
+            return map[key] || 350; // Fallback distance for unknown legs
         }
 
         async function computeImpact() {
-            const source = document.getElementById('sourceInput').value.trim() || 'Mumbai';
-            const destSelect = document.getElementById('destinationSelect');
-            const destOpt = destSelect.selectedOptions[0];
-            const destination = destSelect.value;
-            const destId = destOpt ? destOpt.getAttribute('data-id') : 1;
-            const distance = getApproxDistance(source, destination);
+            let totalDistance = 0;
+            for (let i = 0; i < fullRoute.length - 1; i++) {
+                totalDistance += getApproxDistance(fullRoute[i], fullRoute[i+1]);
+            }
+            
+            const source = fullRoute[0];
+            const destination = fullRoute[fullRoute.length - 1];
+            const distance = totalDistance;
 
             document.getElementById('resultsCard').style.display = 'block';
-            document.getElementById('tripDetailText').innerText = `Distance: ~${distance} km via ${currentMode.toUpperCase()}`;
-            document.getElementById('btnDestName').innerText = destination.split(',')[0];
+            document.getElementById('tripDetailText').innerText = `Total Distance: ~${distance} km via ${currentMode.toUpperCase()}`;
 
             try {
                 const res = await fetch('api/get_suggestions.php', {
@@ -431,16 +426,15 @@ $preselectedDest = $_GET['dest'] ?? '';
                     document.getElementById('aiHotel').innerHTML = data.ai_insights.hotel_advice;
                     document.getElementById('aiAccess').innerHTML = data.ai_insights.accessibility_advice;
 
-                    // Build link to Phase 2 (hotels.php)
+                    // Build link to Passport
                     const params = new URLSearchParams({
-                        dest_id: destId,
                         dest_name: destination,
                         origin: source,
                         mode: currentMode,
                         distance: distance,
                         co2_saved: data.emissions.co2_saved_kg
                     });
-                    document.getElementById('continueToHotelsBtn').href = `hotels.php?${params.toString()}`;
+                    document.getElementById('continueToHotelsBtn').href = `passport.php?${params.toString()}`;
                 }
             } catch (err) {
                 console.error(err);
@@ -454,3 +448,5 @@ $preselectedDest = $_GET['dest'] ?? '';
 </body>
 
 </html>
+
+

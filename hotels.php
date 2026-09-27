@@ -84,22 +84,7 @@ if ($destId === 0 && !empty($allDests)) {
 
     <main class="page-container" style="max-width: 1140px;">
         <!-- Visual Multi-Step Tracker -->
-        <div class="step-progress-bar">
-            <div class="step-bubble">
-                <span class="step-num">1</span>
-                <span>Green Transit</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble active">
-                <span class="step-num">2</span>
-                <span>Select Eco-Stay</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble">
-                <span class="step-num">3</span>
-                <span>Eco-Passport</span>
-            </div>
-        </div>
+        
 
         <!-- Selected Route Glassmorphic Context Bar (No Jitter, Spacious) -->
         <div class="trip-context-bar">
@@ -662,4 +647,5 @@ if ($destId === 0 && !empty($allDests)) {
     <script src="js/effects.js"></script>
 </body>
 </html>
+
 

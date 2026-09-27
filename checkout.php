@@ -120,22 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <main class="page-container" style="max-width: 860px;">
         <!-- Visual Multi-Step Tracker -->
-        <div class="step-progress-bar">
-            <div class="step-bubble">
-                <span class="step-num">✓</span>
-                <span>Transit</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble">
-                <span class="step-num">✓</span>
-                <span>Stay Picked</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble active">
-                <span class="step-num">3</span>
-                <span>Eco-Passport</span>
-            </div>
-        </div>
+        
 
         <?php if (!$bookingConfirmed): ?>
             <!-- Checkout Form Card -->
@@ -354,4 +339,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+
 

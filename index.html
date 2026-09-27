@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Way2Green — Sustainable & Accessible Travel Platform</title>
-    <meta name="description" content="Way2Green: Smart sustainable travel booking, barrier-free hospitality, vertical eco boarding pass, and carbon offset passports.">
-    
+    <meta name="description"
+        content="Way2Green: Smart sustainable travel booking, barrier-free hospitality, vertical eco boarding pass, and carbon offset passports.">
+
     <!-- Google Fonts: Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
 
     <style>
         /* ==========================================================================
@@ -60,7 +64,9 @@
         }
 
         /* Global Reset */
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -85,7 +91,9 @@
             transition: var(--transition);
         }
 
-        button, input, select {
+        button,
+        input,
+        select {
             font-family: inherit;
         }
 
@@ -177,7 +185,8 @@
             transition: var(--transition);
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             color: var(--seaweed-primary);
             background: var(--alice-blue-dark);
         }
@@ -212,8 +221,17 @@
         }
 
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.45; transform: scale(0.85); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.45;
+                transform: scale(0.85);
+            }
         }
 
         .btn-nav-action {
@@ -268,13 +286,11 @@
             position: absolute;
             inset: 0;
             /* Precise blending of Seaweed Green and Alice Blue */
-            background: linear-gradient(
-                135deg,
-                rgba(7, 36, 22, 0.92) 0%,
-                rgba(11, 59, 36, 0.85) 45%,
-                rgba(19, 78, 53, 0.76) 75%,
-                rgba(240, 248, 255, 0.32) 100%
-            );
+            background: linear-gradient(135deg,
+                    rgba(7, 36, 22, 0.92) 0%,
+                    rgba(11, 59, 36, 0.85) 45%,
+                    rgba(19, 78, 53, 0.76) 75%,
+                    rgba(240, 248, 255, 0.32) 100%);
             backdrop-filter: blur(1.5px);
             -webkit-backdrop-filter: blur(1.5px);
             z-index: 2;
@@ -285,7 +301,7 @@
             position: absolute;
             inset: 0;
             background: radial-gradient(circle at 80% 25%, rgba(52, 211, 153, 0.18) 0%, transparent 50%),
-                        radial-gradient(circle at 20% 85%, rgba(240, 248, 255, 0.15) 0%, transparent 45%);
+                radial-gradient(circle at 20% 85%, rgba(240, 248, 255, 0.15) 0%, transparent 45%);
             mix-blend-mode: overlay;
             z-index: 3;
             pointer-events: none;
@@ -377,14 +393,16 @@
         .search-widget-wrapper {
             position: relative;
             margin-top: 1rem;
-            padding-bottom: 24px; /* Space for overlapping button */
+            padding-bottom: 24px;
+            /* Space for overlapping button */
         }
 
         .search-widget-card {
             background: var(--alice-blue-card);
             border: 2px solid rgba(240, 248, 255, 0.9);
             border-radius: var(--radius-lg);
-            padding: 1.8rem 1.8rem 2.8rem; /* Extra bottom padding for button overlap */
+            padding: 1.8rem 1.8rem 2.8rem;
+            /* Extra bottom padding for button overlap */
             box-shadow: 0 20px 45px -8px rgba(4, 22, 13, 0.35), 0 0 20px rgba(34, 197, 94, 0.12);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -490,7 +508,8 @@
             gap: 4px;
         }
 
-        .dest-chip:hover, .dest-chip.active {
+        .dest-chip:hover,
+        .dest-chip.active {
             background: var(--seaweed-primary);
             color: var(--alice-blue);
             border-color: var(--seaweed-primary);
@@ -520,8 +539,15 @@
         }
 
         @keyframes fadeInMenu {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .guest-counter-row {
@@ -895,15 +921,17 @@
         }
 
         /* Left and Right Ticket Hole Notches */
-        .notch-left, .notch-right {
+        .notch-left,
+        .notch-right {
             position: absolute;
             top: 50%;
             width: 26px;
             height: 26px;
-            background: var(--seaweed-dark); /* Blends into hero dark background */
+            background: var(--seaweed-dark);
+            /* Blends into hero dark background */
             border-radius: 50%;
             transform: translateY(-50%);
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
             z-index: 10;
         }
 
@@ -1286,7 +1314,7 @@
             padding: 14px 22px;
             border-radius: var(--radius-md);
             border: 1px solid var(--seaweed-accent);
-            box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -1435,6 +1463,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Ambient Ambient Glowing Backdrop -->
@@ -1480,7 +1509,8 @@
                 <div class="hero-badge-row">
                     <span class="badge-eco-pill">🌍 Sustainable & Barrier-Free Hospitality</span>
                     <span class="badge-destination-indicator" id="heroDestIndicator">
-                        📍 Viewing: <strong id="heroDestIndicatorName" style="margin-left: 4px;">Agra • Taj Mahal Corridor</strong>
+                        📍 Viewing: <strong id="heroDestIndicatorName" style="margin-left: 4px;">Agra • Taj Mahal
+                            Corridor</strong>
                     </span>
                 </div>
 
@@ -1490,14 +1520,15 @@
                 </h1>
 
                 <p class="hero-subtitle">
-                    Select your low-emission corridor, pick verified wheelchair-accessible solar sanctuaries, and generate your instant verified eco-boarding pass.
+                    Select your low-emission corridor, pick verified wheelchair-accessible solar sanctuaries, and
+                    generate your instant verified eco-boarding pass.
                 </p>
 
                 <!-- THE COMPLEX SEARCH WIDGET -->
                 <div class="search-widget-wrapper">
                     <div class="search-widget-card">
                         <div class="search-fields-grid">
-                            
+
                             <!-- Field 1: Destination / Location (Monitored by JS) -->
                             <div class="search-field-group">
                                 <label class="field-label" for="locationInput">
@@ -1505,13 +1536,8 @@
                                 </label>
                                 <div class="field-input-box">
                                     <span class="field-icon">🗺️</span>
-                                    <input 
-                                        type="text" 
-                                        id="locationInput" 
-                                        placeholder="Agra, Goa, Mumbai, Singapore..." 
-                                        value="Agra"
-                                        autocomplete="off"
-                                    >
+                                    <input type="text" id="locationInput" placeholder="Agra, Goa, Mumbai, Singapore..."
+                                        value="Agra" autocomplete="off">
                                 </div>
                             </div>
 
@@ -1542,13 +1568,8 @@
                                 </label>
                                 <div class="field-input-box" id="guestTriggerBtn" style="cursor: pointer;">
                                     <span class="field-icon">🧳</span>
-                                    <input 
-                                        type="text" 
-                                        id="guestSummaryInput" 
-                                        value="2 Adults, 1 Room" 
-                                        readonly 
-                                        style="cursor: pointer;"
-                                    >
+                                    <input type="text" id="guestSummaryInput" value="2 Adults, 1 Room" readonly
+                                        style="cursor: pointer;">
                                 </div>
 
                                 <!-- Interactive Guest Counter Popover -->
@@ -1559,9 +1580,11 @@
                                             <p>Ages 13 and above</p>
                                         </div>
                                         <div class="counter-controls">
-                                            <button class="btn-counter" type="button" onclick="adjustGuest('adults', -1)">−</button>
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('adults', -1)">−</button>
                                             <span class="counter-val" id="valAdults">2</span>
-                                            <button class="btn-counter" type="button" onclick="adjustGuest('adults', 1)">+</button>
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('adults', 1)">+</button>
                                         </div>
                                     </div>
                                     <div class="guest-counter-row">
@@ -1570,9 +1593,12 @@
                                             <p>Ages 0 to 12</p>
                                         </div>
                                         <div class="counter-controls">
-                                            <button class="btn-counter" type="button" onclick="adjustGuest('children', -1)" id="btnMinusChildren" disabled>−</button>
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('children', -1)" id="btnMinusChildren"
+                                                disabled>−</button>
                                             <span class="counter-val" id="valChildren">0</span>
-                                            <button class="btn-counter" type="button" onclick="adjustGuest('children', 1)">+</button>
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('children', 1)">+</button>
                                         </div>
                                     </div>
                                     <div class="guest-counter-row">
@@ -1581,12 +1607,15 @@
                                             <p>Eco-certified units</p>
                                         </div>
                                         <div class="counter-controls">
-                                            <button class="btn-counter" type="button" onclick="adjustGuest('rooms', -1)" id="btnMinusRooms" disabled>−</button>
+                                            <button class="btn-counter" type="button" onclick="adjustGuest('rooms', -1)"
+                                                id="btnMinusRooms" disabled>−</button>
                                             <span class="counter-val" id="valRooms">1</span>
-                                            <button class="btn-counter" type="button" onclick="adjustGuest('rooms', 1)">+</button>
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('rooms', 1)">+</button>
                                         </div>
                                     </div>
-                                    <button class="btn-nav-action" type="button" style="width: 100%; margin-top: 6px;" onclick="closeGuestDropdown()">
+                                    <button class="btn-nav-action" type="button" style="width: 100%; margin-top: 6px;"
+                                        onclick="closeGuestDropdown()">
                                         Done
                                     </button>
                                 </div>
@@ -1596,13 +1625,18 @@
                         <!-- Quick Popular Destination Filter Chips -->
                         <div class="quick-destinations-row">
                             <span class="quick-dest-label">Popular Corridors:</span>
-                            <button class="dest-chip active" type="button" onclick="selectDestination('Agra')">🕌 Agra</button>
+                            <button class="dest-chip active" type="button" onclick="selectDestination('Agra')">🕌
+                                Agra</button>
                             <button class="dest-chip" type="button" onclick="selectDestination('Goa')">🏖️ Goa</button>
-                            <button class="dest-chip" type="button" onclick="selectDestination('Mumbai')">🏛️ Mumbai</button>
-                            <button class="dest-chip" type="button" onclick="selectDestination('Singapore')">🏙️ Singapore</button>
-                            <button class="dest-chip" type="button" onclick="selectDestination('Kerala')">🌿 Kerala</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Mumbai')">🏛️
+                                Mumbai</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Singapore')">🏙️
+                                Singapore</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Kerala')">🌿
+                                Kerala</button>
                             <button class="dest-chip" type="button" onclick="selectDestination('Bali')">🌺 Bali</button>
-                            <button class="dest-chip" type="button" onclick="selectDestination('Kyoto')">🎋 Kyoto</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Kyoto')">🎋
+                                Kyoto</button>
                         </div>
 
                         <!-- Amenities & Accessibility Toggles -->
@@ -1646,7 +1680,9 @@
                             <span style="font-size: 1.3rem;">🌱</span>
                             <div>
                                 <div style="line-height: 1.1;">WAY2GREEN</div>
-                                <span style="font-size: 0.65rem; opacity: 0.85; font-weight: 600; text-transform: uppercase;">Bio-Transit Network</span>
+                                <span
+                                    style="font-size: 0.65rem; opacity: 0.85; font-weight: 600; text-transform: uppercase;">Bio-Transit
+                                    Network</span>
                             </div>
                         </div>
                         <span class="pass-type-badge">First Class Eco</span>
@@ -1664,7 +1700,9 @@
                             <div class="route-connector">
                                 <span class="route-transport-mode" id="passTransitMode">⚡ Solar High-Speed</span>
                                 <div class="connector-line"></div>
-                                <span style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);" id="passDistance">195 km • 0kg CO₂</span>
+                                <span
+                                    style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);"
+                                    id="passDistance">195 km • 0kg CO₂</span>
                             </div>
 
                             <div class="route-stop" style="text-align: right;">
@@ -1790,7 +1828,8 @@
                 <div class="metric-col">
                     <span class="metric-number">1,420,000L</span>
                     <h3 class="metric-title">Clean Water Conserved</h3>
-                    <p class="metric-desc">Rainwater harvesting and greywater wetland filtration at certified resorts.</p>
+                    <p class="metric-desc">Rainwater harvesting and greywater wetland filtration at certified resorts.
+                    </p>
                 </div>
                 <div class="metric-col">
                     <span class="metric-number">94,500 kWh</span>
@@ -1800,7 +1839,8 @@
                 <div class="metric-col">
                     <span class="metric-number">100%</span>
                     <h3 class="metric-title">Barrier-Free Access</h3>
-                    <p class="metric-desc">Physical step-free verification, tactile corridors, and sensory quiet rooms.</p>
+                    <p class="metric-desc">Physical step-free verification, tactile corridors, and sensory quiet rooms.
+                    </p>
                 </div>
                 <div class="metric-col">
                     <span class="metric-number">0 kg</span>
@@ -1817,7 +1857,8 @@
             <div class="footer-brand">
                 <h3>🌱 Way_2_Green</h3>
                 <p>
-                    A conscious travel ecosystem designed to eliminate environmental degradation and create barrier-free travel for everyone.
+                    A conscious travel ecosystem designed to eliminate environmental degradation and create barrier-free
+                    travel for everyone.
                 </p>
                 <div style="margin-top: 14px; font-size: 0.82rem; color: rgba(240, 248, 255, 0.65);">
                     Palette: Strict Seaweed Green (#0b3b24) & Alice Blue (#F0F8FF).
@@ -1837,7 +1878,8 @@
                     <li><a href="javascript:void(0)" onclick="selectDestination('Agra')">Agra Heritage</a></li>
                     <li><a href="javascript:void(0)" onclick="selectDestination('Goa')">Goa Coastal</a></li>
                     <li><a href="javascript:void(0)" onclick="selectDestination('Mumbai')">Mumbai Skyline</a></li>
-                    <li><a href="javascript:void(0)" onclick="selectDestination('Singapore')">Singapore Supertrees</a></li>
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Singapore')">Singapore Supertrees</a>
+                    </li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -2128,7 +2170,7 @@
             if (passSavingsBadge) passSavingsBadge.textContent = dest.savings;
             if (passDistance) passDistance.textContent = dest.distance;
             if (passLandmarkText) passLandmarkText.textContent = dest.landmark;
-            if (passSerialCode) passSerialCode.textContent = `PASS #W2G-${Math.floor(1000 + Math.random()*9000)}-${dest.code}-2026 • CARBON NEUTRAL TICKET`;
+            if (passSerialCode) passSerialCode.textContent = `PASS #W2G-${Math.floor(1000 + Math.random() * 9000)}-${dest.code}-2026 • CARBON NEUTRAL TICKET`;
 
             // Update Active Chip
             document.querySelectorAll('.dest-chip').forEach(chip => {
@@ -2192,14 +2234,14 @@
             return null;
         }
 
-        locationInput.addEventListener('input', function(e) {
+        locationInput.addEventListener('input', function (e) {
             const match = findMatchingDestination(e.target.value);
             if (match && match !== currentDestKey) {
                 updateLocationTheme(match);
             }
         });
 
-        locationInput.addEventListener('change', function(e) {
+        locationInput.addEventListener('change', function (e) {
             const match = findMatchingDestination(e.target.value);
             if (match) {
                 updateLocationTheme(match);
@@ -2225,7 +2267,7 @@
         }
 
         guestTriggerBtn.addEventListener('click', toggleGuestDropdown);
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!guestTriggerBtn.contains(e.target) && !guestDropdownMenu.contains(e.target)) {
                 closeGuestDropdown();
             }
@@ -2318,4 +2360,5 @@
         });
     </script>
 </body>
+
 </html>

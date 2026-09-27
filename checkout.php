@@ -47,32 +47,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $bookingCode = 'W2G-' . strtoupper(substr(md5(uniqid()), 0, 6)) . '-ECO';
 
-        try {
-            $stmt = $pdo->prepare("INSERT INTO bookings 
-                (user_id, hotel_id, origin, destination, travel_mode, distance_km, co2_saved_kg, check_in, check_out, guests, booking_code, total_price, accessibility_notes) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([
-                $user['id'],
-                $hotelId,
-                $origin,
-                $destName,
-                $mode,
-                $distance,
-                $co2Saved,
-                $checkIn,
-                $checkOut,
-                $guests,
-                $bookingCode,
-                $totalPrice,
-                $notesStr
-            ]);
-
-            $bookingConfirmed = true;
-            header("Location: passport.php?code=" . urlencode($bookingCode) . "&success=1");
-            exit;
-        } catch (Exception $e) {
-            $error = "Failed to save booking. Please try again.";
-        }
+        // Bypass DB insertion for the prototype since hotel data is hardcoded in eco-stays.php
+        $bookingConfirmed = true;
+        
+        // Forward all data to passport.php to render the mock passport
+        $queryString = http_build_query([
+            'dest_name' => $destName,
+            'origin' => $origin,
+            'mode' => $mode,
+            'distance' => $distance,
+            'co2_saved' => $co2Saved,
+            'success' => 1
+        ]);
+        
+        header("Location: passport.php?" . $queryString);
+        exit;
     }
 }
 ?>
@@ -339,5 +328,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+
 
 

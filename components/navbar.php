@@ -85,8 +85,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </a>
         <nav class="desktop-nav">
             <a href="index.php" class="nav-link <?= $current_page === 'index.php' ? 'active' : '' ?>">Home</a>
+            <a href="eco-stays.php" class="nav-link <?= $current_page === 'eco-stays.php' ? 'active' : '' ?>">Eco-Stays</a>
             <a href="travel.php" class="nav-link <?= $current_page === 'travel.php' ? 'active' : '' ?>">Plan Transit</a>
-            <a href="hotels.php" class="nav-link <?= $current_page === 'hotels.php' ? 'active' : '' ?>">Eco-Stays</a>
             <a href="digital_twin.php" class="nav-link-twin <?= $current_page === 'digital_twin.php' ? 'active' : '' ?>">Digital Twin</a>
             <a href="about.php" class="nav-link <?= $current_page === 'about.php' ? 'active' : '' ?>">Our Mission</a>
             <?php if ($user): ?>

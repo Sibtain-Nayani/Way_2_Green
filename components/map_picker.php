@@ -41,6 +41,32 @@
 }
 .map-confirm-btn:hover { background: #0a4f38; }
 .map-confirm-btn:disabled { background: #ccc; cursor: not-allowed; }
+.autocomplete-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10000;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.autocomplete-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+.autocomplete-item:hover {
+    background: #f0fdf4;
+}
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
 </style>
 
 <div class="map-modal-overlay" id="mapModalOverlay">
@@ -49,9 +75,10 @@
             <h3>Select Location</h3>
             <button class="map-close-btn" onclick="closeMapPicker()">&times;</button>
         </div>
-        <div class="map-search-box">
-            <input type="text" id="mapSearchInput" class="map-search-input" placeholder="Search for a city or place..." onkeypress="if(event.key === 'Enter') searchMapLocation()">
+        <div class="map-search-box" style="position: relative;">
+            <input type="text" id="mapSearchInput" class="map-search-input" placeholder="Search for a city or place..." oninput="debounceSearch(this.value)" onkeypress="if(event.key === 'Enter') searchMapLocation()">
             <button class="map-search-btn" onclick="searchMapLocation()">Search</button>
+            <div id="autocompleteResults" class="autocomplete-results"></div>
         </div>
         <div id="picker-map"></div>
         <button class="map-confirm-btn" id="mapConfirmBtn" disabled onclick="confirmMapLocation()">Confirm Selected Location</button>
@@ -108,9 +135,46 @@ function setMapMarker(lat, lon, name) {
     document.getElementById('mapConfirmBtn').innerText = `Confirm: ${name}`;
 }
 
+let searchTimeout = null;
+
+function debounceSearch(query) {
+    clearTimeout(searchTimeout);
+    if (!query || query.length < 3) {
+        document.getElementById('autocompleteResults').style.display = 'none';
+        return;
+    }
+    searchTimeout = setTimeout(() => {
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`)
+            .then(res => res.json())
+            .then(data => {
+                const resultsContainer = document.getElementById('autocompleteResults');
+                resultsContainer.innerHTML = '';
+                if (data && data.length > 0) {
+                    data.forEach(loc => {
+                        const div = document.createElement('div');
+                        div.className = 'autocomplete-item';
+                        div.innerText = loc.display_name;
+                        div.onclick = () => {
+                            let shortName = loc.name || loc.display_name.split(',')[0];
+                            setMapMarker(loc.lat, loc.lon, shortName);
+                            pickerMarker.bindPopup(`<b>${shortName}</b>`).openPopup();
+                            document.getElementById('mapSearchInput').value = loc.display_name;
+                            resultsContainer.style.display = 'none';
+                        };
+                        resultsContainer.appendChild(div);
+                    });
+                    resultsContainer.style.display = 'block';
+                } else {
+                    resultsContainer.style.display = 'none';
+                }
+            });
+    }, 400); // 400ms debounce
+}
+
 function searchMapLocation() {
     const q = document.getElementById('mapSearchInput').value;
     if (!q) return;
+    document.getElementById('autocompleteResults').style.display = 'none';
     
     fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`)
         .then(res => res.json())
@@ -125,6 +189,13 @@ function searchMapLocation() {
             }
         });
 }
+
+// Close autocomplete when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.map-search-box')) {
+        document.getElementById('autocompleteResults').style.display = 'none';
+    }
+});
 
 function confirmMapLocation() {
     if (currentTargetInputId && selectedLocationName) {

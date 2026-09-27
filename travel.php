@@ -27,6 +27,12 @@ foreach ($stops as $stop) {
 }
 $fullRoute[] = $preselectedDest;
 
+$hotel_id = $_GET['hotel_id'] ?? '';
+$hotel_name = $_GET['hotel_name'] ?? '';
+$hotel_price = $_GET['hotel_price'] ?? 0;
+$hotel_water = $_GET['hotel_water'] ?? 0;
+$hotel_power = $_GET['hotel_power'] ?? 0;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,13 +96,7 @@ $fullRoute[] = $preselectedDest;
             </p>
 
             <form id="transitForm" onsubmit="event.preventDefault(); computeImpact();">
-                <div class="transit-input-grid">
-                    <!-- Origin -->
-                    <div>
-                        <label class="field-label" for="sourceInput">Starting Point (Your Location)</label>
-                        <div style="position: relative; display: flex; align-items: center;">
-                            <input type="text" id="sourceInput" class="field-input"
-                                placeholder="e.g. Mumbai, Bengaluru, Delhi" value="Mumbai" required>
+                <div style="margin-bottom: 2rem;">
                     <!-- Unified Route Itinerary Display -->
                     <div style="width: 100%;">
                         <label class="field-label">Your Sustainable Roadmap:</label>
@@ -276,11 +276,11 @@ $fullRoute[] = $preselectedDest;
                     </div>
                 </div>
 
-                <!-- Connect Phase 1 to Phase 2 -->
+                <!-- Connect Phase 2 to Phase 3 -->
                 <div style="text-align: center;">
-                    <a href="passport.php?dest_name=<?= urlencode($preselectedDest) ?>" id="continueToHotelsBtn" class="btn-nature-primary"
+                    <a href="#" id="continueToHotelsBtn" class="btn-nature-primary"
                         style="padding: 16px 36px; font-size: 1.05rem;">
-                        Generate Eco-Passport ➔
+                        Proceed to Checkout ➔
                     </a>
                 </div>
             </div>
@@ -426,15 +426,20 @@ $fullRoute[] = $preselectedDest;
                     document.getElementById('aiHotel').innerHTML = data.ai_insights.hotel_advice;
                     document.getElementById('aiAccess').innerHTML = data.ai_insights.accessibility_advice;
 
-                    // Build link to Passport
+                    // Build link to Checkout
                     const params = new URLSearchParams({
+                        hotel_id: "<?= htmlspecialchars($hotel_id) ?>",
+                        hotel_name: "<?= htmlspecialchars($hotel_name) ?>",
+                        price: "<?= htmlspecialchars($hotel_price) ?>",
+                        water_saved: "<?= htmlspecialchars($hotel_water) ?>",
+                        power_saved: "<?= htmlspecialchars($hotel_power) ?>",
                         dest_name: destination,
                         origin: source,
                         mode: currentMode,
                         distance: distance,
                         co2_saved: data.emissions.co2_saved_kg
                     });
-                    document.getElementById('continueToHotelsBtn').href = `passport.php?${params.toString()}`;
+                    document.getElementById('continueToHotelsBtn').href = `checkout.php?${params.toString()}`;
                 }
             } catch (err) {
                 console.error(err);

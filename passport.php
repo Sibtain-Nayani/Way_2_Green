@@ -39,6 +39,30 @@ if ($booking && $booking['user_id'] != $currentUser['id'] && empty($code) && emp
     $booking = null;
 }
 
+// Generate mock booking from URL if no DB booking is found (supports new Plan Transit -> Passport flow)
+if (!$booking && isset($_GET['dest_name']) && isset($_GET['origin'])) {
+    $booking = [
+        'booking_code' => 'ECO-' . strtoupper(substr(uniqid(), -6)),
+        'hotel_name' => 'Way2Green Eco-Stay',
+        'destination' => $_GET['dest_name'],
+        'origin' => $_GET['origin'],
+        'travel_mode' => $_GET['mode'] ?? 'train',
+        'distance_km' => $_GET['distance'] ?? 0,
+        'co2_saved_kg' => $_GET['co2_saved'] ?? 0,
+        'water_saved_liters' => 120000,
+        'power_saved_kwh' => 28000,
+        'eco_rating' => 5.0,
+        'guests' => 2,
+        'check_in' => date('Y-m-d', strtotime('+7 days')),
+        'check_out' => date('Y-m-d', strtotime('+10 days')),
+        'created_at' => date('Y-m-d H:i:s'),
+        'total_price' => 15000,
+        'traveler_name' => $currentUser['name'] ?? 'Traveler',
+        'traveler_email' => $currentUser['email'] ?? 'traveler@example.com',
+        'accessibility_notes' => 'General Accessibility guidelines applied.'
+    ];
+}
+
 // Calculate night duration
 $nights = 1;
 if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {

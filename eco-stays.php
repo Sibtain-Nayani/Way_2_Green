@@ -333,6 +333,13 @@ $hotelDatabase = [
             </div>
             
             <form action="travel.php" method="GET" id="roadmapForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <!-- Hidden fields for selected hotel -->
+                <input type="hidden" name="hotel_id" id="selectedHotelId" required>
+                <input type="hidden" name="hotel_name" id="selectedHotelName" required>
+                <input type="hidden" name="hotel_price" id="selectedHotelPrice">
+                <input type="hidden" name="hotel_water" id="selectedHotelWater">
+                <input type="hidden" name="hotel_power" id="selectedHotelPower">
+
                 <!-- Source -->
                 <div style="display: flex; gap: 10px; align-items: center;">
                     <div style="font-weight: bold; width: 60px; color: var(--text-muted);">Source</div>
@@ -421,9 +428,9 @@ $hotelDatabase = [
                                     <span class="amount">₹<?= number_format($hotel['price']) ?></span>
                                     <span>/ night</span>
                                 </div>
-                                <a href="checkout.php?hotel_id=<?= urlencode($hotel['id']) ?>&hotel_name=<?= urlencode($hotel['name']) ?>&dest_name=<?= urlencode($destDisplay) ?>&origin=<?= urlencode($originDisplay) ?>&price=<?= urlencode($hotel['price']) ?>&water_saved=<?= urlencode($hotel['water_saved']) ?>&power_saved=<?= urlencode($hotel['power_saved']) ?>" class="btn-select-stay">
-                                    View &amp; Book Stay ➔
-                                </a>
+                                <button type="button" class="btn-select-stay" onclick="selectStay('<?= htmlspecialchars($hotel['id']) ?>', '<?= htmlspecialchars(addslashes($hotel['name'])) ?>', <?= floatval($hotel['price']) ?>, <?= floatval($hotel['water_saved']) ?>, <?= floatval($hotel['power_saved']) ?>, this)">
+                                    Select This Stay ➔
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -499,6 +506,38 @@ $hotelDatabase = [
 
     <!-- Client-side filter pills script & drawer toggle -->
     <script>
+        function selectStay(id, name, price, water, power, btnEl) {
+            document.getElementById('selectedHotelId').value = id;
+            document.getElementById('selectedHotelName').value = name;
+            document.getElementById('selectedHotelPrice').value = price;
+            document.getElementById('selectedHotelWater').value = water;
+            document.getElementById('selectedHotelPower').value = power;
+            
+            document.querySelectorAll('.stay-card').forEach(c => c.style.border = 'none');
+            btnEl.closest('.stay-card').style.border = '2px solid var(--primary)';
+            
+            document.querySelectorAll('.btn-select-stay').forEach(b => {
+                b.innerText = 'Select This Stay ➔';
+                b.style.background = 'var(--primary)';
+            });
+            btnEl.innerText = '✓ Selected';
+            btnEl.style.background = '#047857';
+            
+            // Highlight the roadmap form to encourage continuing
+            const form = document.getElementById('roadmapForm');
+            form.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.4)';
+            setTimeout(() => { form.style.boxShadow = 'none'; }, 2000);
+            form.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+
+        // Keep the form validation
+        document.getElementById('roadmapForm').addEventListener('submit', function(e) {
+            if (!document.getElementById('selectedHotelId').value) {
+                e.preventDefault();
+                alert('Please select an Eco-Stay from the list below before calculating transit!');
+            }
+        });
+
         function toggleDrawer() {
             document.getElementById('mobileDrawer').classList.toggle('open');
             document.getElementById('drawerOverlay').classList.toggle('active');

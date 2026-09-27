@@ -2210,6 +2210,10 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 7v14M21 7v14M6 11h4v4H6zM14 11h4v4h-4zM9 3h6v4H9z"/></svg>
             Eco-Stays
         </a>
+        <a href="digital_twin.php" class="drawer-link" style="color:var(--seaweed-primary);font-weight:800;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+            Digital Twin
+        </a>
         <a href="about.php" class="drawer-link">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
             Our Mission
@@ -2255,6 +2259,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 <a href="index.php" class="nav-link active">Home</a>
                 <a href="travel.php" class="nav-link">Plan Transit</a>
                 <a href="hotels.php" class="nav-link">Eco-Stays</a>
+                <a href="digital_twin.php" class="nav-link" style="color:var(--seaweed-primary);font-weight:800;">Digital Twin</a>
                 <a href="about.php" class="nav-link">Our Mission</a>
                 <?php if ($user): ?>
                     <a href="my-trips.php" class="nav-link">My Passports</a>

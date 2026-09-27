@@ -80,25 +80,7 @@ if ($destId === 0 && !empty($allDests)) {
     </div>
 
     <!-- Clean Header -->
-    <header class="header-top">
-        <a href="index.php" class="brand">
-            <span class="brand-leaf">🌱</span>
-            <span>Way2Green</span>
-        </a>
-        <nav class="desktop-nav">
-            <a href="index.php">Home</a>
-            <a href="travel.php">Plan Transit</a>
-            <a href="hotels.php" class="active">Eco-Stays</a>
-            <a href="about.php">About Us</a>
-            <a href="my-trips.php">My Passports</a>
-            <a href="logout.php" style="color: #dc2626;">Sign Out</a>
-        </nav>
-        <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
+    <?php include 'components/navbar.php'; ?>
 
     <main class="page-container" style="max-width: 1140px;">
         <!-- Visual Multi-Step Tracker -->
@@ -680,3 +662,4 @@ if ($destId === 0 && !empty($allDests)) {
     <script src="js/effects.js"></script>
 </body>
 </html>
+

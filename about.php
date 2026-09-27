@@ -541,30 +541,7 @@ $user = get_logged_in_user();
     </div>
 
     <!-- Clean Header -->
-    <header class="header-top">
-        <a href="index.php" class="brand">
-            <span class="brand-leaf">🌱</span>
-            <span>Way2Green</span>
-        </a>
-        <nav class="desktop-nav">
-            <a href="index.php">Home</a>
-            <a href="travel.php">Plan Transit</a>
-            <a href="hotels.php">Eco-Stays</a>
-            <a href="about.php" class="active">About Us</a>
-            <?php if ($user): ?>
-                <a href="my-trips.php">My Passports</a>
-                <a href="logout.php" style="color: #dc2626;">Sign Out</a>
-            <?php else: ?>
-                <a href="login.php">Sign In</a>
-                <a href="register.php" class="nav-cta">Get Started</a>
-            <?php endif; ?>
-        </nav>
-        <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
+    <?php include 'components/navbar.php'; ?>
 
     <!-- Master Hero Section -->
     <section class="about-hero">
@@ -934,3 +911,4 @@ $user = get_logged_in_user();
     </script>
 </body>
 </html>
+

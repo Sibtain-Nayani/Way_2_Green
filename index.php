@@ -634,118 +634,101 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* ============================================================
-           ENLARGED LOCATION INPUT BLOCKS WITH DYNAMIC INLINE BACKGROUNDS
+           LOCATION WRAPPER WITH DYNAMIC BACKGROUND & OVERLAY
            ============================================================ */
-        .field-input-box-xl {
+        .location-wrapper {
             position: relative;
-            background: #ffffff;
+            background-color: #ffffff;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
             border: 2px solid var(--alice-blue-deep);
             border-radius: var(--radius-md);
             display: flex;
             align-items: center;
             padding: 20px 22px;
             gap: 12px;
-            transition: var(--transition);
-            box-shadow: 0 3px 10px rgba(7, 36, 22, 0.06);
             min-height: 78px;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.4s ease;
+            box-shadow: 0 3px 10px rgba(7, 36, 22, 0.06);
             overflow: hidden;
-        }
-
-        /* Dynamic inline background image layer */
-        .field-input-box-xl .field-bg-image {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            z-index: 0;
-        }
-
-        .field-input-box-xl .field-bg-image.active {
-            opacity: 1;
-        }
-
-        /* Semi-transparent seaweed green overlay on inline image */
-        .field-input-box-xl .field-bg-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(7, 36, 22, 0.78) 0%,
-                rgba(11, 59, 36, 0.68) 50%,
-                rgba(19, 78, 53, 0.62) 100%
-            );
-            opacity: 0;
-            transition: opacity 0.5s ease;
             z-index: 1;
         }
 
-        .field-input-box-xl .field-bg-overlay.active {
-            opacity: 1;
-        }
-
-        /* City name label at bottom-right of input box */
-        .field-input-box-xl .field-city-label {
-            position: absolute;
-            bottom: 6px;
-            right: 12px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.92);
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
-            letter-spacing: 0.03em;
-            z-index: 5;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            pointer-events: none;
-        }
-
-        .field-input-box-xl .field-city-label.active {
-            opacity: 1;
-        }
-
-        .field-input-box-xl:focus-within {
+        .location-wrapper:focus-within {
             border-color: var(--seaweed-accent);
-            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.18), 0 6px 18px rgba(7, 36, 22, 0.08);
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2), 0 6px 18px rgba(7, 36, 22, 0.08);
         }
 
-        .field-input-box-xl .field-icon {
-            font-size: 1.35rem;
-            position: relative;
-            z-index: 3;
-        }
-
-        .field-input-box-xl input {
+        /* The actual <input> must be 100% transparent so the background shows through */
+        .location-wrapper input {
             width: 100%;
-            border: none;
-            background: transparent;
-            outline: none;
+            border: none !important;
+            background: transparent !important;
+            outline: none !important;
             font-size: 1.15rem;
             font-weight: 700;
             color: var(--seaweed-dark);
             position: relative;
             z-index: 3;
+            transition: color 0.2s ease;
         }
 
-        /* When bg is active, make text white */
-        .field-input-box-xl.has-bg input {
-            color: #ffffff;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+        /* When dynamic background is active on the wrapper:
+           the text turns crisp white with subtle text-shadow for readability */
+        .location-wrapper.has-bg input {
+            color: #ffffff !important;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
         }
 
-        .field-input-box-xl.has-bg .field-icon {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .field-input-box-xl input::placeholder {
+        .location-wrapper input::placeholder {
             color: #8fa79b;
             font-weight: 500;
         }
 
-        .field-input-box-xl.has-bg input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+        .location-wrapper.has-bg input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .location-wrapper .field-icon {
+            font-size: 1.35rem;
+            position: relative;
+            z-index: 3;
+            color: var(--seaweed-mid);
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .location-wrapper.has-bg .field-icon {
+            color: #ffffff;
+            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+        }
+
+        /* Bottom-Right Label inside the wrapper */
+        .location-corner-label {
+            position: absolute;
+            bottom: 7px;
+            right: 12px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            z-index: 4;
+            pointer-events: none;
+            display: none;
+            background: rgba(7, 36, 22, 0.6);
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(2px);
+        }
+
+        .location-wrapper.has-bg .location-corner-label {
+            display: inline-block;
         }
 
         .field-label-xl {
@@ -759,8 +742,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             gap: 5px;
         }
 
-        /* GPS Dropdown for Starting Place */
-        .gps-dropdown {
+        /* GPS & Destination Dropdown Menus */
+        .gps-dropdown,
+        .dest-dropdown {
             position: absolute;
             top: calc(100% + 6px);
             left: 0;
@@ -777,12 +761,14 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             overflow-y: auto;
         }
 
-        .gps-dropdown.show {
+        .gps-dropdown.show,
+        .dest-dropdown.show {
             display: flex;
             animation: fadeInMenu 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .gps-dropdown-item {
+        .gps-dropdown-item,
+        .dest-dropdown-item {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -795,11 +781,13 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             border-bottom: 1px solid rgba(202, 227, 251, 0.5);
         }
 
-        .gps-dropdown-item:last-child {
+        .gps-dropdown-item:last-child,
+        .dest-dropdown-item:last-child {
             border-bottom: none;
         }
 
-        .gps-dropdown-item:hover {
+        .gps-dropdown-item:hover,
+        .dest-dropdown-item:hover {
             background: var(--alice-blue);
         }
 
@@ -2368,12 +2356,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
                                             Starting Place
                                         </label>
-                                        <div class="field-input-box-xl" id="originInputBox">
-                                            <!-- Dynamic inline background layers -->
-                                            <div class="field-bg-image" id="originBgImage"></div>
-                                            <div class="field-bg-overlay" id="originBgOverlay"></div>
-                                            <span class="field-city-label" id="originCityLabel"></span>
-                                            <span class="field-icon" style="position:relative;z-index:3;">
+                                        <div class="location-wrapper" id="originWrapper">
+                                            <span class="field-icon">
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
                                             </span>
                                             <input 
@@ -2384,6 +2368,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                                 value="New Delhi"
                                                 autocomplete="off"
                                             >
+                                            <span class="location-corner-label" id="originCornerLabel">New Delhi</span>
                                         </div>
                                         <!-- GPS Dropdown Menu -->
                                         <div class="gps-dropdown" id="gpsDropdown">
@@ -2458,12 +2443,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                                             Destination
                                         </label>
-                                        <div class="field-input-box-xl" id="destInputBox">
-                                            <!-- Dynamic inline background layers -->
-                                            <div class="field-bg-image" id="destBgImage"></div>
-                                            <div class="field-bg-overlay" id="destBgOverlay"></div>
-                                            <span class="field-city-label" id="destCityLabel"></span>
-                                            <span class="field-icon" style="position:relative;z-index:3;">
+                                        <div class="location-wrapper" id="destWrapper">
+                                            <span class="field-icon">
                                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                             </span>
                                             <input 
@@ -2475,6 +2456,58 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                                 autocomplete="off"
                                                 required
                                             >
+                                            <span class="location-corner-label" id="destCornerLabel">Agra</span>
+                                        </div>
+                                        <!-- Destination Dropdown Menu -->
+                                        <div class="dest-dropdown" id="destDropdown">
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Agra')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Agra &bull; Taj Mahal Eco Sanctuary
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Goa')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Goa &bull; Coastal Beaches
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Mumbai')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Mumbai &bull; Marine Drive &amp; Gateway
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Singapore')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Singapore &bull; Supertrees &amp; Gardens
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Munnar')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Munnar &bull; Western Ghats Tea Hills
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Manali')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Manali &bull; Solang Alpine Valley
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Kyoto')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Kyoto &bull; Arashiyama Bamboo Sanctuary
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Bali')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Bali &bull; Ubud Rice Terraces
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -3247,53 +3280,80 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         const toastNotification = document.getElementById('toastNotification');
         const toastMsg = document.getElementById('toastMsg');
 
-        // Input box background elements
-        const originInputBox = document.getElementById('originInputBox');
-        const originBgImage = document.getElementById('originBgImage');
-        const originBgOverlay = document.getElementById('originBgOverlay');
-        const originCityLabel = document.getElementById('originCityLabel');
-        const destInputBox = document.getElementById('destInputBox');
-        const destBgImage = document.getElementById('destBgImage');
-        const destBgOverlay = document.getElementById('destBgOverlay');
-        const destCityLabel = document.getElementById('destCityLabel');
+        // Location Wrapper Elements & Corner Labels
+        const originWrapper = document.getElementById('originWrapper');
+        const originCornerLabel = document.getElementById('originCornerLabel');
+        const destWrapper = document.getElementById('destWrapper');
+        const destCornerLabel = document.getElementById('destCornerLabel');
 
-        // GPS Dropdown
+        // Dropdown menus
         const gpsDropdown = document.getElementById('gpsDropdown');
+        const destDropdown = document.getElementById('destDropdown');
 
         // State variables
         let currentDestKey = 'agra';
         let guests = { adults: 2, children: 0, rooms: 1 };
 
         // ============================================================
-        // DYNAMIC INLINE BACKGROUND FOR INPUT FIELDS
+        // DYNAMIC TOURIST SPOT BACKGROUND & OVERLAY ON WRAPPER
         // ============================================================
-        function updateInputBackground(inputBoxEl, bgImageEl, bgOverlayEl, cityLabelEl, dest) {
-            if (!dest) {
-                // Clear background
-                bgImageEl.classList.remove('active');
-                bgOverlayEl.classList.remove('active');
-                cityLabelEl.classList.remove('active');
-                inputBoxEl.classList.remove('has-bg');
+        const SEAWEED_OVERLAY_GRADIENT = 'linear-gradient(135deg, rgba(7, 36, 22, 0.76) 0%, rgba(11, 59, 36, 0.68) 50%, rgba(19, 78, 53, 0.62) 100%)';
+
+        function setLocationWrapperBackground(wrapper, label, dest) {
+            if (!wrapper) return;
+            if (!dest || !dest.imageUrl) {
+                wrapper.style.backgroundImage = 'none';
+                wrapper.style.backgroundColor = '#ffffff';
+                wrapper.classList.remove('has-bg');
+                if (label) {
+                    label.textContent = '';
+                    label.style.display = 'none';
+                }
                 return;
             }
 
-            bgImageEl.style.backgroundImage = `url('${dest.imageUrl}')`;
-            bgImageEl.classList.add('active');
-            bgOverlayEl.classList.add('active');
-            cityLabelEl.textContent = dest.name;
-            cityLabelEl.classList.add('active');
-            inputBoxEl.classList.add('has-bg');
+            // Apply dynamic background image with Seaweed Green gradient overlay
+            wrapper.style.backgroundImage = `${SEAWEED_OVERLAY_GRADIENT}, url('${dest.imageUrl}')`;
+            wrapper.style.backgroundSize = 'cover';
+            wrapper.style.backgroundPosition = 'center center';
+            wrapper.style.backgroundRepeat = 'no-repeat';
+            wrapper.classList.add('has-bg');
+
+            if (label) {
+                label.textContent = dest.name;
+                label.style.display = 'inline-block';
+            }
         }
 
-        // 2. Sync boarding pass + update destination input background
+        // Helper to match queries against catalog
+        function findMatchingDestination(query) {
+            if (!query) return null;
+            const cleaned = query.trim().toLowerCase();
+            if (!cleaned) return null;
+
+            for (const key in destinationsCatalog) {
+                if (key === cleaned || destinationsCatalog[key].name.toLowerCase() === cleaned) {
+                    return key;
+                }
+            }
+            // Partial match fallback
+            for (const key in destinationsCatalog) {
+                if (key.includes(cleaned) || cleaned.includes(key) || destinationsCatalog[key].name.toLowerCase().includes(cleaned)) {
+                    return key;
+                }
+            }
+            return null;
+        }
+
+        // 2. Sync boarding pass + update destination wrapper background
         function updateLocationTheme(key) {
             const dest = destinationsCatalog[key];
             if (!dest) return;
 
             currentDestKey = key;
 
-            // Update DESTINATION input background
-            updateInputBackground(destInputBox, destBgImage, destBgOverlay, destCityLabel, dest);
+            // Update DESTINATION wrapper background & bottom-right label
+            setLocationWrapperBackground(destWrapper, destCornerLabel, dest);
 
             // Update Hero Destination Indicator
             if (heroDestIndicatorName) {
@@ -3326,31 +3386,11 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             });
         }
 
-        // Helper to match queries against catalog
-        function findMatchingDestination(query) {
-            if (!query) return null;
-            const cleaned = query.trim().toLowerCase();
-            if (!cleaned) return null;
-
-            for (const key in destinationsCatalog) {
-                if (key === cleaned || destinationsCatalog[key].name.toLowerCase() === cleaned) {
-                    return key;
-                }
-            }
-            // Partial match fallback
-            for (const key in destinationsCatalog) {
-                if (key.includes(cleaned) || cleaned.includes(key) || destinationsCatalog[key].name.toLowerCase().includes(cleaned)) {
-                    return key;
-                }
-            }
-            return null;
-        }
-
-        // Update origin input background when a city is selected for origin
+        // Update origin wrapper background when a city is selected for origin
         function updateOriginBackground(cityName) {
             const matchKey = findMatchingDestination(cityName);
             const dest = matchKey ? destinationsCatalog[matchKey] : null;
-            updateInputBackground(originInputBox, originBgImage, originBgOverlay, originCityLabel, dest);
+            setLocationWrapperBackground(originWrapper, originCornerLabel, dest);
         }
 
         // 3. Listen for input changes in both fields
@@ -3359,7 +3399,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             if (match && match !== currentDestKey) {
                 updateLocationTheme(match);
             } else if (!e.target.value.trim()) {
-                updateInputBackground(destInputBox, destBgImage, destBgOverlay, destCityLabel, null);
+                setLocationWrapperBackground(destWrapper, destCornerLabel, null);
             }
         });
 
@@ -3370,7 +3410,12 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             }
         });
 
-        // Origin input changes — update origin inline background
+        locationInput.addEventListener('focus', function () {
+            if (destDropdown) destDropdown.classList.add('show');
+            if (gpsDropdown) gpsDropdown.classList.remove('show');
+        });
+
+        // Origin input changes — update origin wrapper background
         originInput.addEventListener('input', function (e) {
             updateOriginBackground(e.target.value);
         });
@@ -3379,38 +3424,44 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             updateOriginBackground(e.target.value);
         });
 
+        originInput.addEventListener('focus', function () {
+            if (gpsDropdown) gpsDropdown.classList.add('show');
+            if (destDropdown) destDropdown.classList.remove('show');
+        });
+
         // Quick chip click handler
         function selectDestination(name) {
             const key = name.toLowerCase();
             locationInput.value = name;
+            if (destDropdown) destDropdown.classList.remove('show');
             updateLocationTheme(key);
             showToast(`Selected destination: ${name}`);
         }
 
         // ============================================================
-        // GPS DROPDOWN for Starting Place
+        // GPS & DESTINATION DROPDOWNS
         // ============================================================
-        originInput.addEventListener('focus', function () {
-            gpsDropdown.classList.add('show');
-        });
-
-        // Close GPS dropdown when clicking outside
+        // Close dropdowns when clicking outside
         document.addEventListener('click', function (e) {
             const originGroup = originInput.closest('.search-field-group');
-            if (!originGroup.contains(e.target)) {
-                gpsDropdown.classList.remove('show');
+            if (originGroup && !originGroup.contains(e.target)) {
+                if (gpsDropdown) gpsDropdown.classList.remove('show');
+            }
+            const destGroup = locationInput.closest('.search-field-group');
+            if (destGroup && !destGroup.contains(e.target)) {
+                if (destDropdown) destDropdown.classList.remove('show');
             }
         });
 
         function selectOriginCity(city) {
             originInput.value = city;
-            gpsDropdown.classList.remove('show');
+            if (gpsDropdown) gpsDropdown.classList.remove('show');
             updateOriginBackground(city);
             showToast(`Starting place set: ${city}`);
         }
 
         function useGPSLocation() {
-            gpsDropdown.classList.remove('show');
+            if (gpsDropdown) gpsDropdown.classList.remove('show');
             if (navigator.geolocation) {
                 originInput.value = 'Locating...';
                 navigator.geolocation.getCurrentPosition(
@@ -3478,14 +3529,13 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             originInput.value = locationInput.value;
             locationInput.value = tempVal;
 
-            // Update both inline backgrounds
+            // Update both wrappers
             updateOriginBackground(originInput.value);
             const match = findMatchingDestination(locationInput.value);
             if (match) {
                 updateLocationTheme(match);
             } else {
-                // Clear dest background if not in catalog
-                updateInputBackground(destInputBox, destBgImage, destBgOverlay, destCityLabel, null);
+                setLocationWrapperBackground(destWrapper, destCornerLabel, null);
             }
 
             showToast(`Swapped: ${originInput.value} \u21C4 ${locationInput.value}`);

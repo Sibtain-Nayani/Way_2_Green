@@ -152,10 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Minimal Clean Header -->
     <header class="header-top">
-        <a href="index.php" class="brand">
-            <span class="brand-leaf">🌱</span>
-            <span>Way2Green</span>
-        </a>
+        <a href="index.php" class="brand"><img src="assets/img/logo.png" alt="Way2Green Logo" style="height: 32px; width: auto;"></a>
         <div style="display: flex; gap: 14px; align-items: center;">
             <a href="index.php" style="text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.92rem;">Home</a>
             <a href="register.php" class="btn-nature-primary" style="padding: 8px 18px; font-size: 0.88rem;">Create Account</a>
@@ -226,3 +223,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="js/effects.js"></script>
 </body>
 </html>
+

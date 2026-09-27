@@ -2307,9 +2307,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                     Select your low-emission corridor, pick verified wheelchair-accessible solar sanctuaries, and generate your instant verified eco-boarding pass.
                 </p>
 
-                <!-- THE COMPLEX SEARCH WIDGET (Direct Form Submission to hotels.php) -->
+                <!-- THE COMPLEX SEARCH WIDGET (Native GET Form Submission to eco-stays.php) -->
                 <div class="search-widget-wrapper">
-                    <form method="GET" action="hotels.php" id="heroSearchForm">
+                    <form action="eco-stays.php" method="GET" id="heroSearchForm">
                         <div class="search-widget-card">
                             <div class="search-fields-grid">
                                 

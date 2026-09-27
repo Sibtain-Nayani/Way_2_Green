@@ -912,7 +912,6 @@ try {
             </div>
         </div>
     </section>
-    <?php endif; ?>
 
     <!-- MISSION -->
     <section class="sec" style="background:var(--cream)">

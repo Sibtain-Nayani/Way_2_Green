@@ -126,9 +126,11 @@ if ($destId === 0 && !empty($allDests)) {
                     Chosen Route
                 </span>
                 <span class="route-cities">
-                    <?= htmlspecialchars($origin) ?> ➔ <span id="currentDestLabel"><?= htmlspecialchars($destName) ?></span>
+                    <span id="route-origin-text"><?= htmlspecialchars($origin) ?></span>
+                    <span style="margin: 0 6px; opacity: 0.7;">➔</span>
+                    <span id="currentDestLabel"><?= htmlspecialchars($destName) ?></span>
                 </span>
-                <span class="route-meta">
+                <span class="route-meta" id="route-meta-text">
                     • <?= strtoupper($mode) ?> (<?= $distance ?> km) • <strong><?= $co2Saved ?> kg CO₂ Avoided</strong>
                 </span>
             </div>
@@ -235,7 +237,7 @@ if ($destId === 0 && !empty($allDests)) {
     <script>
         let currentDestId = <?= $destId ?>;
         let currentFilter = 'all';
-        const originCity = "<?= htmlspecialchars($origin) ?>";
+        let originCity = "<?= htmlspecialchars($origin) ?>";   // may be overridden by localStorage
         const travelMode = "<?= htmlspecialchars($mode) ?>";
         const travelDistance = <?= $distance ?>;
         const carbonAvoided = <?= $co2Saved ?>;
@@ -347,6 +349,52 @@ if ($destId === 0 && !empty($allDests)) {
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            // ─── Read homepage handoff from localStorage ──────────────────
+            const savedOrigin = localStorage.getItem('w2g_origin') || 'New Delhi';
+            const savedDest   = localStorage.getItem('w2g_dest')   || 'Manali';
+
+            // Override the JS originCity variable so checkout URLs use it
+            originCity = savedOrigin;
+
+            // Update the route bar origin text
+            const routeOriginEl = document.getElementById('route-origin-text');
+            if (routeOriginEl) routeOriginEl.textContent = savedOrigin;
+
+            // Try to match savedDest to an existing <option> in the dropdown
+            const destSelect = document.getElementById('destinationFilterSelect');
+            if (destSelect && savedDest) {
+                const savedDestLower = savedDest.trim().toLowerCase();
+                let matchedId = null;
+
+                Array.from(destSelect.options).forEach(opt => {
+                    const optName = (opt.getAttribute('data-name') || opt.text).trim().toLowerCase();
+                    if (optName.includes(savedDestLower) || savedDestLower.includes(optName)) {
+                        matchedId = opt.value;
+                        opt.selected = true;
+                    }
+                });
+
+                if (matchedId) {
+                    currentDestId = parseInt(matchedId);
+                }
+
+                // Update the route-bar destination label
+                const destLabel = document.getElementById('currentDestLabel');
+                if (destLabel) {
+                    const selected = destSelect.selectedOptions[0];
+                    destLabel.textContent = selected
+                        ? (selected.getAttribute('data-name') || savedDest)
+                        : savedDest;
+                }
+            }
+
+            // Sync URL without reloading
+            const url = new URL(window.location);
+            url.searchParams.set('dest_id', currentDestId);
+            url.searchParams.set('origin',  savedOrigin);
+            window.history.replaceState({}, '', url);
+
+            // Load hotels for the matched destination
             loadStays();
         });
     </script>

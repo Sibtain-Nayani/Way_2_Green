@@ -3646,6 +3646,32 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             // Set initial New Delhi origin background
             updateOriginBackground('New Delhi');
         });
+
+        // ============================================================
+        // SEARCH HANDOFF: Save origin + destination to localStorage,
+        // then redirect to the Eco-Stays page (hotels.php).
+        // The eco-stays page can read these values with:
+        //   localStorage.getItem('w2g_origin')
+        //   localStorage.getItem('w2g_dest')
+        // ============================================================
+        document.getElementById('heroSearchForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Stop default form submission
+
+            const originValue = originInput.value.trim();
+            const destValue   = locationInput.value.trim();
+
+            // Persist selections for the eco-stays page
+            localStorage.setItem('w2g_origin', originValue);
+            localStorage.setItem('w2g_dest',   destValue);
+
+            // Also keep check-in / check-out and guest counts for hotel filters
+            if (checkInInput)  localStorage.setItem('w2g_checkin',  checkInInput.value);
+            if (checkOutInput) localStorage.setItem('w2g_checkout', checkOutInput.value);
+            localStorage.setItem('w2g_guests', JSON.stringify(guests));
+
+            // Navigate to eco-stays page
+            window.location.href = 'hotels.php';
+        });
     </script>
 </body>
 </html>

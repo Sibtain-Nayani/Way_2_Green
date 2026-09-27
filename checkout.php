@@ -117,18 +117,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Clean Header -->
     <header class="header-top">
-        <a href="index.php" class="brand">
-            <span class="brand-leaf">🌱</span>
-            <span>Way2Green</span>
-        </a>
+        <a href="index.php" class="brand"><img src="assets/img/logo.png" alt="Way2Green Logo" style="height: 32px; width: auto;"></a>
         <nav class="desktop-nav">
             <a href="index.php">Home</a>
-            <a href="travel.php">Plan Transit</a>
             <a href="hotels.php">Eco-Stays</a>
+            <a href="travel.php">Plan Transit</a>
             <a href="about.php">About Us</a>
-            <a href="my-trips.php" class="active">My Passports</a>
-            <a href="logout.php" style="color: #dc2626;">Sign Out</a>
-        </nav>
+            <a href="my-trips.php">My Passports</a>
+            <a href="logout.php" style="color: #dc2626;">Sign Out</a></nav>
         <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
             <span></span>
             <span></span>
@@ -372,3 +368,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </script>
 </body>
 </html>
+

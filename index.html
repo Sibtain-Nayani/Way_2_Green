@@ -1,147 +1,19 @@
-<?php
-// index.php - Way2Green: Smart Sustainable & Accessible Hospitality Platform
-require_once 'db.php';
-require_once 'user_auth.php';
-
-$user = get_logged_in_user();
-
-// Fetch curated destinations from database
-$featuredDests = [];
-try {
-    if (isset($pdo)) {
-        $stmt = $pdo->query("SELECT * FROM destinations ORDER BY id ASC");
-        $featuredDests = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-} catch (Exception $e) {
-    $featuredDests = [];
-}
-
-// Fetch verified eco-hotels with destination info from database
-$featuredHotels = [];
-try {
-    if (isset($pdo)) {
-        $stmtHotels = $pdo->query("
-            SELECT h.*, d.name AS destination_name 
-            FROM hotels h 
-            JOIN destinations d ON h.destination_id = d.id 
-            ORDER BY h.eco_rating DESC, h.id ASC 
-            LIMIT 6
-        ");
-        $featuredHotels = $stmtHotels->fetchAll(PDO::FETCH_ASSOC);
-    }
-} catch (Exception $e) {
-    $featuredHotels = [];
-}
-
-// Curated high-res scenic photos for fallback & destination headers
-$destImages = [
-    'Agra' => 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1920&q=80',
-    'Goa' => 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1920&q=80',
-    'Mumbai' => 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1920&q=80',
-    'Singapore' => 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80',
-    'Munnar' => 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80',
-    'Manali' => 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1920&q=80',
-    'South Goa' => 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1920&q=80',
-    'Rishikesh' => 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80',
-    'Ooty' => 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80'
-];
-
-// Rich fallback hotels in case the database is not yet seeded
-$fallbackHotels = [
-    [
-        'id' => 1,
-        'name' => 'The Solar Lotus Sanctuary',
-        'destination_name' => 'Agra, Uttar Pradesh',
-        'eco_rating' => 4.9,
-        'price_per_night' => 4200,
-        'water_saved_liters' => 145000,
-        'power_saved_kwh' => 28000,
-        'image_url' => 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
-        'description' => '100% solar microgrid, electric monument shuttles, zero single-use plastics, and step-free wheelchair gardens.',
-        'eco_badges' => '100% Solar Powered, Zero Plastic, Greywater Recycling',
-        'accessibility_tags' => 'Wheelchair Ramps, Roll-in Showers, Braille Markers'
-    ],
-    [
-        'id' => 2,
-        'name' => 'Palolem Dune Bio-Cabins',
-        'destination_name' => 'South Goa (Eco-Coast)',
-        'eco_rating' => 4.88,
-        'price_per_night' => 3800,
-        'water_saved_liters' => 110000,
-        'power_saved_kwh' => 22000,
-        'image_url' => 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80',
-        'description' => 'Reclaimed bamboo cottages supporting Olive Ridley turtle conservation, with beach wheelchair mats and solar showers.',
-        'eco_badges' => 'Solar Powered, Marine Reserve Partner, Zero Waste',
-        'accessibility_tags' => 'Beach Wheelchair, Step-free Boardwalk, Sensory Friendly'
-    ],
-    [
-        'id' => 3,
-        'name' => 'Misty Mountain Eco-Resort',
-        'destination_name' => 'Munnar, Kerala',
-        'eco_rating' => 4.95,
-        'price_per_night' => 4500,
-        'water_saved_liters' => 165000,
-        'power_saved_kwh' => 32000,
-        'image_url' => 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80',
-        'description' => 'Organic tea plantation retreat running on micro-hydro & solar energy. Features wheelchair accessible forest skywalk.',
-        'eco_badges' => '100% Renewable, Rainwater Catchment, Organic Farm',
-        'accessibility_tags' => 'Skywalk Ramps, Visual Alerts, Wide Doorways'
-    ],
-    [
-        'id' => 4,
-        'name' => 'The Urban Mangrove Retreat',
-        'destination_name' => 'Mumbai, Maharashtra',
-        'eco_rating' => 4.82,
-        'price_per_night' => 5200,
-        'water_saved_liters' => 125000,
-        'power_saved_kwh' => 26000,
-        'image_url' => 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80',
-        'description' => 'LEED Platinum certified property with vertical botanical gardens, universal accessibility elevators, and metro connections.',
-        'eco_badges' => 'LEED Platinum, 100% Greywater, EV Charging Hub',
-        'accessibility_tags' => 'Braille Signs, Auditory Cues, Level Access'
-    ],
-    [
-        'id' => 5,
-        'name' => 'Solang Himalayan Bio-Lodge',
-        'destination_name' => 'Manali, Himachal Pradesh',
-        'eco_rating' => 4.86,
-        'price_per_night' => 4100,
-        'water_saved_liters' => 98000,
-        'power_saved_kwh' => 21000,
-        'image_url' => 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
-        'description' => 'Passive solar-heated alpine timber lodge with triple-glazed windows and zero-food-waste community composting.',
-        'eco_badges' => 'Passive Solar, Composting Hub, Native Timber',
-        'accessibility_tags' => 'Wheelchair Ramps, Ground Floor Suites, Grab Bars'
-    ],
-    [
-        'id' => 6,
-        'name' => 'Marina Biophilic Sanctuary',
-        'destination_name' => 'Singapore Garden City',
-        'eco_rating' => 4.98,
-        'price_per_night' => 12500,
-        'water_saved_liters' => 280000,
-        'power_saved_kwh' => 74000,
-        'image_url' => 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=80',
-        'description' => 'World-class biophilic towers with universal access, smart rainwater cooling, zero plastics, and verified net-zero operations.',
-        'eco_badges' => 'Net-Zero Carbon, Rainwater Cooling, Zero Plastic',
-        'accessibility_tags' => 'Full Universal Access, Smart Elevators, Tactile Guides'
-    ]
-];
-
-$displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
-?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Way2Green — Travel Light. Leave Only Footprints.</title>
-    <meta name="description" content="A conscious travel platform combining low-carbon transit planning, verified barrier-free eco-lodges, dynamic vertical boarding passes, and official green passports.">
-    
+    <title>Way2Green — Sustainable & Accessible Travel Platform</title>
+    <meta name="description"
+        content="Way2Green: Smart sustainable travel booking, barrier-free hospitality, vertical eco boarding pass, and carbon offset passports.">
+
     <!-- Google Fonts: Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
 
     <style>
         /* ==========================================================================
@@ -172,7 +44,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             --text-on-seaweed: #F0F8FF;
             --text-on-alice: #072416;
             --text-muted: #4d6d5d;
-            --text-light-subtle: rgba(240, 248, 255, 0.82);
+            --text-light-subtle: rgba(240, 248, 255, 0.78);
 
             /* Elevation & Shadows */
             --shadow-sm: 0 4px 14px rgba(7, 36, 22, 0.08);
@@ -192,7 +64,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* Global Reset */
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -209,13 +83,6 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             line-height: 1.6;
             overflow-x: hidden;
             position: relative;
-            padding-bottom: 74px; /* Mobile bottom dock clearance */
-        }
-
-        @media (min-width: 900px) {
-            body {
-                padding-bottom: 0;
-            }
         }
 
         a {
@@ -224,7 +91,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             transition: var(--transition);
         }
 
-        button, input, select {
+        button,
+        input,
+        select {
             font-family: inherit;
         }
 
@@ -254,17 +123,17 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* ==========================================================================
-           TOP NAVIGATION BAR (CONNECTED ACROSS WEBSITE)
+           TOP NAVIGATION BAR
            ========================================================================== */
         .site-header {
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(240, 248, 255, 0.90);
+            background: rgba(240, 248, 255, 0.88);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--alice-blue-border);
-            padding: 0.85rem 2rem;
+            padding: 0.9rem 2rem;
             transition: var(--transition);
         }
 
@@ -300,23 +169,24 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             box-shadow: 0 4px 12px rgba(11, 59, 36, 0.25);
         }
 
-        .desktop-nav {
+        .nav-menu {
             display: flex;
             align-items: center;
-            gap: 1.6rem;
+            gap: 2rem;
             list-style: none;
         }
 
         .nav-link {
-            font-size: 0.94rem;
-            font-weight: 700;
+            font-size: 0.95rem;
+            font-weight: 600;
             color: var(--seaweed-mid);
-            padding: 6px 14px;
+            padding: 6px 12px;
             border-radius: var(--radius-sm);
             transition: var(--transition);
         }
 
-        .nav-link:hover, .nav-link.active {
+        .nav-link:hover,
+        .nav-link.active {
             color: var(--seaweed-primary);
             background: var(--alice-blue-dark);
         }
@@ -351,11 +221,20 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.45; transform: scale(0.85); }
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.45;
+                transform: scale(0.85);
+            }
         }
 
-        .btn-nav-primary {
+        .btn-nav-action {
             background: linear-gradient(135deg, var(--seaweed-primary), var(--seaweed-light));
             color: var(--alice-blue);
             padding: 8px 18px;
@@ -366,100 +245,11 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             cursor: pointer;
             box-shadow: 0 4px 14px rgba(11, 59, 36, 0.25);
             transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
         }
 
-        .btn-nav-primary:hover {
+        .btn-nav-action:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(11, 59, 36, 0.35);
-            color: #ffffff;
-        }
-
-        .btn-hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-        }
-
-        .btn-hamburger span {
-            display: block;
-            width: 24px;
-            height: 2.5px;
-            background-color: var(--seaweed-primary);
-            border-radius: 2px;
-            transition: var(--transition);
-        }
-
-        /* Mobile Off-Canvas Drawer */
-        .drawer-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(4, 22, 13, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .drawer-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .mobile-drawer {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 300px;
-            max-width: 85%;
-            background: var(--alice-blue);
-            border-left: 2px solid var(--alice-blue-deep);
-            padding: 2rem 1.5rem;
-            z-index: 201;
-            transform: translateX(100%);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.15);
-        }
-
-        .mobile-drawer.open {
-            transform: translateX(0);
-        }
-
-        .drawer-close {
-            align-self: flex-end;
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            color: var(--seaweed-primary);
-            cursor: pointer;
-            margin-bottom: 1rem;
-        }
-
-        .drawer-link {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--seaweed-mid);
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .drawer-link:hover, .drawer-link.active {
-            color: var(--seaweed-primary);
-            background: var(--alice-blue-dark);
         }
 
         /* ==========================================================================
@@ -468,7 +258,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
            ========================================================================== */
         .hero-section {
             position: relative;
-            min-height: 94vh;
+            min-height: 92vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -495,23 +285,23 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         .hero-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(7, 36, 22, 0.92) 0%,
-                rgba(11, 59, 36, 0.85) 45%,
-                rgba(19, 78, 53, 0.76) 75%,
-                rgba(240, 248, 255, 0.32) 100%
-            );
+            /* Precise blending of Seaweed Green and Alice Blue */
+            background: linear-gradient(135deg,
+                    rgba(7, 36, 22, 0.92) 0%,
+                    rgba(11, 59, 36, 0.85) 45%,
+                    rgba(19, 78, 53, 0.76) 75%,
+                    rgba(240, 248, 255, 0.32) 100%);
             backdrop-filter: blur(1.5px);
             -webkit-backdrop-filter: blur(1.5px);
             z-index: 2;
         }
 
+        /* Secondary subtle ambient glow layer */
         .hero-ambient-mesh {
             position: absolute;
             inset: 0;
             background: radial-gradient(circle at 80% 25%, rgba(52, 211, 153, 0.18) 0%, transparent 50%),
-                        radial-gradient(circle at 20% 85%, rgba(240, 248, 255, 0.15) 0%, transparent 45%);
+                radial-gradient(circle at 20% 85%, rgba(240, 248, 255, 0.15) 0%, transparent 45%);
             mix-blend-mode: overlay;
             z-index: 3;
             pointer-events: none;
@@ -596,19 +386,23 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* ==========================================================================
-           THE COMPLEX SEARCH WIDGET (SUBMITS TO hotels.php)
+           THE COMPLEX SEARCH WIDGET
+           Features: Location, Check-in/out, Guests dropdown, Filters, and
+           Large Overlapping "SEARCH" Button
            ========================================================================== */
         .search-widget-wrapper {
             position: relative;
             margin-top: 1rem;
-            padding-bottom: 0;
+            padding-bottom: 24px;
+            /* Space for overlapping button */
         }
 
         .search-widget-card {
             background: var(--alice-blue-card);
             border: 2px solid rgba(240, 248, 255, 0.9);
             border-radius: var(--radius-lg);
-            padding: 1.8rem;
+            padding: 1.8rem 1.8rem 2.8rem;
+            /* Extra bottom padding for button overlap */
             box-shadow: 0 20px 45px -8px rgba(4, 22, 13, 0.35), 0 0 20px rgba(34, 197, 94, 0.12);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
@@ -681,7 +475,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             font-weight: 500;
         }
 
-        /* Quick Destination Chips */
+        /* Quick Destination Chips for Fast Selection */
         .quick-destinations-row {
             margin-top: 0.9rem;
             display: flex;
@@ -714,14 +508,15 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             gap: 4px;
         }
 
-        .dest-chip:hover, .dest-chip.active {
+        .dest-chip:hover,
+        .dest-chip.active {
             background: var(--seaweed-primary);
             color: var(--alice-blue);
             border-color: var(--seaweed-primary);
             transform: translateY(-1px);
         }
 
-        /* Guest Selector Dropdown */
+        /* Custom Interactive Guest Selector Dropdown */
         .guest-dropdown-menu {
             position: absolute;
             top: calc(100% + 8px);
@@ -744,8 +539,15 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         @keyframes fadeInMenu {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .guest-counter-row {
@@ -805,7 +607,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             text-align: center;
         }
 
-        /* Amenities & Accessibility Toggles */
+        /* Accessibility & Eco Toggles Bar */
         .search-amenities-row {
             display: flex;
             align-items: center;
@@ -843,63 +645,16 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* ==========================================================================
-           BUTTON AREA: VERTICAL STACK (NO OVERLAP, SPACIOUS BREATHING ROOM)
+           LARGE OVERLAPPING "SEARCH" BUTTON
+           Crucial Requirement: Overlaps the search card boundary with commanding elevation
            ========================================================================== */
-        .search-actions-group {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-            justify-content: center;
-            margin-top: 1.6rem;
-            width: 100%;
-            position: relative;
-            z-index: 15;
-        }
-
-        .search-secondary-action {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin: 0;
-            text-align: center;
-        }
-
-        .link-transit-calc {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: var(--alice-blue);
-            font-size: 0.92rem;
-            font-weight: 700;
-            background: rgba(11, 59, 36, 0.55);
-            border: 1.5px solid rgba(240, 248, 255, 0.35);
-            padding: 9px 22px;
-            border-radius: var(--radius-full);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: var(--transition);
-            text-align: center;
-            max-width: 100%;
-            box-shadow: 0 4px 14px rgba(7, 36, 22, 0.2);
-        }
-
-        .link-transit-calc:hover {
-            background: var(--seaweed-primary);
-            border-color: var(--seaweed-accent);
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(11, 59, 36, 0.35);
-        }
-
         .search-btn-container {
-            position: static;
-            transform: none;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin: 0;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            z-index: 15;
+            width: auto;
         }
 
         .btn-search-large {
@@ -923,7 +678,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         .btn-search-large:hover {
-            transform: scale(1.03) translateY(-2px);
+            transform: scale(1.04) translateY(-3px);
             background: linear-gradient(135deg, var(--seaweed-light) 0%, var(--seaweed-primary) 100%);
             box-shadow: 0 20px 40px rgba(7, 36, 22, 0.45), 0 0 30px rgba(34, 197, 94, 0.5);
             color: #ffffff;
@@ -953,6 +708,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 
         /* ==========================================================================
            ECO-FRIENDLY VERTICAL BOARDING PASS DESIGN
+           Features: Perforated tear notches, flight/train route, seat, barcode,
+           verification stamp, and live synchronization with destination input!
            ========================================================================== */
         .hero-right {
             display: flex;
@@ -978,6 +735,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             transform: translateY(-6px) rotate(0.5deg);
         }
 
+        /* Pass Header - Dark Seaweed Top Bar */
         .pass-header {
             background: linear-gradient(135deg, var(--seaweed-dark) 0%, var(--seaweed-primary) 100%);
             color: var(--alice-blue);
@@ -1011,11 +769,13 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             letter-spacing: 0.05em;
         }
 
+        /* Pass Body Content */
         .pass-main-body {
             padding: 1.5rem 1.8rem;
             background: #ffffff;
         }
 
+        /* Transit Departure -> Destination Large Display */
         .pass-route-block {
             display: flex;
             align-items: center;
@@ -1082,6 +842,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             padding: 0 4px;
         }
 
+        /* Pass Metadata Grid */
         .pass-details-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -1114,6 +875,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             letter-spacing: -0.02em;
         }
 
+        /* Verified Carbon Footprint Strip */
         .pass-carbon-strip {
             margin-top: 1.3rem;
             background: rgba(240, 248, 255, 0.85);
@@ -1158,15 +920,18 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             border-top: 2px dashed rgba(11, 59, 36, 0.24);
         }
 
-        .notch-left, .notch-right {
+        /* Left and Right Ticket Hole Notches */
+        .notch-left,
+        .notch-right {
             position: absolute;
             top: 50%;
             width: 26px;
             height: 26px;
             background: var(--seaweed-dark);
+            /* Blends into hero dark background */
             border-radius: 50%;
             transform: translateY(-50%);
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
             z-index: 10;
         }
 
@@ -1231,6 +996,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             font-family: var(--font-mono);
         }
 
+        /* Barcode & QR Display */
         .pass-barcode-container {
             display: flex;
             align-items: center;
@@ -1277,115 +1043,13 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             letter-spacing: 0.1em;
         }
 
-        .btn-stub-passport {
-            background: var(--seaweed-primary);
-            color: var(--alice-blue);
-            text-align: center;
-            font-size: 0.82rem;
-            font-weight: 700;
-            padding: 8px 14px;
-            border-radius: var(--radius-full);
-            display: block;
-            transition: var(--transition);
-        }
-
-        .btn-stub-passport:hover {
-            background: var(--seaweed-light);
-            color: #ffffff;
-        }
-
         /* ==========================================================================
-           SECTION: 3-STEP JOURNEY ROADMAP (CONNECTED FLOW)
-           ========================================================================== */
-        .roadmap-section {
-            max-width: 1320px;
-            margin: -2.5rem auto 3rem;
-            padding: 0 1.5rem;
-            position: relative;
-            z-index: 20;
-        }
-
-        .roadmap-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-            gap: 1.6rem;
-        }
-
-        .roadmap-card {
-            background: #ffffff;
-            border: 1.5px solid var(--alice-blue-deep);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: var(--transition);
-        }
-
-        .roadmap-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--seaweed-accent);
-        }
-
-        .roadmap-badge {
-            font-size: 0.76rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--seaweed-light);
-            background: var(--alice-blue);
-            padding: 4px 10px;
-            border-radius: var(--radius-full);
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .roadmap-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
-
-        .roadmap-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--seaweed-dark);
-            margin-bottom: 8px;
-        }
-
-        .roadmap-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.55;
-            margin-bottom: 1.4rem;
-        }
-
-        .roadmap-btn {
-            background: var(--alice-blue);
-            color: var(--seaweed-primary);
-            border: 1px solid var(--alice-blue-deep);
-            padding: 10px 16px;
-            border-radius: var(--radius-full);
-            font-size: 0.88rem;
-            font-weight: 700;
-            text-align: center;
-            display: inline-block;
-            transition: var(--transition);
-        }
-
-        .roadmap-btn:hover {
-            background: var(--seaweed-primary);
-            color: var(--alice-blue);
-            border-color: var(--seaweed-primary);
-        }
-
-        /* ==========================================================================
-           SECTION 2: POPULAR GREEN CORRIDORS & FEATURED ECO-STAYS
+           SECTION 2: POPULAR GREEN CORRIDORS & SEARCH RESULTS PREVIEW
            ========================================================================== */
         .section-container {
             max-width: 1320px;
             margin: 0 auto;
-            padding: 3.5rem 1.5rem 5rem;
+            padding: 5rem 1.5rem;
         }
 
         .section-header-row {
@@ -1424,6 +1088,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             margin-top: 6px;
         }
 
+        /* Curated Stays Grid */
         .stays-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -1524,19 +1189,6 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             flex-grow: 1;
         }
 
-        .stay-metrics-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--seaweed-mid);
-            background: var(--alice-blue);
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 1rem;
-        }
-
         .stay-tags-row {
             display: flex;
             align-items: center;
@@ -1561,7 +1213,6 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             justify-content: space-between;
             padding-top: 1.1rem;
             border-top: 1px solid var(--alice-blue-dark);
-            gap: 8px;
         }
 
         .stay-price-box {
@@ -1581,46 +1232,21 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             color: var(--seaweed-primary);
         }
 
-        .stay-action-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         .btn-view-stay {
             background: var(--seaweed-primary);
             color: var(--alice-blue);
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: var(--radius-full);
             font-size: 0.85rem;
             font-weight: 700;
             border: none;
             cursor: pointer;
             transition: var(--transition);
-            display: inline-block;
         }
 
         .btn-view-stay:hover {
             background: var(--seaweed-light);
-            color: #ffffff;
             transform: translateY(-2px);
-        }
-
-        .btn-plan-transit {
-            background: var(--alice-blue);
-            color: var(--seaweed-primary);
-            border: 1px solid var(--alice-blue-deep);
-            padding: 7px 12px;
-            border-radius: var(--radius-full);
-            font-size: 0.8rem;
-            font-weight: 700;
-            display: inline-block;
-            transition: var(--transition);
-        }
-
-        .btn-plan-transit:hover {
-            background: var(--alice-blue-dark);
-            border-color: var(--seaweed-primary);
         }
 
         /* ==========================================================================
@@ -1678,80 +1304,17 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             line-height: 1.5;
         }
 
-        /* CTA Section */
-        .cta-box {
-            background: linear-gradient(135deg, var(--seaweed-mid) 0%, var(--seaweed-primary) 100%);
-            color: #ffffff;
-            border-radius: var(--radius-lg);
-            padding: 3.5rem 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            margin-top: 3.5rem;
-        }
-
-        .cta-title {
-            font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            color: #ffffff;
-        }
-
-        .cta-desc {
-            max-width: 600px;
-            margin: 0 auto 2.2rem;
-            font-size: 1.05rem;
-            color: rgba(240, 248, 255, 0.9);
-            line-height: 1.6;
-        }
-
-        .cta-actions {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-cta-white {
-            background: #ffffff;
-            color: var(--seaweed-dark);
-            font-weight: 800;
-            padding: 12px 28px;
-            border-radius: var(--radius-full);
-            transition: var(--transition);
-        }
-
-        .btn-cta-white:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-            background: var(--alice-blue);
-        }
-
-        .btn-cta-outline {
-            border: 2px solid rgba(240, 248, 255, 0.8);
-            color: #ffffff;
-            font-weight: 700;
-            padding: 10px 24px;
-            border-radius: var(--radius-full);
-            transition: var(--transition);
-        }
-
-        .btn-cta-outline:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #ffffff;
-        }
-
         /* Toast Notifications */
         .toast-notification {
             position: fixed;
-            bottom: 84px;
-            right: 24px;
+            bottom: 28px;
+            right: 28px;
             background: var(--seaweed-dark);
             color: var(--alice-blue);
             padding: 14px 22px;
             border-radius: var(--radius-md);
             border: 1px solid var(--seaweed-accent);
-            box-shadow: 0 16px 36px rgba(0,0,0,0.3);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -1770,11 +1333,11 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             pointer-events: auto;
         }
 
-        /* Site Footer */
+        /* Footer */
         .site-footer {
             background: var(--seaweed-deepest);
             color: var(--alice-blue);
-            padding: 4.5rem 1.5rem 2.5rem;
+            padding: 4rem 1.5rem 2.5rem;
             border-top: 1px solid rgba(240, 248, 255, 0.1);
         }
 
@@ -1845,52 +1408,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             gap: 1rem;
         }
 
-        /* Mobile Bottom Fixed Dock */
-        .mobile-bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 64px;
-            background: rgba(240, 248, 255, 0.95);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-top: 1px solid var(--alice-blue-deep);
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            z-index: 90;
-            box-shadow: 0 -4px 16px rgba(4, 22, 13, 0.08);
-        }
-
-        .mobile-nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-            color: var(--seaweed-mid);
-            font-size: 0.72rem;
-            font-weight: 700;
-        }
-
-        .mobile-nav-item .icon {
-            font-size: 1.25rem;
-        }
-
-        .mobile-nav-item.active, .mobile-nav-item:hover {
-            color: var(--seaweed-primary);
-        }
-
-        @media (min-width: 900px) {
-            .mobile-bottom-bar {
-                display: none;
-            }
-            .toast-notification {
-                bottom: 28px;
-            }
-        }
-
-        /* Responsive Breakpoints */
+        /* ==========================================================================
+           RESPONSIVE DESIGN BREAKPOINTS
+           ========================================================================== */
         @media (max-width: 1100px) {
             .hero-container {
                 grid-template-columns: 1fr;
@@ -1914,16 +1434,11 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             }
         }
 
-        @media (max-width: 899px) {
-            .desktop-nav {
+        @media (max-width: 768px) {
+            .nav-menu {
                 display: none;
             }
-            .btn-hamburger {
-                display: flex;
-            }
-        }
 
-        @media (max-width: 768px) {
             .hero-section {
                 padding: 3rem 1rem 5.5rem;
             }
@@ -1932,22 +1447,14 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 grid-template-columns: 1fr;
             }
 
-            .search-actions-group {
-                gap: 16px;
-                margin-top: 1.3rem;
-            }
-
-            .link-transit-calc {
-                font-size: 0.82rem;
-                padding: 8px 14px;
-                width: 100%;
-            }
-
             .btn-search-large {
-                width: 100%;
-                padding: 1rem 1.4rem;
-                font-size: 0.98rem;
-                white-space: normal;
+                width: 90%;
+                padding: 1rem 1.8rem;
+                font-size: 1rem;
+            }
+
+            .pass-route-block {
+                flex-direction: row;
             }
 
             .footer-inner {
@@ -1956,64 +1463,33 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
     </style>
 </head>
+
 <body>
 
-    <!-- Ambient Glowing Backdrop -->
+    <!-- Ambient Ambient Glowing Backdrop -->
     <div class="ambient-glow-1"></div>
     <div class="ambient-glow-2"></div>
-
-    <!-- Mobile Drawer Overlay -->
-    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
-
-    <!-- Off-Canvas Mobile Drawer -->
-    <div class="mobile-drawer" id="mobileDrawer">
-        <button class="drawer-close" onclick="toggleDrawer()">✕</button>
-        <div style="font-weight: 800; font-size: 1.3rem; color: var(--seaweed-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.4rem;">🌱</span> Way2Green
-        </div>
-        <a href="index.php" class="drawer-link active">🏡 Home</a>
-        <a href="travel.php" class="drawer-link">🚆 Plan Transit</a>
-        <a href="hotels.php" class="drawer-link">🏨 Eco-Stays</a>
-        <a href="about.php" class="drawer-link">🌿 Our Mission</a>
-        <?php if ($user): ?>
-            <a href="my-trips.php" class="drawer-link">📜 My Passports</a>
-            <a href="logout.php" class="drawer-link" style="color: #dc2626;">🚪 Sign Out (<?= htmlspecialchars($user['name']) ?>)</a>
-        <?php else: ?>
-            <a href="login.php" class="drawer-link">👤 Traveler Sign In</a>
-            <a href="register.php" class="drawer-link" style="color: var(--seaweed-light);">✨ Create Account</a>
-        <?php endif; ?>
-        <hr style="border: none; border-top: 1px solid var(--alice-blue-deep); margin: 0.5rem 0;">
-        <a href="admin/login.php" class="drawer-link" style="font-size: 0.9rem; color: var(--text-muted);">🔒 Admin Portal</a>
-    </div>
 
     <!-- Navigation Header -->
     <header class="site-header">
         <div class="nav-inner">
-            <a href="index.php" class="brand-logo">
+            <a href="#" class="brand-logo">
                 <div class="brand-icon-box">🌱</div>
                 <span>Way_2_Green</span>
             </a>
 
-            <!-- Desktop Nav Menu Connecting Whole Website -->
-            <nav class="desktop-nav">
-            <a href="index.php" class="active">Home</a>
-            <a href="hotels.php">Eco-Stays</a>
-            <a href="travel.php">Plan Transit</a>
-            <a href="about.php">About Us</a>
-            <a href="my-trips.php">My Passports</a>
-            <a href="logout.php" style="color: #dc2626;">Sign Out</a></nav>
+            <ul class="nav-menu">
+                <li><a href="#heroSection" class="nav-link active">Boarding Pass</a></li>
+                <li><a href="#staysSection" class="nav-link">Eco-Stays</a></li>
+                <li><a href="#impactSection" class="nav-link">Zero Impact Metrics</a></li>
+            </ul>
 
             <div class="header-actions">
                 <div class="eco-status-pill">
                     <span class="status-dot"></span>
-                    <span><?= $user ? 'Logged in: ' . htmlspecialchars($user['name']) : '100% Carbon Verified' ?></span>
+                    <span>100% Carbon Verified</span>
                 </div>
-                <!-- Mobile Hamburger Button -->
-                <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
+                <button class="btn-nav-action" onclick="scrollToSearch()">Book Journey</button>
             </div>
         </div>
     </header>
@@ -2033,7 +1509,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 <div class="hero-badge-row">
                     <span class="badge-eco-pill">🌍 Sustainable & Barrier-Free Hospitality</span>
                     <span class="badge-destination-indicator" id="heroDestIndicator">
-                        📍 Viewing: <strong id="heroDestIndicatorName" style="margin-left: 4px;">Agra • Taj Mahal Corridor</strong>
+                        📍 Viewing: <strong id="heroDestIndicatorName" style="margin-left: 4px;">Agra • Taj Mahal
+                            Corridor</strong>
                     </span>
                 </div>
 
@@ -2043,165 +1520,154 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 </h1>
 
                 <p class="hero-subtitle">
-                    Select your low-emission corridor, pick verified wheelchair-accessible solar sanctuaries, and generate your instant verified eco-boarding pass.
+                    Select your low-emission corridor, pick verified wheelchair-accessible solar sanctuaries, and
+                    generate your instant verified eco-boarding pass.
                 </p>
 
-                <!-- THE COMPLEX SEARCH WIDGET (Direct Form Submission to hotels.php) -->
+                <!-- THE COMPLEX SEARCH WIDGET -->
                 <div class="search-widget-wrapper">
-                    <form method="GET" action="hotels.php" id="heroSearchForm">
-                        <div class="search-widget-card">
-                            <div class="search-fields-grid">
-                                
-                                <!-- Field 1: Destination / Location (Monitored by JS) -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="locationInput">
-                                        <span>📍</span> Destination
-                                    </label>
-                                    <div class="field-input-box">
-                                        <span class="field-icon">🗺️</span>
-                                        <input 
-                                            type="text" 
-                                            name="dest" 
-                                            id="locationInput" 
-                                            placeholder="Agra, Goa, Mumbai, Singapore, Munnar..." 
-                                            value="Agra"
-                                            autocomplete="off"
-                                            required
-                                        >
-                                    </div>
-                                </div>
+                    <div class="search-widget-card">
+                        <div class="search-fields-grid">
 
-                                <!-- Field 2: Check-in Date -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="checkInInput">
-                                        <span>📅</span> Check-In
-                                    </label>
-                                    <div class="field-input-box">
-                                        <input type="date" name="check_in" id="checkInInput">
-                                    </div>
-                                </div>
-
-                                <!-- Field 3: Check-out Date -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="checkOutInput">
-                                        <span>📅</span> Check-Out
-                                    </label>
-                                    <div class="field-input-box">
-                                        <input type="date" name="check_out" id="checkOutInput">
-                                    </div>
-                                </div>
-
-                                <!-- Field 4: Guests & Rooms Selector -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="guestTriggerBtn">
-                                        <span>👥</span> Guests & Rooms
-                                    </label>
-                                    <div class="field-input-box" id="guestTriggerBtn" style="cursor: pointer;">
-                                        <span class="field-icon">🧳</span>
-                                        <input 
-                                            type="text" 
-                                            id="guestSummaryInput" 
-                                            value="2 Adults, 1 Room" 
-                                            readonly 
-                                            style="cursor: pointer;"
-                                        >
-                                        <input type="hidden" name="guests" id="guestsHiddenInput" value="2">
-                                    </div>
-
-                                    <!-- Interactive Guest Counter Popover -->
-                                    <div class="guest-dropdown-menu" id="guestDropdownMenu">
-                                        <div class="guest-counter-row">
-                                            <div class="counter-info">
-                                                <h4>Adults</h4>
-                                                <p>Ages 13 and above</p>
-                                            </div>
-                                            <div class="counter-controls">
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('adults', -1)">−</button>
-                                                <span class="counter-val" id="valAdults">2</span>
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('adults', 1)">+</button>
-                                            </div>
-                                        </div>
-                                        <div class="guest-counter-row">
-                                            <div class="counter-info">
-                                                <h4>Children</h4>
-                                                <p>Ages 0 to 12</p>
-                                            </div>
-                                            <div class="counter-controls">
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('children', -1)" id="btnMinusChildren" disabled>−</button>
-                                                <span class="counter-val" id="valChildren">0</span>
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('children', 1)">+</button>
-                                            </div>
-                                        </div>
-                                        <div class="guest-counter-row">
-                                            <div class="counter-info">
-                                                <h4>Rooms</h4>
-                                                <p>Eco-certified units</p>
-                                            </div>
-                                            <div class="counter-controls">
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('rooms', -1)" id="btnMinusRooms" disabled>−</button>
-                                                <span class="counter-val" id="valRooms">1</span>
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('rooms', 1)">+</button>
-                                            </div>
-                                        </div>
-                                        <button class="btn-nav-primary" type="button" style="width: 100%; margin-top: 6px; justify-content: center;" onclick="closeGuestDropdown()">
-                                            Done
-                                        </button>
-                                    </div>
+                            <!-- Field 1: Destination / Location (Monitored by JS) -->
+                            <div class="search-field-group">
+                                <label class="field-label" for="locationInput">
+                                    <span>📍</span> Destination
+                                </label>
+                                <div class="field-input-box">
+                                    <span class="field-icon">🗺️</span>
+                                    <input type="text" id="locationInput" placeholder="Agra, Goa, Mumbai, Singapore..."
+                                        value="Agra" autocomplete="off">
                                 </div>
                             </div>
 
-                            <!-- Quick Popular Destination Filter Chips -->
-                            <div class="quick-destinations-row">
-                                <span class="quick-dest-label">Popular Corridors:</span>
-                                <button class="dest-chip active" type="button" onclick="selectDestination('Agra')">🕌 Agra</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Goa')">🏖️ Goa</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Mumbai')">🏛️ Mumbai</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Singapore')">🏙️ Singapore</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Munnar')">🌿 Munnar</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Manali')">🏔️ Manali</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Kyoto')">🎋 Kyoto</button>
+                            <!-- Field 2: Check-in Date -->
+                            <div class="search-field-group">
+                                <label class="field-label" for="checkInInput">
+                                    <span>📅</span> Check-In
+                                </label>
+                                <div class="field-input-box">
+                                    <input type="date" id="checkInInput">
+                                </div>
                             </div>
 
-                            <!-- Amenities & Accessibility Toggles -->
-                            <div class="search-amenities-row">
-                                <div class="eco-filters-group">
-                                    <label class="checkbox-pill">
-                                        <input type="checkbox" name="accessible" value="1" id="checkWheelchair" checked>
-                                        <span>♿ Wheelchair Accessible</span>
-                                    </label>
-                                    <label class="checkbox-pill">
-                                        <input type="checkbox" name="solar" value="1" id="checkSolar" checked>
-                                        <span>☀️ 100% Solar Powered</span>
-                                    </label>
-                                    <label class="checkbox-pill">
-                                        <input type="checkbox" name="zero_plastic" value="1" id="checkPlasticFree" checked>
-                                        <span>🌱 Zero Single-Use Plastics</span>
-                                    </label>
+                            <!-- Field 3: Check-out Date -->
+                            <div class="search-field-group">
+                                <label class="field-label" for="checkOutInput">
+                                    <span>📅</span> Check-Out
+                                </label>
+                                <div class="field-input-box">
+                                    <input type="date" id="checkOutInput">
                                 </div>
-                                <span style="font-size: 0.78rem; font-weight: 700; color: var(--seaweed-mid);">
-                                    ⚡ Connected to Official Transit & Stays Engine
-                                </span>
+                            </div>
+
+                            <!-- Field 4: Guests & Rooms Selector -->
+                            <div class="search-field-group">
+                                <label class="field-label" for="guestTriggerBtn">
+                                    <span>👥</span> Guests & Rooms
+                                </label>
+                                <div class="field-input-box" id="guestTriggerBtn" style="cursor: pointer;">
+                                    <span class="field-icon">🧳</span>
+                                    <input type="text" id="guestSummaryInput" value="2 Adults, 1 Room" readonly
+                                        style="cursor: pointer;">
+                                </div>
+
+                                <!-- Interactive Guest Counter Popover -->
+                                <div class="guest-dropdown-menu" id="guestDropdownMenu">
+                                    <div class="guest-counter-row">
+                                        <div class="counter-info">
+                                            <h4>Adults</h4>
+                                            <p>Ages 13 and above</p>
+                                        </div>
+                                        <div class="counter-controls">
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('adults', -1)">−</button>
+                                            <span class="counter-val" id="valAdults">2</span>
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('adults', 1)">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="guest-counter-row">
+                                        <div class="counter-info">
+                                            <h4>Children</h4>
+                                            <p>Ages 0 to 12</p>
+                                        </div>
+                                        <div class="counter-controls">
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('children', -1)" id="btnMinusChildren"
+                                                disabled>−</button>
+                                            <span class="counter-val" id="valChildren">0</span>
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('children', 1)">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="guest-counter-row">
+                                        <div class="counter-info">
+                                            <h4>Rooms</h4>
+                                            <p>Eco-certified units</p>
+                                        </div>
+                                        <div class="counter-controls">
+                                            <button class="btn-counter" type="button" onclick="adjustGuest('rooms', -1)"
+                                                id="btnMinusRooms" disabled>−</button>
+                                            <span class="counter-val" id="valRooms">1</span>
+                                            <button class="btn-counter" type="button"
+                                                onclick="adjustGuest('rooms', 1)">+</button>
+                                        </div>
+                                    </div>
+                                    <button class="btn-nav-action" type="button" style="width: 100%; margin-top: 6px;"
+                                        onclick="closeGuestDropdown()">
+                                        Done
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Action Buttons Group: Vertically Stacked with Breathing Room & No Overlap -->
-                        <div class="search-actions-group">
-                            <!-- Top Transit Calculator Pill -->
-                            <div class="search-secondary-action">
-                                <a href="travel.php?dest=Agra" id="transitPlannerHeroLink" class="link-transit-calc">
-                                    <span>🚆 Want route emissions first? Open Phase 1 Transit Calculator ➔</span>
-                                </a>
-                            </div>
-
-                            <!-- Main Search Button Submitting to hotels.php -->
-                            <div class="search-btn-container">
-                                <button type="submit" class="btn-search-large" id="mainSearchBtn">
-                                    <span>Search Eco-Stays</span>
-                                    <span class="search-btn-icon">➔</span>
-                                </button>
-                            </div>
+                        <!-- Quick Popular Destination Filter Chips -->
+                        <div class="quick-destinations-row">
+                            <span class="quick-dest-label">Popular Corridors:</span>
+                            <button class="dest-chip active" type="button" onclick="selectDestination('Agra')">🕌
+                                Agra</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Goa')">🏖️ Goa</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Mumbai')">🏛️
+                                Mumbai</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Singapore')">🏙️
+                                Singapore</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Kerala')">🌿
+                                Kerala</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Bali')">🌺 Bali</button>
+                            <button class="dest-chip" type="button" onclick="selectDestination('Kyoto')">🎋
+                                Kyoto</button>
                         </div>
-                    </form>
+
+                        <!-- Amenities & Accessibility Toggles -->
+                        <div class="search-amenities-row">
+                            <div class="eco-filters-group">
+                                <label class="checkbox-pill">
+                                    <input type="checkbox" id="checkWheelchair" checked>
+                                    <span>♿ Wheelchair Accessible</span>
+                                </label>
+                                <label class="checkbox-pill">
+                                    <input type="checkbox" id="checkSolar" checked>
+                                    <span>☀️ 100% Solar Powered</span>
+                                </label>
+                                <label class="checkbox-pill">
+                                    <input type="checkbox" id="checkPlasticFree" checked>
+                                    <span>🌱 Zero Single-Use Plastics</span>
+                                </label>
+                            </div>
+                            <span style="font-size: 0.78rem; font-weight: 700; color: var(--seaweed-mid);">
+                                ⚡ Real-Time Emission Matching
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- CRITICAL REQUIREMENT: Large Overlapping "SEARCH" Button -->
+                    <div class="search-btn-container">
+                        <button class="btn-search-large" id="mainSearchBtn" onclick="handleSearchClick()">
+                            <span>Search Eco-Stays</span>
+                            <span class="search-btn-icon">➔</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -2214,7 +1680,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                             <span style="font-size: 1.3rem;">🌱</span>
                             <div>
                                 <div style="line-height: 1.1;">WAY2GREEN</div>
-                                <span style="font-size: 0.65rem; opacity: 0.85; font-weight: 600; text-transform: uppercase;">Bio-Transit Network</span>
+                                <span
+                                    style="font-size: 0.65rem; opacity: 0.85; font-weight: 600; text-transform: uppercase;">Bio-Transit
+                                    Network</span>
                             </div>
                         </div>
                         <span class="pass-type-badge">First Class Eco</span>
@@ -2232,7 +1700,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                             <div class="route-connector">
                                 <span class="route-transport-mode" id="passTransitMode">⚡ Solar High-Speed</span>
                                 <div class="connector-line"></div>
-                                <span style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);" id="passDistance">195 km • 0kg CO₂</span>
+                                <span
+                                    style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);"
+                                    id="passDistance">195 km • 0kg CO₂</span>
                             </div>
 
                             <div class="route-stop" style="text-align: right;">
@@ -2241,11 +1711,11 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                             </div>
                         </div>
 
-                        <!-- Passenger & Transit Metadata Grid -->
+                        <!-- Passenger & Flight Metadata Grid -->
                         <div class="pass-details-grid">
                             <div class="pass-meta-item">
                                 <span class="meta-label">Passenger Name</span>
-                                <span class="meta-value"><?= $user ? htmlspecialchars($user['name']) : 'A. Vance / Voyager' ?></span>
+                                <span class="meta-value">A. Vance / Voyager</span>
                             </div>
                             <div class="pass-meta-item">
                                 <span class="meta-label">Seat / Unit</span>
@@ -2253,7 +1723,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                             </div>
                             <div class="pass-meta-item">
                                 <span class="meta-label">Departure Date</span>
-                                <span class="meta-value mono" id="passDepartDate"><?= date('d M Y') ?></span>
+                                <span class="meta-value mono" id="passDepartDate">28 Sep 2026</span>
                             </div>
                             <div class="pass-meta-item">
                                 <span class="meta-label">Boarding Gate</span>
@@ -2295,6 +1765,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                         <!-- Barcode & QR Simulation -->
                         <div class="pass-barcode-container">
                             <div class="barcode-strip" id="barcodeStrip">
+                                <!-- Dynamic barcode lines generated by CSS -->
                                 <div class="barcode-line" style="width: 3px;"></div>
                                 <div class="barcode-line" style="width: 1px;"></div>
                                 <div class="barcode-line" style="width: 4px;"></div>
@@ -2322,127 +1793,31 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                         <div class="pass-serial" id="passSerialCode">
                             PASS #W2G-9842-AGR-2026 • CARBON NEUTRAL TICKET
                         </div>
-
-                        <!-- Action Button on Pass Stub -->
-                        <a href="<?= $user ? 'my-trips.php' : 'travel.php?dest=Agra' ?>" id="stubPassActionBtn" class="btn-stub-passport">
-                            <?= $user ? 'View My Saved Passports ➔' : 'Plan Low-Carbon Transit ➔' ?>
-                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION: THE 3-STEP JOURNEY ROADMAP (MULTI-PAGE CONNECTED FLOW) -->
-    <section class="roadmap-section">
-        <div class="roadmap-grid">
-            <!-- Step 1 -->
-            <div class="roadmap-card">
-                <div>
-                    <span class="roadmap-badge">Phase 1 • Low Carbon Transit</span>
-                    <div class="roadmap-icon">🚆</div>
-                    <h3 class="roadmap-title">Calculate & Cut Emissions</h3>
-                    <p class="roadmap-desc">
-                        Compare trains, coaches, electric vehicles, and driving. See exact carbon footprints in kilograms and get AI recommendations.
-                    </p>
-                </div>
-                <a href="travel.php" class="roadmap-btn">Open Transit Calculator ➔</a>
-            </div>
-
-            <!-- Step 2 -->
-            <div class="roadmap-card">
-                <div>
-                    <span class="roadmap-badge">Phase 2 • Inclusive Hospitality</span>
-                    <div class="roadmap-icon">🏨</div>
-                    <h3 class="roadmap-title">Stay at Verified Eco-Resorts</h3>
-                    <p class="roadmap-desc">
-                        Handpicked solar-powered properties with greywater recycling, zero single-use plastics, and physical step-free wheelchair access.
-                    </p>
-                </div>
-                <a href="hotels.php" class="roadmap-btn">Browse Eco-Stays Catalog ➔</a>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="roadmap-card">
-                <div>
-                    <span class="roadmap-badge">Phase 3 • Digital Green Passport</span>
-                    <div class="roadmap-icon">📜</div>
-                    <h3 class="roadmap-title">Earn Your Eco-Passport</h3>
-                    <p class="roadmap-desc">
-                        Lock in your reservation to receive a verified, downloadable Carbon-Offset Passport showing liters of water saved and clean energy used.
-                    </p>
-                </div>
-                <a href="<?= $user ? 'my-trips.php' : 'login.php' ?>" class="roadmap-btn">
-                    <?= $user ? 'View My Trips & Passports ➔' : 'Sign In to View Passports ➔' ?>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 2: POPULAR GREEN CORRIDORS & FEATURED ECO-STAYS -->
+    <!-- SECTION 2: MATCHING ECO-STAYS PREVIEW -->
     <section class="section-container" id="staysSection">
         <div class="section-header-row">
             <div>
                 <span class="section-tag">Featured Stays</span>
-                <h2 class="section-heading" id="staysHeading">Verified Inclusive Eco-Resorts</h2>
+                <h2 class="section-heading" id="staysHeading">Verified Eco-Resorts in Agra</h2>
                 <p class="section-subtext" id="staysSubtext">
-                    Solar-powered, barrier-free certified accommodations across India with real-time transit & reservation links.
+                    Solar-powered, barrier-free certified accommodations matching your sustainable boarding pass.
                 </p>
             </div>
             <div>
-                <a href="hotels.php" class="btn-nav-primary">
-                    View All 26 Stays in Catalog ➔
-                </a>
+                <span class="eco-status-pill" style="font-size: 0.9rem; padding: 8px 16px;">
+                    🌱 Universal Accessibility Standard Certified
+                </span>
             </div>
         </div>
 
         <div class="stays-grid" id="staysGrid">
-            <?php foreach ($displayHotels as $h): 
-                $badges = array_filter(array_map('trim', explode(',', $h['eco_badges'] ?? 'Solar Powered, Zero Plastic')));
-                $access = array_filter(array_map('trim', explode(',', $h['accessibility_tags'] ?? 'Wheelchair Friendly')));
-            ?>
-            <div class="stay-card">
-                <div class="stay-thumb-box">
-                    <img src="<?= htmlspecialchars($h['image_url']) ?>" alt="<?= htmlspecialchars($h['name']) ?>" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'">
-                    <div class="stay-rating-tag">★ <?= htmlspecialchars($h['eco_rating']) ?></div>
-                    <div class="stay-eco-badge">🌱 <?= htmlspecialchars($badges[0] ?? 'Eco Certified') ?></div>
-                </div>
-                <div class="stay-card-body">
-                    <div class="stay-loc">📍 <?= htmlspecialchars($h['destination_name']) ?></div>
-                    <h3 class="stay-title"><?= htmlspecialchars($h['name']) ?></h3>
-                    <p class="stay-description"><?= htmlspecialchars($h['description']) ?></p>
-
-                    <div class="stay-metrics-row">
-                        <span>💧 <?= number_format($h['water_saved_liters'] ?? 120000) ?>L Saved</span>
-                        <span>⚡ <?= number_format($h['power_saved_kwh'] ?? 25000) ?> kWh Solar</span>
-                    </div>
-
-                    <div class="stay-tags-row">
-                        <?php foreach (array_slice($badges, 0, 2) as $b): ?>
-                            <span class="eco-tag">🌱 <?= htmlspecialchars($b) ?></span>
-                        <?php endforeach; ?>
-                        <?php foreach (array_slice($access, 0, 2) as $a): ?>
-                            <span class="eco-tag" style="background:#ecfdf5; border-color:#a7f3d0;">♿ <?= htmlspecialchars($a) ?></span>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <div class="stay-card-bottom">
-                        <div class="stay-price-box">
-                            <span class="price-label">Eco Rate</span>
-                            <span class="price-val">₹<?= number_format($h['price_per_night'] ?? 3500) ?> <span style="font-size:0.8rem; font-weight:500;">/ night</span></span>
-                        </div>
-                        <div class="stay-action-group">
-                            <a href="travel.php?dest=<?= urlencode($h['destination_name']) ?>" class="btn-plan-transit" title="Calculate Route Transit">
-                                🚆 Transit
-                            </a>
-                            <a href="checkout.php?hotel_id=<?= $h['id'] ?>&hotel_name=<?= urlencode($h['name']) ?>&dest_name=<?= urlencode($h['destination_name']) ?>&price=<?= $h['price_per_night'] ?>" class="btn-view-stay">
-                                Book Stay ➔
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <?php endforeach; ?>
+            <!-- Dynamic stays loaded by JS based on selected location -->
         </div>
     </section>
 
@@ -2453,138 +1828,85 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 <div class="metric-col">
                     <span class="metric-number">1,420,000L</span>
                     <h3 class="metric-title">Clean Water Conserved</h3>
-                    <p class="metric-desc">Rainwater harvesting and wetland greywater recycling at certified partner resorts.</p>
+                    <p class="metric-desc">Rainwater harvesting and greywater wetland filtration at certified resorts.
+                    </p>
                 </div>
                 <div class="metric-col">
                     <span class="metric-number">94,500 kWh</span>
                     <h3 class="metric-title">Solar Energy Generated</h3>
-                    <p class="metric-desc">Decarbonized stays operating on on-site solar, micro-hydro, and clean battery grids.</p>
+                    <p class="metric-desc">Decarbonized stays operating on 100% on-site solar and micro-hydro power.</p>
                 </div>
                 <div class="metric-col">
                     <span class="metric-number">100%</span>
-                    <h3 class="metric-title">Barrier-Free Standards</h3>
-                    <p class="metric-desc">Physical step-free verification, tactile paths, quiet zones, and accessible showers.</p>
+                    <h3 class="metric-title">Barrier-Free Access</h3>
+                    <p class="metric-desc">Physical step-free verification, tactile corridors, and sensory quiet rooms.
+                    </p>
                 </div>
                 <div class="metric-col">
                     <span class="metric-number">0 kg</span>
                     <h3 class="metric-title">Single-Use Plastics</h3>
-                    <p class="metric-desc">Glass water refill stations, organic amenities, and zero-waste food composting.</p>
+                    <p class="metric-desc">Glass refill stations, organic bamboo amenities, and zero-waste dining.</p>
                 </div>
-            </div>
-        </div>
-
-        <!-- Call to Action Banner -->
-        <div class="cta-box">
-            <h2 class="cta-title">Ready for a Journey That Gives Back?</h2>
-            <p class="cta-desc">
-                Calculate your transit carbon savings, select a verified barrier-free sanctuary, and receive your certified digital green passport.
-            </p>
-            <div class="cta-actions">
-                <a href="travel.php" class="btn-cta-white">
-                    Start Transit Calculator ➔
-                </a>
-                <a href="hotels.php" class="btn-cta-outline">
-                    Explore All Eco-Stays
-                </a>
-                <a href="about.php" class="btn-cta-outline">
-                    Our Mission & Impact
-                </a>
             </div>
         </div>
     </section>
 
-    <!-- Site Footer with Full Cross-Page Connectivity -->
+    <!-- Site Footer -->
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-brand">
                 <h3>🌱 Way_2_Green</h3>
                 <p>
-                    A conscious travel ecosystem designed to eliminate environmental degradation and create barrier-free travel for everyone.
+                    A conscious travel ecosystem designed to eliminate environmental degradation and create barrier-free
+                    travel for everyone.
                 </p>
                 <div style="margin-top: 14px; font-size: 0.82rem; color: rgba(240, 248, 255, 0.65);">
-                    Palette: Strict Seaweed Green (<code>#0b3b24</code>) & Alice Blue (<code>#F0F8FF</code>).
+                    Palette: Strict Seaweed Green (#0b3b24) & Alice Blue (#F0F8FF).
                 </div>
             </div>
             <div class="footer-col">
-                <h4>Pages & Tools</h4>
+                <h4>Navigation</h4>
                 <ul class="footer-links">
-                    <li><a href="index.php">Home Overview</a></li>
-                    <li><a href="travel.php">Phase 1: Transit Emissions Calculator</a></li>
-                    <li><a href="hotels.php">Phase 2: Eco-Hotels Catalog</a></li>
-                    <li><a href="about.php">About Our Mission & Inclusivity</a></li>
-                    <li><a href="my-trips.php">My Eco-Passports & Trips</a></li>
+                    <li><a href="#heroSection">Vertical Boarding Pass</a></li>
+                    <li><a href="#staysSection">Search Eco-Stays</a></li>
+                    <li><a href="#impactSection">Impact Metrics</a></li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Popular Corridors</h4>
+                <h4>Destinations</h4>
                 <ul class="footer-links">
-                    <li><a href="hotels.php?dest=Agra">Agra Heritage Corridor</a></li>
-                    <li><a href="hotels.php?dest=Goa">South Goa Bio-Reserve</a></li>
-                    <li><a href="hotels.php?dest=Munnar">Munnar Tea Hills</a></li>
-                    <li><a href="hotels.php?dest=Manali">Solang Alpine Sanctuary</a></li>
-                    <li><a href="hotels.php?dest=Mumbai">Mumbai Coastal Skyline</a></li>
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Agra')">Agra Heritage</a></li>
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Goa')">Goa Coastal</a></li>
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Mumbai')">Mumbai Skyline</a></li>
+                    <li><a href="javascript:void(0)" onclick="selectDestination('Singapore')">Singapore Supertrees</a>
+                    </li>
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Account & Portal</h4>
+                <h4>Standards</h4>
                 <ul class="footer-links">
-                    <?php if ($user): ?>
-                        <li><a href="my-trips.php">Profile (<?= htmlspecialchars($user['name']) ?>)</a></li>
-                        <li><a href="logout.php">Sign Out</a></li>
-                    <?php else: ?>
-                        <li><a href="login.php">Traveler Sign In</a></li>
-                        <li><a href="register.php">Create Account</a></li>
-                    <?php endif; ?>
-                    <li><a href="admin/login.php" style="color: var(--seaweed-mint);">Admin Control Panel 🔒</a></li>
+                    <li><a href="#">Wheelchair Auditing</a></li>
+                    <li><a href="#">Solar Grid Verification</a></li>
+                    <li><a href="#">Digital Green Passports</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <span>© 2026 Way_2_Green Platform • Green & Inclusive Travel Hackathon Challenge.</span>
-            <span>Connected Multi-Page Architecture • PHP / MySQL / Vanilla JS</span>
+            <span>© 2026 Way_2_Green Platform • Green & Inclusive Travel Hackathon</span>
+            <span>Single-File Standalone Architecture • Zero External JS Dependencies</span>
         </div>
     </footer>
-
-    <!-- Mobile Bottom Navigation Dock -->
-    <nav class="mobile-bottom-bar">
-        <a href="index.php" class="mobile-nav-item active">
-            <span class="icon">🏡</span>
-            <span class="label">Home</span>
-        </a>
-        <a href="travel.php" class="mobile-nav-item">
-            <span class="icon">🚆</span>
-            <span class="label">Transit</span>
-        </a>
-        <a href="hotels.php" class="mobile-nav-item">
-            <span class="icon">🏨</span>
-            <span class="label">Stays</span>
-        </a>
-        <a href="about.php" class="mobile-nav-item">
-            <span class="icon">🌿</span>
-            <span class="label">Mission</span>
-        </a>
-        <?php if ($user): ?>
-            <a href="my-trips.php" class="mobile-nav-item">
-                <span class="icon">📜</span>
-                <span class="label">Passports</span>
-            </a>
-        <?php else: ?>
-            <a href="login.php" class="mobile-nav-item">
-                <span class="icon">👤</span>
-                <span class="label">Sign In</span>
-            </a>
-        <?php endif; ?>
-    </nav>
 
     <!-- Interactive Toast Notification -->
     <div class="toast-notification" id="toastNotification">
         <span style="font-size: 1.3rem;">🌱</span>
-        <span id="toastMsg">Ready to travel light...</span>
+        <span id="toastMsg">Searching low-carbon stays...</span>
     </div>
 
     <!-- ==========================================================================
-       INLINE JAVASCRIPT: Dynamic Location Backgrounds & Synchronized Boarding Pass
+       INLINE JAVASCRIPT: Dynamic Location Backgrounds & Search Interactivity
+       Strict Requirement: Ready-to-run inline script without external dependencies
        ========================================================================== -->
     <script>
         // 1. JS Dictionary/Mapping of popular destinations to high-quality placeholder image URLs
@@ -2596,7 +1918,39 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 landmark: "Taj Mahal Eco Sanctuary",
                 imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1920&q=80",
                 savings: "-84% CO₂ Emissions",
-                distance: "195 km • Solar Express"
+                distance: "195 km • Solar Express",
+                stays: [
+                    {
+                        name: "The Solar Lotus Sanctuary",
+                        loc: "Agra • 1.5 km from Taj East Gate",
+                        rating: "4.9 ★",
+                        badge: "100% Solar Powered",
+                        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+                        desc: "Electric shuttle to monuments, zero plastic policy, and step-free wheelchair gardens.",
+                        tags: ["Wheelchair Ramps", "Organic Kitchen", "Solar AC"],
+                        price: "₹4,200"
+                    },
+                    {
+                        name: "Yamuna Heritage Eco-Lodge",
+                        loc: "Agra • Riverfront Reserve",
+                        rating: "4.8 ★",
+                        badge: "Rainwater Harvesting",
+                        image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80",
+                        desc: "Traditional adobe terracotta insulation, native flora canopy, and braille trail markings.",
+                        tags: ["Step-Free Access", "Bio-Septic", "Quiet Hours"],
+                        price: "₹3,600"
+                    },
+                    {
+                        name: "Mughal Green Haven",
+                        loc: "Agra • Fatehabad Road",
+                        rating: "4.95 ★",
+                        badge: "Zero Waste Certified",
+                        image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=800&q=80",
+                        desc: "100% greywater recycling, organic fruit orchard, and sensory-friendly rooms.",
+                        tags: ["Tactile Corridors", "EV Charging", "Solar Heated"],
+                        price: "₹5,100"
+                    }
+                ]
             },
             "goa": {
                 name: "Goa",
@@ -2605,7 +1959,29 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 landmark: "Palolem & Mandrem Eco-Beaches",
                 imageUrl: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1920&q=80",
                 savings: "-88% CO₂ Emissions",
-                distance: "580 km • Coastal Electric"
+                distance: "580 km • Coastal Electric",
+                stays: [
+                    {
+                        name: "Palolem Dune Bio-Cabins",
+                        loc: "South Goa • Beachfront Boardwalk",
+                        rating: "4.9 ★",
+                        badge: "Marine Conservation",
+                        image: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80",
+                        desc: "Reclaimed bamboo cottages with elevated wheelchair beach mats and solar showers.",
+                        tags: ["Beach Wheelchair", "Solar Microgrid", "Zero Plastic"],
+                        price: "₹4,800"
+                    },
+                    {
+                        name: "Turtle Nest Sanctuary Resort",
+                        loc: "Morjim • Protected Olive Ridley Zone",
+                        rating: "4.85 ★",
+                        badge: "Dark Sky Certified",
+                        image: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+                        desc: "Shielded warm lighting for nesting turtles, solar water, and organic vegan dining.",
+                        tags: ["Ramped Suites", "Wetland Recycling", "Electric Scooters"],
+                        price: "₹5,400"
+                    }
+                ]
             },
             "mumbai": {
                 name: "Mumbai",
@@ -2614,7 +1990,29 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 landmark: "Gateway of India & Marine Drive",
                 imageUrl: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1920&q=80",
                 savings: "-76% CO₂ Emissions",
-                distance: "320 km • High-Speed Electric"
+                distance: "320 km • High-Speed Electric",
+                stays: [
+                    {
+                        name: "The Urban Mangrove Retreat",
+                        loc: "Mumbai • Bandra West",
+                        rating: "4.8 ★",
+                        badge: "LEED Platinum Stay",
+                        image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80",
+                        desc: "Rooftop urban solar farm, vertical botanical walls, and fully accessible elevators.",
+                        tags: ["Braille Signs", "Metro Connected", "100% Greywater"],
+                        price: "₹6,800"
+                    },
+                    {
+                        name: "Sanjay Gandhi Green Haven",
+                        loc: "Mumbai • Borivali Edge",
+                        rating: "4.75 ★",
+                        badge: "Forest Buffer Zone",
+                        image: "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=800&q=80",
+                        desc: "Tranquil retreat nestled near the national park with electric buggy transfers.",
+                        tags: ["Roll-in Showers", "Solar Powered", "No Single-Use Plastic"],
+                        price: "₹4,100"
+                    }
+                ]
             },
             "singapore": {
                 name: "Singapore",
@@ -2623,43 +2021,60 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 landmark: "Marina Bay & Supertrees",
                 imageUrl: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80",
                 savings: "-92% CO₂ Emissions",
-                distance: "Global Corridor • Carbon Offset"
-            },
-            "munnar": {
-                name: "Munnar",
-                fullName: "Munnar, Kerala",
-                code: "KER",
-                landmark: "Western Ghats Tea Sanctuary",
-                imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
-                savings: "-89% CO₂ Emissions",
-                distance: "450 km • Electric Transit"
+                distance: "Global Corridor • Carbon Offset",
+                stays: [
+                    {
+                        name: "Marina Biophilic Sanctuary",
+                        loc: "Singapore • Marina Bay",
+                        rating: "4.98 ★",
+                        badge: "BCA Green Mark Platinum",
+                        image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80",
+                        desc: "World-class universal accessibility, smart rainwater cooling, and net-zero energy towers.",
+                        tags: ["Full Accessibility", "100% Renewable", "Urban Garden"],
+                        price: "₹14,500"
+                    },
+                    {
+                        name: "Sentosa Heritage Nature Stay",
+                        loc: "Singapore • Sentosa Island",
+                        rating: "4.9 ★",
+                        badge: "Certified Carbon Neutral",
+                        image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80",
+                        desc: "Low-density forest eco-villas with sensory audio trails and solar buggy transport.",
+                        tags: ["Wheelchair Accessible", "Rainwater Harvesting", "Farm-to-Table"],
+                        price: "₹12,200"
+                    }
+                ]
             },
             "kerala": {
                 name: "Kerala",
                 fullName: "Kerala Backwaters & Munnar",
                 code: "KER",
-                landmark: "Western Ghats Tea Sanctuary",
+                landmark: "Western Ghats Tea Hills",
                 imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
                 savings: "-89% CO₂ Emissions",
-                distance: "450 km • Electric Transit"
-            },
-            "manali": {
-                name: "Manali",
-                fullName: "Manali, Himachal Pradesh",
-                code: "KUU",
-                landmark: "Solang Alpine Valley",
-                imageUrl: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1920&q=80",
-                savings: "-81% CO₂ Emissions",
-                distance: "540 km • Himalayan Eco-Coach"
-            },
-            "kyoto": {
-                name: "Kyoto",
-                fullName: "Kyoto Heritage Sanctuary",
-                code: "UKY",
-                landmark: "Arashiyama Bamboo Grove",
-                imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=80",
-                savings: "-90% CO₂ Emissions",
-                distance: "Bullet Train Shinkansen Eco-Link"
+                distance: "450 km • Electric Transit",
+                stays: [
+                    {
+                        name: "Munnar Cloud Forest Sanctuary",
+                        loc: "Munnar • 1,600m Altitude",
+                        rating: "4.95 ★",
+                        badge: "100% Hydro & Solar",
+                        image: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80",
+                        desc: "Micro-hydro powered tea lodge with wheelchair accessible forest skywalk.",
+                        tags: ["Boardwalk Ramps", "Zero Plastics", "Organic Spices"],
+                        price: "₹4,900"
+                    },
+                    {
+                        name: "Kumarakom Solar Houseboats",
+                        loc: "Vembanad Lake • Backwaters",
+                        rating: "4.9 ★",
+                        badge: "Electric Propulsion",
+                        image: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80",
+                        desc: "Quiet electric motors that do not disturb migratory birds. Wheelchair boarding gangway.",
+                        tags: ["Solar Roof", "Barrier-Free Entry", "Bio-Toilets"],
+                        price: "₹6,200"
+                    }
+                ]
             },
             "bali": {
                 name: "Bali",
@@ -2668,7 +2083,40 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 landmark: "Ubud Rice Terraces",
                 imageUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=80",
                 savings: "-83% CO₂ Emissions",
-                distance: "Island Biosphere Reserve"
+                distance: "Island Biosphere Reserve",
+                stays: [
+                    {
+                        name: "Ubud Bamboo Forest Eco-Retreat",
+                        loc: "Ubud • Ayung River Valley",
+                        rating: "4.92 ★",
+                        badge: "Natural Architecture",
+                        image: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
+                        desc: "Engineered curved bamboo pavilions, zero chemical pools, and accessible pathways.",
+                        tags: ["Ramp Accessible", "Permaculture Farm", "Zero Waste"],
+                        price: "₹7,200"
+                    }
+                ]
+            },
+            "kyoto": {
+                name: "Kyoto",
+                fullName: "Kyoto Heritage Sanctuary",
+                code: "UKY",
+                landmark: "Arashiyama Bamboo Grove",
+                imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=80",
+                savings: "-90% CO₂ Emissions",
+                distance: "Bullet Train Shinkansen Eco-Link",
+                stays: [
+                    {
+                        name: "Arashiyama Cedar Ryokan",
+                        loc: "Kyoto • Sagano Bamboo Path",
+                        rating: "4.97 ★",
+                        badge: "Preservation Certified",
+                        image: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80",
+                        desc: "Geothermal heated spring baths with wheelchair hoists and zero carbon footprint.",
+                        tags: ["Universal Ryokan", "Solar Timber", "Sensory Garden"],
+                        price: "₹11,000"
+                    }
+                ]
             }
         };
 
@@ -2682,14 +2130,14 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         const passDistance = document.getElementById('passDistance');
         const passLandmarkText = document.getElementById('passLandmarkText');
         const passSerialCode = document.getElementById('passSerialCode');
+        const staysHeading = document.getElementById('staysHeading');
+        const staysSubtext = document.getElementById('staysSubtext');
+        const staysGrid = document.getElementById('staysGrid');
         const checkInInput = document.getElementById('checkInInput');
         const checkOutInput = document.getElementById('checkOutInput');
         const guestTriggerBtn = document.getElementById('guestTriggerBtn');
         const guestDropdownMenu = document.getElementById('guestDropdownMenu');
         const guestSummaryInput = document.getElementById('guestSummaryInput');
-        const guestsHiddenInput = document.getElementById('guestsHiddenInput');
-        const transitPlannerHeroLink = document.getElementById('transitPlannerHeroLink');
-        const stubPassActionBtn = document.getElementById('stubPassActionBtn');
         const toastNotification = document.getElementById('toastNotification');
         const toastMsg = document.getElementById('toastMsg');
 
@@ -2724,14 +2172,6 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             if (passLandmarkText) passLandmarkText.textContent = dest.landmark;
             if (passSerialCode) passSerialCode.textContent = `PASS #W2G-${Math.floor(1000 + Math.random() * 9000)}-${dest.code}-2026 • CARBON NEUTRAL TICKET`;
 
-            // Sync links connecting to travel.php
-            if (transitPlannerHeroLink) {
-                transitPlannerHeroLink.href = `travel.php?dest=${encodeURIComponent(dest.name)}`;
-            }
-            if (stubPassActionBtn && !stubPassActionBtn.href.includes('my-trips.php')) {
-                stubPassActionBtn.href = `travel.php?dest=${encodeURIComponent(dest.name)}`;
-            }
-
             // Update Active Chip
             document.querySelectorAll('.dest-chip').forEach(chip => {
                 if (chip.textContent.toLowerCase().includes(key)) {
@@ -2740,6 +2180,44 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                     chip.classList.remove('active');
                 }
             });
+
+            // Update matching stays catalog preview
+            renderStays(dest);
+        }
+
+        // Render Stays in Section 2
+        function renderStays(dest) {
+            staysHeading.textContent = `Verified Eco-Resorts in ${dest.name}`;
+            staysSubtext.textContent = `Solar-powered, barrier-free certified accommodations in ${dest.fullName} matching your zero-emission boarding pass.`;
+
+            staysGrid.innerHTML = '';
+            dest.stays.forEach(stay => {
+                const card = document.createElement('div');
+                card.className = 'stay-card';
+                card.innerHTML = `
+                    <div class="stay-thumb-box">
+                        <img src="${stay.image}" alt="${stay.name}" loading="lazy">
+                        <div class="stay-rating-tag">${stay.rating}</div>
+                        <div class="stay-eco-badge">🌱 ${stay.badge}</div>
+                    </div>
+                    <div class="stay-card-body">
+                        <div class="stay-loc">📍 ${stay.loc}</div>
+                        <h3 class="stay-title">${stay.name}</h3>
+                        <p class="stay-description">${stay.desc}</p>
+                        <div class="stay-tags-row">
+                            ${stay.tags.map(t => `<span class="eco-tag">✓ ${t}</span>`).join('')}
+                        </div>
+                        <div class="stay-card-bottom">
+                            <div class="stay-price-box">
+                                <span class="price-label">Eco-Certified Rate</span>
+                                <span class="price-val">${stay.price} <span style="font-size:0.8rem; font-weight:500;">/ night</span></span>
+                            </div>
+                            <button class="btn-view-stay" onclick="bookStayConfirmation('${stay.name}')">Book Stay ➔</button>
+                        </div>
+                    </div>
+                `;
+                staysGrid.appendChild(card);
+            });
         }
 
         // 3. Listen for input changes in the "Location" field of the search widget
@@ -2747,6 +2225,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             const cleaned = query.trim().toLowerCase();
             if (!cleaned) return null;
 
+            // Direct key match or substring match
             for (const key in destinationsCatalog) {
                 if (key.includes(cleaned) || cleaned.includes(key) || destinationsCatalog[key].name.toLowerCase().includes(cleaned)) {
                     return key;
@@ -2814,15 +2293,34 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             }
             text += `, ${guests.rooms} Room${guests.rooms > 1 ? 's' : ''}`;
             guestSummaryInput.value = text;
-            guestsHiddenInput.value = guests.adults + guests.children;
         }
 
-        // Mobile drawer toggle
-        function toggleDrawer() {
-            const drawer = document.getElementById('mobileDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            drawer.classList.toggle('open');
-            overlay.classList.toggle('active');
+        // 5. Large Overlapping Search Button Click Handler
+        function handleSearchClick() {
+            const dest = destinationsCatalog[currentDestKey];
+            const checkIn = checkInInput.value || 'Today';
+            const checkOut = checkOutInput.value || 'Next Day';
+            const wheelchair = document.getElementById('checkWheelchair').checked;
+            const solar = document.getElementById('checkSolar').checked;
+
+            // Trigger button animation
+            const btn = document.getElementById('mainSearchBtn');
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => { btn.style.transform = ''; }, 200);
+
+            showToast(`Found ${dest.stays.length} Eco-Stays in ${dest.name} • ${guests.rooms} Room(s)`);
+
+            // Smooth scroll down to Stays section
+            document.getElementById('staysSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function scrollToSearch() {
+            document.getElementById('locationInput').focus();
+            document.getElementById('heroSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function bookStayConfirmation(stayName) {
+            showToast(`Voucher generated for "${stayName}". Green Passport attached!`);
         }
 
         // Toast Helper
@@ -2836,8 +2334,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             }, 3200);
         }
 
-        // 5. Initialize on page load
+        // 6. Initialize on page load
         window.addEventListener('DOMContentLoaded', () => {
+            // Set default dates (today and day after tomorrow)
             const today = new Date();
             const afterTomorrow = new Date();
             afterTomorrow.setDate(today.getDate() + 2);
@@ -2849,9 +2348,17 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             checkOutInput.min = formatYMD(today);
             checkOutInput.value = formatYMD(afterTomorrow);
 
+            // Format date string for the boarding pass
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            const passDateEl = document.getElementById('passDepartDate');
+            if (passDateEl) {
+                passDateEl.textContent = today.toLocaleDateString('en-GB', options);
+            }
+
             // Set initial Agra theme
             updateLocationTheme('agra');
         });
     </script>
 </body>
+
 </html>

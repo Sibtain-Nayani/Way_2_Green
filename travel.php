@@ -362,12 +362,22 @@ $preselectedDest = $_GET['dest'] ?? '';
         <header class="header-top transparent-header">
             <a href="index.php" class="brand"><img src="assets/img/logo.png" alt="Way2Green Logo" style="height: 32px; width: auto;"></a>
             <nav class="desktop-nav">
+<<<<<<< HEAD
             <a href="index.php">Home</a>
             <a href="hotels.php">Eco-Stays</a>
             <a href="travel.php" class="active">Plan Transit</a>
             <a href="about.php">About Us</a>
             <a href="my-trips.php">My Passports</a>
             <a href="logout.php" style="color: #dc2626;">Sign Out</a></nav>
+=======
+                <a href="index.php">Home</a>
+                <a href="hotels.php">Eco-Stays</a>
+                <a href="travel.php" class="active">Plan Transit</a>
+                <a href="about.php">About Us</a>
+                <a href="my-trips.php">My Passports</a>
+                <a href="logout.php" style="color: #fca5a5;">Sign Out</a>
+            </nav>
+>>>>>>> 95927ad17535a90f2869adb9fd4075fb46196d00
             <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu" style="filter: brightness(0) invert(1);">
                 <span></span>
                 <span></span>

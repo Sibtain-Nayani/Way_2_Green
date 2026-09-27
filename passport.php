@@ -46,6 +46,31 @@ if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {
     $d2 = new DateTime($booking['check_out']);
     $nights = max(1, $d1->diff($d2)->days);
 }
+
+// Transit mode helpers & corridor codes for Eco-Boarding Pass Card
+$modeIcon = '🚆';
+$modeLabel = 'Clean Rail';
+$originCode = 'DEP';
+$destCode = 'ARR';
+
+if ($booking) {
+    $tMode = strtolower($booking['travel_mode'] ?? '');
+    if (strpos($tMode, 'flight') !== false || strpos($tMode, 'air') !== false) {
+        $modeIcon = '✈️';
+        $modeLabel = 'Clean Aviation';
+    } elseif (strpos($tMode, 'bus') !== false) {
+        $modeIcon = '🚌';
+        $modeLabel = 'Electric Coach';
+    } elseif (strpos($tMode, 'car') !== false || strpos($tMode, 'ev') !== false) {
+        $modeIcon = '⚡';
+        $modeLabel = 'EV Corridor';
+    }
+
+    $originClean = preg_replace('/[^a-zA-Z]/', '', $booking['origin'] ?? 'DEP');
+    $originCode = strtoupper(substr($originClean ?: 'DEP', 0, 3));
+    $destClean = preg_replace('/[^a-zA-Z]/', '', $booking['destination'] ?? 'ARR');
+    $destCode = strtoupper(substr($destClean ?: 'ARR', 0, 3));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,6 +87,12 @@ if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {
     
     <style>
         /* Screen UI Elements */
+        .passport-page-main {
+            max-width: 1360px !important;
+            margin: 0 auto 3rem !important;
+            padding: 1.5rem 1.5rem 3rem !important;
+        }
+
         .receipt-action-bar {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(14px);
@@ -77,9 +108,384 @@ if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {
             box-shadow: var(--shadow-sm);
         }
 
+        /* 25% - 75% Master Split Layout */
+        .passport-split-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2.2rem;
+            align-items: start;
+            width: 100%;
+        }
+
+        @media (min-width: 1280px) {
+            .passport-split-layout {
+                grid-template-columns: 26% 74%;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .passport-split-layout {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .passport-card-col {
+            position: sticky;
+            top: 1.5rem;
+            z-index: 10;
+        }
+
+        @media (max-width: 1024px) {
+            .passport-card-col {
+                position: static;
+            }
+        }
+
+        .passport-cert-col {
+            min-width: 0;
+            width: 100%;
+        }
+
+        /* ==========================================================================
+           DESIGN 2: ECO BOARDING PASS TICKET CARD (25% COLUMN)
+           ========================================================================== */
+        .eco-boarding-ticket {
+            background: #fdfbf7;
+            background-image: radial-gradient(#e5dfd3 0.75px, transparent 0.75px);
+            background-size: 14px 14px;
+            border: 1.8px solid #dcd4c3;
+            border-radius: 20px;
+            box-shadow: 0 16px 36px rgba(15, 61, 36, 0.12), 0 2px 8px rgba(0,0,0,0.04);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #1e293b;
+            transition: var(--transition);
+        }
+
+        .eco-boarding-ticket:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 22px 48px rgba(15, 61, 36, 0.18), 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        /* Header of Boarding Pass */
+        .ticket-header {
+            background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+            color: #ffffff;
+            padding: 1.25rem 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .ticket-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            letter-spacing: -0.3px;
+        }
+
+        .ticket-badge-pill {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            color: #ecfdf5;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        /* Body Section */
+        .ticket-body {
+            padding: 1.3rem 1.4rem 0.5rem;
+        }
+
+        /* Route Corridor Banner */
+        .ticket-route {
+            background: #ffffff;
+            border: 1px solid #e2dcd2;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+        }
+
+        .route-point {
+            text-align: left;
+        }
+
+        .route-point.dest {
+            text-align: right;
+        }
+
+        .route-code {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: #064e3b;
+            line-height: 1;
+        }
+
+        .route-city {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-top: 3px;
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .route-plane {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            color: #059669;
+            font-size: 1.1rem;
+            padding: 0 6px;
+        }
+
+        .route-plane-line {
+            width: 44px;
+            height: 2px;
+            background: #a7f3d0;
+            position: relative;
+        }
+
+        .route-plane-line::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -3px;
+            width: 7px;
+            height: 7px;
+            border-top: 2px solid #059669;
+            border-right: 2px solid #059669;
+            transform: rotate(45deg);
+        }
+
+        /* Passenger Details Fields */
+        .ticket-passenger-group {
+            margin-bottom: 1rem;
+        }
+
+        .ticket-label {
+            font-size: 0.65rem;
+            color: #78716c;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .ticket-value-main {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .ticket-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 0.9rem;
+        }
+
+        .ticket-info-tile {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid #e5e0d4;
+            border-radius: 8px;
+            padding: 7px 9px;
+        }
+
+        .ticket-value-sub {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .ticket-value-mono {
+            font-family: 'JetBrains Mono', monospace;
+            color: #047857;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Perforation Tear Notch Row */
+        .ticket-perforation-wrap {
+            position: relative;
+            margin: 0.7rem 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticket-perforation-wrap::before,
+        .ticket-perforation-wrap::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: var(--bg-main, #f3f8f5);
+            border: 1.8px solid #dcd4c3;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+        }
+
+        .ticket-perforation-wrap::before {
+            left: -13px;
+        }
+
+        .ticket-perforation-wrap::after {
+            right: -13px;
+        }
+
+        .ticket-dashed-tear {
+            width: 100%;
+            border-top: 2px dashed #cbd5e1;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Lower Ticket Stub */
+        .ticket-stub {
+            padding: 0.5rem 1.4rem 1.4rem;
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+        .ticket-eco-stamp-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 0.9rem;
+        }
+
+        .ticket-eco-stamp {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #ecfdf5;
+            border: 1.5px solid #059669;
+            color: #065f46;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transform: rotate(-1deg);
+        }
+
+        .ticket-carbon-tag {
+            background: #dcfce7;
+            color: #15803d;
+            font-weight: 700;
+            font-size: 0.72rem;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Authentic CSS Barcode */
+        .ticket-barcode-box {
+            background: #ffffff;
+            border: 1px solid #e2dcd2;
+            border-radius: 10px;
+            padding: 10px 8px 6px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+        }
+
+        .barcode-graphic {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 2px;
+            height: 44px;
+            margin: 0 auto 5px;
+            padding: 0 6px;
+            overflow: hidden;
+        }
+
+        .b-bar {
+            background-color: #0f172a;
+            height: 100%;
+            border-radius: 1px;
+            display: inline-block;
+        }
+        .b-w1 { width: 1.5px; }
+        .b-w2 { width: 3px; }
+        .b-w3 { width: 4.5px; }
+        .b-w4 { width: 6px; }
+
+        .barcode-code-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #334155;
+            letter-spacing: 2px;
+        }
+
+        /* Action Buttons within Card */
+        .ticket-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-ticket-action {
+            flex: 1;
+            background: #ffffff;
+            border: 1.5px solid #059669;
+            color: #065f46;
+            padding: 7px 8px;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: var(--transition);
+        }
+
+        .btn-ticket-action:hover {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        .btn-ticket-action.primary {
+            background: #065f46;
+            color: #ffffff;
+            border-color: #064e3b;
+        }
+
+        .btn-ticket-action.primary:hover {
+            background: #047857;
+        }
+
         /* Certificate Master Layout */
         .certificate-container {
-            max-width: 820px;
+            max-width: 100%;
             margin: 0 auto 3rem;
         }
 
@@ -351,6 +757,18 @@ if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {
                 padding: 0 !important;
             }
 
+            .passport-split-layout {
+                display: block !important;
+            }
+
+            .passport-card-col {
+                display: none !important;
+            }
+
+            .passport-cert-col {
+                width: 100% !important;
+            }
+
             .certificate-container {
                 max-width: 100% !important;
                 margin: 0 !important;
@@ -496,18 +914,14 @@ if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {
 
     <!-- Clean Header -->
     <header class="header-top">
-        <a href="index.php" class="brand">
-            <span class="brand-leaf">🌱</span>
-            <span>Way2Green</span>
-        </a>
+        <a href="index.php" class="brand"><img src="assets/img/logo.png" alt="Way2Green Logo" style="height: 32px; width: auto;"></a>
         <nav class="desktop-nav">
             <a href="index.php">Home</a>
-            <a href="travel.php">Plan Transit</a>
             <a href="hotels.php">Eco-Stays</a>
+            <a href="travel.php">Plan Transit</a>
             <a href="about.php">About Us</a>
             <a href="my-trips.php" class="active">My Passports</a>
-            <a href="logout.php" style="color: #dc2626;">Sign Out</a>
-        </nav>
+            <a href="logout.php" style="color: #dc2626;">Sign Out</a></nav>
         <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
             <span></span>
             <span></span>
@@ -515,7 +929,7 @@ if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {
         </button>
     </header>
 
-    <main class="page-container" style="max-width: 860px;">
+    <main class="page-container passport-page-main">
 
         <?php if ($booking): ?>
 
@@ -550,143 +964,273 @@ if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {
                 </div>
             </div>
 
-            <!-- The Official Verified Certificate (Both Screen & Print) -->
-            <div class="certificate-container">
-                <div class="eco-passport-cert">
-                    
-                    <!-- Header Section -->
-                    <div class="cert-header">
-                        <div class="cert-logo-group">
-                            <div class="cert-logo-icon">🌱</div>
-                            <div>
-                                <div class="cert-title-text">Official Way2Green Eco-Passport</div>
-                                <div class="cert-subtitle">Verified Sustainable Hospitality Record • Global Tourism Code #W2G-<?= date('Y') ?></div>
+            <!-- 25% - 75% Split Layout Container -->
+            <div class="passport-split-layout">
+
+                <!-- 25% Left Column: Eco Boarding Pass Ticket Card -->
+                <aside class="passport-card-col no-print">
+                    <div class="eco-boarding-ticket">
+                        <!-- Top Header -->
+                        <div class="ticket-header">
+                            <div class="ticket-brand">
+                                <span>🌱</span>
+                                <span>Way2Green</span>
+                            </div>
+                            <div class="ticket-badge-pill">
+                                Boarding Pass
                             </div>
                         </div>
-                        <div class="cert-seal-badge">
-                            ✓ Verified<br>Net-Zero
-                        </div>
-                    </div>
 
-                    <!-- 2-Column Passport Details Grid -->
-                    <div class="cert-grid">
-                        <div class="cert-tile">
-                            <div class="cert-tile-label">Eco Traveler</div>
-                            <div class="cert-tile-value"><?= htmlspecialchars($booking['traveler_name'] ?? $currentUser['name']) ?></div>
-                            <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;"><?= htmlspecialchars($booking['traveler_email'] ?? $currentUser['email']) ?></div>
-                        </div>
-
-                        <div class="cert-tile">
-                            <div class="cert-tile-label">Booking Reference</div>
-                            <div class="cert-tile-value mono"><?= htmlspecialchars($booking['booking_code']) ?></div>
-                            <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Issued: <?= date('M d, Y • H:i', strtotime($booking['created_at'])) ?> UTC</div>
-                        </div>
-
-                        <div class="cert-tile">
-                            <div class="cert-tile-label">Certified Eco-Sanctuary</div>
-                            <div class="cert-tile-value"><?= htmlspecialchars($booking['hotel_name']) ?></div>
-                            <div style="font-size: 0.75rem; color: #047857; margin-top: 2px;">★ <?= number_format($booking['eco_rating'], 1) ?> Eco-Accredited</div>
-                        </div>
-
-                        <div class="cert-tile">
-                            <div class="cert-tile-label">Destination Corridor</div>
-                            <div class="cert-tile-value"><?= htmlspecialchars($booking['destination']) ?></div>
-                            <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Origin: <?= htmlspecialchars($booking['origin']) ?></div>
-                        </div>
-
-                        <div class="cert-tile">
-                            <div class="cert-tile-label">Stay Duration & Dates</div>
-                            <div class="cert-tile-value">
-                                <?= date('M d, Y', strtotime($booking['check_in'])) ?> – <?= date('M d, Y', strtotime($booking['check_out'])) ?>
+                        <!-- Ticket Main Body -->
+                        <div class="ticket-body">
+                            <!-- Route Corridor -->
+                            <div class="ticket-route">
+                                <div class="route-point">
+                                    <div class="route-code"><?= $originCode ?></div>
+                                    <div class="route-city" title="<?= htmlspecialchars($booking['origin']) ?>"><?= htmlspecialchars($booking['origin']) ?></div>
+                                </div>
+                                <div class="route-plane">
+                                    <span><?= $modeIcon ?></span>
+                                    <div class="route-plane-line"></div>
+                                </div>
+                                <div class="route-point dest">
+                                    <div class="route-code"><?= $destCode ?></div>
+                                    <div class="route-city" title="<?= htmlspecialchars($booking['destination']) ?>"><?= htmlspecialchars($booking['destination']) ?></div>
+                                </div>
                             </div>
-                            <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;"><?= $nights ?> Night(s) • <?= intval($booking['guests']) ?> Guest(s)</div>
-                        </div>
 
-                        <div class="cert-tile">
-                            <div class="cert-tile-label">Low-Carbon Transit Mode</div>
-                            <div class="cert-tile-value" style="text-transform: capitalize;">
-                                <?= strtoupper($booking['travel_mode']) ?> (<?= floatval($booking['distance_km']) ?> km)
+                            <!-- Passenger Details -->
+                            <div class="ticket-passenger-group">
+                                <div class="ticket-label">Passenger / Eco Traveler</div>
+                                <div class="ticket-value-main"><?= htmlspecialchars($booking['traveler_name'] ?? $currentUser['name']) ?></div>
                             </div>
-                            <div style="font-size: 0.75rem; color: #047857; margin-top: 2px;">Clean Journey Corridor</div>
-                        </div>
-                    </div>
 
-                    <!-- Environmental Impact Metric Strip -->
-                    <div class="cert-impact-strip">
-                        <div class="cert-impact-item">
-                            <div class="cert-impact-num">🌱 <?= floatval($booking['co2_saved_kg']) ?> kg</div>
-                            <div class="cert-impact-lbl">Carbon Avoided</div>
-                        </div>
-                        <div class="cert-impact-item">
-                            <div class="cert-impact-num">💧 <?= number_format($booking['water_saved_liters'] ?: 120000) ?>L</div>
-                            <div class="cert-impact-lbl">Water Preserved</div>
-                        </div>
-                        <div class="cert-impact-item">
-                            <div class="cert-impact-num">⚡ <?= number_format($booking['power_saved_kwh'] ?: 28000) ?> kWh</div>
-                            <div class="cert-impact-lbl">Clean Solar Energy</div>
-                        </div>
-                    </div>
+                            <div class="ticket-grid-2">
+                                <div class="ticket-info-tile">
+                                    <div class="ticket-label">Corridor Pass</div>
+                                    <div class="ticket-value-mono"><?= htmlspecialchars(substr($booking['booking_code'], 0, 8)) ?></div>
+                                </div>
+                                <div class="ticket-info-tile">
+                                    <div class="ticket-label">Transit Mode</div>
+                                    <div class="ticket-value-sub" style="color: #047857;"><?= htmlspecialchars($modeLabel) ?></div>
+                                </div>
+                                <div class="ticket-info-tile">
+                                    <div class="ticket-label">Check-In Date</div>
+                                    <div class="ticket-value-sub"><?= date('d M Y', strtotime($booking['check_in'])) ?></div>
+                                </div>
+                                <div class="ticket-info-tile">
+                                    <div class="ticket-label">Stay Duration</div>
+                                    <div class="ticket-value-sub"><?= $nights ?> Night(s)</div>
+                                </div>
+                            </div>
 
-                    <!-- Accessibility Accommodations (Zero Extra Charge) -->
-                    <?php if (!empty($booking['accessibility_notes'])): ?>
-                        <div class="cert-acc-box">
-                            <span style="font-size: 1.1rem;">♿</span>
-                            <div>
-                                <strong>Universal Inclusivity Guaranteed:</strong> <?= htmlspecialchars($booking['accessibility_notes']) ?>
+                            <div class="ticket-info-tile" style="margin-bottom: 0.5rem;">
+                                <div class="ticket-label">Eco-Sanctuary Hotel</div>
+                                <div class="ticket-value-sub" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="<?= htmlspecialchars($booking['hotel_name']) ?>">
+                                    <?= htmlspecialchars($booking['hotel_name']) ?>
+                                </div>
                             </div>
                         </div>
-                    <?php endif; ?>
 
-                    <!-- Itemized Financial Receipt -->
-                    <table class="cert-table">
-                        <thead>
-                            <tr>
-                                <th>Hospitality & Transit Description</th>
-                                <th style="text-align: center;">Units</th>
-                                <th style="text-align: right;">Amount (INR)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <strong><?= htmlspecialchars($booking['hotel_name']) ?></strong><br>
-                                    <span style="font-size: 0.78rem; color: #64748b;">Eco-Cottage / Suite reservation at verified destination</span>
-                                </td>
-                                <td style="text-align: center;"><?= $nights ?> Night(s)</td>
-                                <td style="text-align: right; font-weight: 600;">₹<?= number_format($booking['total_price']) ?></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <strong>Sustainable Travel Infrastructure Fee</strong><br>
-                                    <span style="font-size: 0.78rem; color: #059669;">100% Waived by Way2Green Low-Carbon Initiative</span>
-                                </td>
-                                <td style="text-align: center;">1</td>
-                                <td style="text-align: right; color: #059669; font-weight: 700;">₹0 (Free)</td>
-                            </tr>
-                            <tr class="total-row">
-                                <td colspan="2">
-                                    Total Paid (Inclusive of All Sustainable Taxes)
-                                </td>
-                                <td style="text-align: right;">₹<?= number_format($booking['total_price']) ?></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- Digital Verification & Signature Footer -->
-                    <div class="cert-footer">
-                        <div>
-                            <div><strong>Way2Green Certified Digital Ledger</strong></div>
-                            <div>Hash: <span style="font-family: monospace;"><?= substr(hash('sha256', $booking['booking_code'] . $booking['created_at']), 0, 24) ?>...</span></div>
-                            <div>Registry: <em>way2green.synergize.co/verify</em></div>
+                        <!-- Perforation Line with Realistic Semicircle Edge Notches -->
+                        <div class="ticket-perforation-wrap">
+                            <div class="ticket-dashed-tear"></div>
                         </div>
-                        <div class="cert-signature">
-                            <div style="font-size: 1.4rem; color: #059669; margin-bottom: -4px;">🌿</div>
-                            <div class="cert-signature-name">Way2Green Climate Board</div>
-                            <div style="font-size: 0.7rem; color: #64748b;">Certified Global Eco-Hospitality</div>
+
+                        <!-- Lower Ticket Stub with Barcode & Verification -->
+                        <div class="ticket-stub">
+                            <div class="ticket-eco-stamp-row">
+                                <div class="ticket-eco-stamp">
+                                    <span>🌿</span> Verified Net-Zero
+                                </div>
+                                <div class="ticket-carbon-tag">
+                                    -<?= floatval($booking['co2_saved_kg']) ?> kg CO₂
+                                </div>
+                            </div>
+
+                            <div class="ticket-barcode-box">
+                                <div class="barcode-graphic" aria-hidden="true">
+                                    <span class="b-bar b-w2"></span>
+                                    <span class="b-bar b-w1"></span>
+                                    <span class="b-bar b-w3"></span>
+                                    <span class="b-bar b-w1"></span>
+                                    <span class="b-bar b-w2"></span>
+                                    <span class="b-bar b-w4"></span>
+                                    <span class="b-bar b-w1"></span>
+                                    <span class="b-bar b-w3"></span>
+                                    <span class="b-bar b-w2"></span>
+                                    <span class="b-bar b-w1"></span>
+                                    <span class="b-bar b-w2"></span>
+                                    <span class="b-bar b-w3"></span>
+                                    <span class="b-bar b-w1"></span>
+                                    <span class="b-bar b-w4"></span>
+                                    <span class="b-bar b-w2"></span>
+                                    <span class="b-bar b-w1"></span>
+                                    <span class="b-bar b-w3"></span>
+                                    <span class="b-bar b-w1"></span>
+                                    <span class="b-bar b-w2"></span>
+                                    <span class="b-bar b-w4"></span>
+                                    <span class="b-bar b-w1"></span>
+                                    <span class="b-bar b-w2"></span>
+                                    <span class="b-bar b-w3"></span>
+                                </div>
+                                <div class="barcode-code-text"><?= htmlspecialchars($booking['booking_code']) ?></div>
+                            </div>
+
+                            <div class="ticket-actions">
+                                <button type="button" class="btn-ticket-action" onclick="copyBookingCode('<?= htmlspecialchars($booking['booking_code']) ?>')">
+                                    📋 Copy Pass
+                                </button>
+                                <button type="button" class="btn-ticket-action primary" onclick="window.print()">
+                                    🖨️ Print Certificate
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </aside>
+
+                <!-- 75% Right Column: The Official Verified Certificate & Receipt -->
+                <section class="passport-cert-col">
+                    <div class="certificate-container">
+                        <div class="eco-passport-cert">
+                            
+                            <!-- Header Section -->
+                            <div class="cert-header">
+                                <div class="cert-logo-group">
+                                    <div class="cert-logo-icon">🌱</div>
+                                    <div>
+                                        <div class="cert-title-text">Official Way2Green Eco-Passport</div>
+                                        <div class="cert-subtitle">Verified Sustainable Hospitality Record • Global Tourism Code #W2G-<?= date('Y') ?></div>
+                                    </div>
+                                </div>
+                                <div class="cert-seal-badge">
+                                    ✓ Verified<br>Net-Zero
+                                </div>
+                            </div>
+
+                            <!-- 2-Column Passport Details Grid -->
+                            <div class="cert-grid">
+                                <div class="cert-tile">
+                                    <div class="cert-tile-label">Eco Traveler</div>
+                                    <div class="cert-tile-value"><?= htmlspecialchars($booking['traveler_name'] ?? $currentUser['name']) ?></div>
+                                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;"><?= htmlspecialchars($booking['traveler_email'] ?? $currentUser['email']) ?></div>
+                                </div>
+
+                                <div class="cert-tile">
+                                    <div class="cert-tile-label">Booking Reference</div>
+                                    <div class="cert-tile-value mono"><?= htmlspecialchars($booking['booking_code']) ?></div>
+                                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Issued: <?= date('M d, Y • H:i', strtotime($booking['created_at'])) ?> UTC</div>
+                                </div>
+
+                                <div class="cert-tile">
+                                    <div class="cert-tile-label">Certified Eco-Sanctuary</div>
+                                    <div class="cert-tile-value"><?= htmlspecialchars($booking['hotel_name']) ?></div>
+                                    <div style="font-size: 0.75rem; color: #047857; margin-top: 2px;">★ <?= number_format($booking['eco_rating'], 1) ?> Eco-Accredited</div>
+                                </div>
+
+                                <div class="cert-tile">
+                                    <div class="cert-tile-label">Destination Corridor</div>
+                                    <div class="cert-tile-value"><?= htmlspecialchars($booking['destination']) ?></div>
+                                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Origin: <?= htmlspecialchars($booking['origin']) ?></div>
+                                </div>
+
+                                <div class="cert-tile">
+                                    <div class="cert-tile-label">Stay Duration & Dates</div>
+                                    <div class="cert-tile-value">
+                                        <?= date('M d, Y', strtotime($booking['check_in'])) ?> – <?= date('M d, Y', strtotime($booking['check_out'])) ?>
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;"><?= $nights ?> Night(s) • <?= intval($booking['guests']) ?> Guest(s)</div>
+                                </div>
+
+                                <div class="cert-tile">
+                                    <div class="cert-tile-label">Low-Carbon Transit Mode</div>
+                                    <div class="cert-tile-value" style="text-transform: capitalize;">
+                                        <?= strtoupper($booking['travel_mode']) ?> (<?= floatval($booking['distance_km']) ?> km)
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: #047857; margin-top: 2px;">Clean Journey Corridor</div>
+                                </div>
+                            </div>
+
+                            <!-- Environmental Impact Metric Strip -->
+                            <div class="cert-impact-strip">
+                                <div class="cert-impact-item">
+                                    <div class="cert-impact-num">🌱 <?= floatval($booking['co2_saved_kg']) ?> kg</div>
+                                    <div class="cert-impact-lbl">Carbon Avoided</div>
+                                </div>
+                                <div class="cert-impact-item">
+                                    <div class="cert-impact-num">💧 <?= number_format($booking['water_saved_liters'] ?: 120000) ?>L</div>
+                                    <div class="cert-impact-lbl">Water Preserved</div>
+                                </div>
+                                <div class="cert-impact-item">
+                                    <div class="cert-impact-num">⚡ <?= number_format($booking['power_saved_kwh'] ?: 28000) ?> kWh</div>
+                                    <div class="cert-impact-lbl">Clean Solar Energy</div>
+                                </div>
+                            </div>
+
+                            <!-- Accessibility Accommodations (Zero Extra Charge) -->
+                            <?php if (!empty($booking['accessibility_notes'])): ?>
+                                <div class="cert-acc-box">
+                                    <span style="font-size: 1.1rem;">♿</span>
+                                    <div>
+                                        <strong>Universal Inclusivity Guaranteed:</strong> <?= htmlspecialchars($booking['accessibility_notes']) ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Itemized Financial Receipt -->
+                            <table class="cert-table">
+                                <thead>
+                                    <tr>
+                                        <th>Hospitality & Transit Description</th>
+                                        <th style="text-align: center;">Units</th>
+                                        <th style="text-align: right;">Amount (INR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <strong><?= htmlspecialchars($booking['hotel_name']) ?></strong><br>
+                                            <span style="font-size: 0.78rem; color: #64748b;">Eco-Cottage / Suite reservation at verified destination</span>
+                                        </td>
+                                        <td style="text-align: center;"><?= $nights ?> Night(s)</td>
+                                        <td style="text-align: right; font-weight: 600;">₹<?= number_format($booking['total_price']) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Sustainable Travel Infrastructure Fee</strong><br>
+                                            <span style="font-size: 0.78rem; color: #059669;">100% Waived by Way2Green Low-Carbon Initiative</span>
+                                        </td>
+                                        <td style="text-align: center;">1</td>
+                                        <td style="text-align: right; color: #059669; font-weight: 700;">₹0 (Free)</td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td colspan="2">
+                                            Total Paid (Inclusive of All Sustainable Taxes)
+                                        </td>
+                                        <td style="text-align: right;">₹<?= number_format($booking['total_price']) ?></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <!-- Digital Verification & Signature Footer -->
+                            <div class="cert-footer">
+                                <div>
+                                    <div><strong>Way2Green Certified Digital Ledger</strong></div>
+                                    <div>Hash: <span style="font-family: monospace;"><?= substr(hash('sha256', $booking['booking_code'] . $booking['created_at']), 0, 24) ?>...</span></div>
+                                    <div>Registry: <em>way2green.synergize.co/verify</em></div>
+                                </div>
+                                <div class="cert-signature">
+                                    <div style="font-size: 1.4rem; color: #059669; margin-bottom: -4px;">🌿</div>
+                                    <div class="cert-signature-name">Way2Green Climate Board</div>
+                                    <div style="font-size: 0.7rem; color: #64748b;">Certified Global Eco-Hospitality</div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
+                </section>
 
-                </div>
             </div>
 
         <?php else: ?>
@@ -784,3 +1328,4 @@ if ($booking && !empty($booking['check_in']) && !empty($booking['check_out'])) {
     </script>
 </body>
 </html>
+

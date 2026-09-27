@@ -202,14 +202,20 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             scroll-behavior: smooth;
         }
 
+        /* PERMANENT STATIC TROPICAL BEACH BACKGROUND — ORIGINAL FULL BRIGHT COLORS (NO OVERLAY) */
         body {
             font-family: var(--font-main);
-            background-color: var(--alice-blue);
             color: var(--text-on-alice);
             line-height: 1.6;
             overflow-x: hidden;
             position: relative;
-            padding-bottom: 74px; /* Mobile bottom dock clearance */
+            padding-bottom: 74px;
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=85') center center / cover no-repeat fixed;
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
         }
 
         @media (min-width: 900px) {
@@ -228,29 +234,17 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             font-family: inherit;
         }
 
-        /* Ambient Glowing Background Elements */
-        .ambient-glow-1 {
-            position: fixed;
-            top: -120px;
-            right: -100px;
-            width: 480px;
-            height: 480px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(34, 197, 94, 0.12) 0%, rgba(240, 248, 255, 0) 70%);
-            pointer-events: none;
-            z-index: 0;
+        /* SVG Icon Base Styles */
+        .svg-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
-
-        .ambient-glow-2 {
-            position: fixed;
-            bottom: -150px;
-            left: -100px;
-            width: 520px;
-            height: 520px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(11, 59, 36, 0.1) 0%, rgba(240, 248, 255, 0) 70%);
-            pointer-events: none;
-            z-index: 0;
+        .svg-icon svg {
+            width: 1em;
+            height: 1em;
+            fill: currentColor;
         }
 
         /* ==========================================================================
@@ -463,8 +457,10 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* ==========================================================================
-           MAIN HERO SECTION WITH DYNAMIC LOCATION BACKGROUND
-           Strict UI Constraint: Semi-transparent Seaweed Green / Alice Blue Gradient Overlay
+           MAIN HERO SECTION — STATIC TROPICAL BEACH BG
+           ========================================================================== */
+        /* ==========================================================================
+           MAIN HERO SECTION — STATIC TROPICAL BEACH BG (NO OVERLAY / PURE ORIGINAL COLORS)
            ========================================================================== */
         .hero-section {
             position: relative;
@@ -474,47 +470,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             justify-content: center;
             padding: 4rem 1.5rem 6.5rem;
             overflow: hidden;
-            background-color: var(--seaweed-dark);
-            transition: background 0.6s ease-in-out;
-        }
-
-        /* Dynamic Background Layer with Smooth Image Crossfading */
-        .hero-bg-layer {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            opacity: 1;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: scale(1.02);
-            z-index: 1;
-        }
-
-        /* Gradient Overlay: Semi-transparent Seaweed Green + Alice Blue */
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(7, 36, 22, 0.92) 0%,
-                rgba(11, 59, 36, 0.85) 45%,
-                rgba(19, 78, 53, 0.76) 75%,
-                rgba(240, 248, 255, 0.32) 100%
-            );
-            backdrop-filter: blur(1.5px);
-            -webkit-backdrop-filter: blur(1.5px);
-            z-index: 2;
-        }
-
-        .hero-ambient-mesh {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 80% 25%, rgba(52, 211, 153, 0.18) 0%, transparent 50%),
-                        radial-gradient(circle at 20% 85%, rgba(240, 248, 255, 0.15) 0%, transparent 45%);
-            mix-blend-mode: overlay;
-            z-index: 3;
-            pointer-events: none;
+            background: transparent;
         }
 
         .hero-container {
@@ -544,55 +500,61 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         .badge-eco-pill {
-            background: rgba(240, 248, 255, 0.15);
-            border: 1px solid rgba(240, 248, 255, 0.3);
-            color: var(--alice-blue);
+            background: rgba(7, 36, 22, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            color: #ffffff;
             padding: 6px 14px;
             border-radius: var(--radius-full);
             font-size: 0.84rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.03em;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(8px);
         }
 
         .badge-destination-indicator {
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid var(--seaweed-accent);
-            color: #d1fae5;
+            background: rgba(7, 36, 22, 0.78);
+            border: 1.5px solid var(--seaweed-accent);
+            color: #ffffff;
             padding: 6px 14px;
             border-radius: var(--radius-full);
             font-size: 0.84rem;
-            font-weight: 700;
+            font-weight: 800;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
             transition: var(--transition);
         }
 
         .hero-title {
             font-size: clamp(2.3rem, 4.2vw, 3.5rem);
-            font-weight: 800;
+            font-weight: 900;
             line-height: 1.12;
-            color: var(--alice-blue);
+            color: #ffffff;
             letter-spacing: -0.03em;
-            text-shadow: 0 3px 18px rgba(4, 22, 13, 0.4);
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.85);
         }
 
         .hero-title .highlight {
-            background: linear-gradient(120deg, #6ee7b7, #a7f3d0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #34d399;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.85);
             display: inline-block;
         }
 
         .hero-subtitle {
-            font-size: 1.08rem;
-            color: var(--text-light-subtle);
+            font-size: 1.1rem;
+            color: #ffffff;
             line-height: 1.65;
             max-width: 580px;
+            font-weight: 700;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 2px 10px rgba(0, 0, 0, 0.9);
         }
 
         /* ==========================================================================
@@ -618,9 +580,238 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 
         .search-fields-grid {
             display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+            grid-template-columns: 1fr;
             gap: 1rem;
             align-items: start;
+        }
+
+        /* Split Location Row: Origin + Swap + Destination */
+        .location-split-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0.75rem;
+            align-items: end;
+        }
+
+        .secondary-fields-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.2fr;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        /* ============================================================
+           LOCATION WRAPPER WITH DYNAMIC BACKGROUND & OVERLAY
+           ============================================================ */
+        .location-wrapper {
+            position: relative;
+            background-color: #ffffff;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            border: 2px solid var(--alice-blue-deep);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            padding: 20px 22px;
+            gap: 12px;
+            min-height: 78px;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.4s ease;
+            box-shadow: 0 3px 10px rgba(7, 36, 22, 0.06);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .location-wrapper:focus-within {
+            border-color: var(--seaweed-accent);
+            box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.2), 0 6px 18px rgba(7, 36, 22, 0.08);
+        }
+
+        /* The actual <input> must be 100% transparent so the background shows through */
+        .location-wrapper input {
+            width: 100%;
+            border: none !important;
+            background: transparent !important;
+            outline: none !important;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--seaweed-dark);
+            position: relative;
+            z-index: 3;
+            transition: color 0.2s ease;
+        }
+
+        /* When dynamic background is active on the wrapper:
+           the text turns crisp white with STRONG text-shadow for readability over bright photos */
+        .location-wrapper.has-bg input {
+            color: #ffffff !important;
+            font-weight: 800;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 0 8px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.95) !important;
+        }
+
+        .location-wrapper input::placeholder {
+            color: #8fa79b;
+            font-weight: 500;
+        }
+
+        .location-wrapper.has-bg input::placeholder {
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95);
+        }
+
+        .location-wrapper .field-icon {
+            font-size: 1.35rem;
+            position: relative;
+            z-index: 3;
+            color: var(--seaweed-mid);
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .location-wrapper.has-bg .field-icon {
+            color: #ffffff;
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.9));
+        }
+
+        /* Bottom-Right Label inside the wrapper */
+        .location-corner-label {
+            position: absolute;
+            bottom: 7px;
+            right: 12px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 0 8px rgba(0, 0, 0, 0.9);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            z-index: 4;
+            pointer-events: none;
+            display: none;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
+        }
+
+        .location-wrapper.has-bg .location-corner-label {
+            display: inline-block;
+        }
+
+        .field-label-xl {
+            font-size: 0.82rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--seaweed-primary);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* GPS & Destination Dropdown Menus */
+        .gps-dropdown,
+        .dest-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 2px solid var(--alice-blue-deep);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            z-index: 60;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            max-height: 340px;
+            overflow-y: auto;
+        }
+
+        .gps-dropdown.show,
+        .dest-dropdown.show {
+            display: flex;
+            animation: fadeInMenu 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .gps-dropdown-item,
+        .dest-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--seaweed-dark);
+            border-bottom: 1px solid rgba(202, 227, 251, 0.5);
+        }
+
+        .gps-dropdown-item:last-child,
+        .dest-dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .gps-dropdown-item:hover,
+        .dest-dropdown-item:hover {
+            background: var(--alice-blue);
+        }
+
+        .gps-dropdown-item.gps-option {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(240, 248, 255, 1) 100%);
+            font-weight: 800;
+            color: var(--seaweed-primary);
+            border-bottom: 2px solid var(--alice-blue-deep);
+        }
+
+        .gps-dropdown-item.gps-option:hover {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.18) 0%, rgba(240, 248, 255, 1) 100%);
+        }
+
+        .gps-icon-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--seaweed-primary);
+            color: var(--alice-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .gps-icon-circle.city-circle {
+            background: var(--alice-blue-dark);
+            color: var(--seaweed-mid);
+        }
+
+        /* Swap Button between Origin & Destination */
+        .swap-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--seaweed-primary), var(--seaweed-light));
+            color: var(--alice-blue);
+            border: 3px solid var(--alice-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 800;
+            box-shadow: 0 4px 14px rgba(11, 59, 36, 0.2);
+            transition: var(--transition);
+            margin-bottom: 4px;
+            flex-shrink: 0;
+            align-self: end;
+        }
+
+        .swap-btn:hover {
+            transform: rotate(180deg) scale(1.08);
+            box-shadow: 0 6px 20px rgba(11, 59, 36, 0.35);
         }
 
         .search-field-group {
@@ -843,7 +1034,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* ==========================================================================
-           BUTTON AREA: VERTICAL STACK (NO OVERLAP, SPACIOUS BREATHING ROOM)
+           BUTTON AREA: VERTICAL STACK
            ========================================================================== */
         .search-actions-group {
             display: flex;
@@ -1072,14 +1263,16 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         .connector-line::after {
-            content: '🚆';
+            content: '';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 0.95rem;
-            background: #ffffff;
-            padding: 0 4px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--seaweed-primary);
+            box-shadow: 0 0 0 3px #ffffff, 0 0 8px rgba(34, 197, 94, 0.3);
         }
 
         .pass-details-grid {
@@ -1266,7 +1459,6 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-size: 1.4rem;
         }
 
         .pass-serial {
@@ -1295,7 +1487,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* ==========================================================================
-           SECTION: 3-STEP JOURNEY ROADMAP (CONNECTED FLOW)
+           SECTION: 3-STEP JOURNEY ROADMAP
            ========================================================================== */
         .roadmap-section {
             max-width: 1320px;
@@ -1342,8 +1534,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         .roadmap-icon {
-            font-size: 2rem;
             margin-bottom: 8px;
+            color: var(--seaweed-primary);
         }
 
         .roadmap-title {
@@ -1881,6 +2073,27 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             color: var(--seaweed-primary);
         }
 
+        /* Bottom feature trust strip */
+        .trust-features-strip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+            padding: 1.2rem 0;
+            margin-top: 0.5rem;
+            border-top: 1px dashed rgba(11, 59, 36, 0.12);
+        }
+
+        .trust-feature {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--seaweed-mid);
+        }
+
         @media (min-width: 900px) {
             .mobile-bottom-bar {
                 display: none;
@@ -1905,7 +2118,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 max-width: 460px;
             }
 
-            .search-fields-grid {
+            .secondary-fields-row {
                 grid-template-columns: 1fr 1fr;
             }
 
@@ -1928,7 +2141,22 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 padding: 3rem 1rem 5.5rem;
             }
 
-            .search-fields-grid {
+            .location-split-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .swap-btn {
+                align-self: center;
+                transform: rotate(90deg);
+                margin: 0 auto;
+            }
+
+            .swap-btn:hover {
+                transform: rotate(270deg) scale(1.08);
+            }
+
+            .secondary-fields-row {
                 grid-template-columns: 1fr;
             }
 
@@ -1958,39 +2186,67 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 </head>
 <body>
 
-    <!-- Ambient Glowing Backdrop -->
-    <div class="ambient-glow-1"></div>
-    <div class="ambient-glow-2"></div>
-
     <!-- Mobile Drawer Overlay -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
 
-    <!-- Off-Canvas Mobile Drawer -->
+    <!-- Off-Canvas Mobile Drawer (No emojis — SVG icons inline) -->
     <div class="mobile-drawer" id="mobileDrawer">
-        <button class="drawer-close" onclick="toggleDrawer()">✕</button>
+        <button class="drawer-close" onclick="toggleDrawer()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
         <div style="font-weight: 800; font-size: 1.3rem; color: var(--seaweed-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.4rem;">🌱</span> Way2Green
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--seaweed-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+            Way2Green
         </div>
-        <a href="index.php" class="drawer-link active">🏡 Home</a>
-        <a href="travel.php" class="drawer-link">🚆 Plan Transit</a>
-        <a href="hotels.php" class="drawer-link">🏨 Eco-Stays</a>
-        <a href="about.php" class="drawer-link">🌿 Our Mission</a>
+        <a href="index.php" class="drawer-link active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+            Home
+        </a>
+        <a href="travel.php" class="drawer-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22"/></svg>
+            Plan Transit
+        </a>
+        <a href="hotels.php" class="drawer-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 7v14M21 7v14M6 11h4v4H6zM14 11h4v4h-4zM9 3h6v4H9z"/></svg>
+            Eco-Stays
+        </a>
+        <a href="about.php" class="drawer-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            Our Mission
+        </a>
         <?php if ($user): ?>
-            <a href="my-trips.php" class="drawer-link">📜 My Passports</a>
-            <a href="logout.php" class="drawer-link" style="color: #dc2626;">🚪 Sign Out (<?= htmlspecialchars($user['name']) ?>)</a>
+            <a href="my-trips.php" class="drawer-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                My Passports
+            </a>
+            <a href="logout.php" class="drawer-link" style="color: #dc2626;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+                Sign Out (<?= htmlspecialchars($user['name']) ?>)
+            </a>
         <?php else: ?>
-            <a href="login.php" class="drawer-link">👤 Traveler Sign In</a>
-            <a href="register.php" class="drawer-link" style="color: var(--seaweed-light);">✨ Create Account</a>
+            <a href="login.php" class="drawer-link">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Traveler Sign In
+            </a>
+            <a href="register.php" class="drawer-link" style="color: var(--seaweed-light);">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                Create Account
+            </a>
         <?php endif; ?>
         <hr style="border: none; border-top: 1px solid var(--alice-blue-deep); margin: 0.5rem 0;">
-        <a href="admin/login.php" class="drawer-link" style="font-size: 0.9rem; color: var(--text-muted);">🔒 Admin Portal</a>
+        <a href="admin/login.php" class="drawer-link" style="font-size: 0.9rem; color: var(--text-muted);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Admin Portal
+        </a>
     </div>
 
     <!-- Navigation Header -->
     <header class="site-header">
         <div class="nav-inner">
             <a href="index.php" class="brand-logo">
-                <div class="brand-icon-box">🌱</div>
+                <div class="brand-icon-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </div>
                 <span>Way_2_Green</span>
             </a>
 
@@ -2005,7 +2261,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                     <a href="logout.php" class="nav-link" style="color: #dc2626;">Sign Out</a>
                 <?php else: ?>
                     <a href="login.php" class="nav-link">Sign In</a>
-                    <a href="register.php" class="btn-nav-primary">Get Started ➔</a>
+                    <a href="register.php" class="btn-nav-primary">Get Started
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
                 <?php endif; ?>
             </nav>
 
@@ -2024,22 +2282,19 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         </div>
     </header>
 
-    <!-- Main Hero Section with Dynamic Location Backgrounds -->
+    <!-- Main Hero Section with STATIC Tropical Beach Background (Unmodified Original Colors) -->
     <section class="hero-section" id="heroSection">
-        <!-- Dynamic Background Layer (Manipulated by Inline JS) -->
-        <div class="hero-bg-layer" id="heroBgLayer"></div>
-
-        <!-- Strict UI Constraint: Semi-transparent Seaweed Green / Alice Blue Gradient Overlay -->
-        <div class="hero-overlay"></div>
-        <div class="hero-ambient-mesh"></div>
-
         <div class="hero-container">
             <!-- Left Hero Content & The Complex Search Widget -->
             <div class="hero-left">
                 <div class="hero-badge-row">
-                    <span class="badge-eco-pill">🌍 Sustainable & Barrier-Free Hospitality</span>
+                    <span class="badge-eco-pill">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                        Sustainable &amp; Barrier-Free Hospitality
+                    </span>
                     <span class="badge-destination-indicator" id="heroDestIndicator">
-                        📍 Viewing: <strong id="heroDestIndicatorName" style="margin-left: 4px;">Agra • Taj Mahal Corridor</strong>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Viewing: <strong id="heroDestIndicatorName" style="margin-left: 4px;">Agra &bull; Taj Mahal Corridor</strong>
                     </span>
                 </div>
 
@@ -2058,29 +2313,177 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                         <div class="search-widget-card">
                             <div class="search-fields-grid">
                                 
-                                <!-- Field 1: Destination / Location (Monitored by JS) -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="locationInput">
-                                        <span>📍</span> Destination
-                                    </label>
-                                    <div class="field-input-box">
-                                        <span class="field-icon">🗺️</span>
-                                        <input 
-                                            type="text" 
-                                            name="dest" 
-                                            id="locationInput" 
-                                            placeholder="Agra, Goa, Mumbai, Singapore, Munnar..." 
-                                            value="Agra"
-                                            autocomplete="off"
-                                            required
-                                        >
+                                <!-- Split Location Fields: Starting Place + Swap + Destination -->
+                                <div class="location-split-row">
+                                    <!-- Field 1A: Starting Place (Origin) with GPS Dropdown -->
+                                    <div class="search-field-group">
+                                        <label class="field-label-xl" for="originInput">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+                                            Starting Place
+                                        </label>
+                                        <div class="location-wrapper" id="originWrapper">
+                                            <span class="field-icon">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                            </span>
+                                            <input 
+                                                type="text" 
+                                                name="origin" 
+                                                id="originInput" 
+                                                placeholder="e.g. New Delhi, Mumbai, Bangalore..." 
+                                                value="New Delhi"
+                                                autocomplete="off"
+                                            >
+                                            <span class="location-corner-label" id="originCornerLabel">New Delhi</span>
+                                        </div>
+                                        <!-- GPS Dropdown Menu -->
+                                        <div class="gps-dropdown" id="gpsDropdown">
+                                            <div class="gps-dropdown-item gps-option" onclick="useGPSLocation()">
+                                                <div class="gps-icon-circle">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight:800;">Find my location through GPS</div>
+                                                    <div style="font-size:0.76rem;color:var(--text-muted);font-weight:500;">Use your device's current location</div>
+                                                </div>
+                                            </div>
+                                            <div class="gps-dropdown-item" onclick="selectOriginCity('New Delhi')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                New Delhi
+                                            </div>
+                                            <div class="gps-dropdown-item" onclick="selectOriginCity('Mumbai')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Mumbai
+                                            </div>
+                                            <div class="gps-dropdown-item" onclick="selectOriginCity('Bangalore')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Bangalore
+                                            </div>
+                                            <div class="gps-dropdown-item" onclick="selectOriginCity('Chennai')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Chennai
+                                            </div>
+                                            <div class="gps-dropdown-item" onclick="selectOriginCity('Kolkata')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Kolkata
+                                            </div>
+                                            <div class="gps-dropdown-item" onclick="selectOriginCity('Hyderabad')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Hyderabad
+                                            </div>
+                                            <div class="gps-dropdown-item" onclick="selectOriginCity('Pune')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Pune
+                                            </div>
+                                            <div class="gps-dropdown-item" onclick="selectOriginCity('Jaipur')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Jaipur
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Swap Button -->
+                                    <button type="button" class="swap-btn" id="swapLocationsBtn" title="Swap origin and destination" onclick="swapLocations()">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+                                    </button>
+
+                                    <!-- Field 1B: Destination -->
+                                    <div class="search-field-group">
+                                        <label class="field-label-xl" for="locationInput">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                            Destination
+                                        </label>
+                                        <div class="location-wrapper" id="destWrapper">
+                                            <span class="field-icon">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                            </span>
+                                            <input 
+                                                type="text" 
+                                                name="dest" 
+                                                id="locationInput" 
+                                                placeholder="Agra, Goa, Mumbai, Singapore, Munnar..." 
+                                                value="Agra"
+                                                autocomplete="off"
+                                                required
+                                            >
+                                            <span class="location-corner-label" id="destCornerLabel">Agra</span>
+                                        </div>
+                                        <!-- Destination Dropdown Menu -->
+                                        <div class="dest-dropdown" id="destDropdown">
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Agra')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Agra &bull; Taj Mahal Eco Sanctuary
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Goa')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Goa &bull; Coastal Beaches
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Mumbai')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Mumbai &bull; Marine Drive &amp; Gateway
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Singapore')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Singapore &bull; Supertrees &amp; Gardens
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Munnar')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Munnar &bull; Western Ghats Tea Hills
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Manali')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Manali &bull; Solang Alpine Valley
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Kyoto')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Kyoto &bull; Arashiyama Bamboo Sanctuary
+                                            </div>
+                                            <div class="dest-dropdown-item" onclick="selectDestination('Bali')">
+                                                <div class="gps-icon-circle city-circle">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                                </div>
+                                                Bali &bull; Ubud Rice Terraces
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
+                                <!-- Secondary Fields Row: Check-in, Check-out, Guests -->
+                                <div class="secondary-fields-row">
                                 <!-- Field 2: Check-in Date -->
                                 <div class="search-field-group">
                                     <label class="field-label" for="checkInInput">
-                                        <span>📅</span> Check-In
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        Check-In
                                     </label>
                                     <div class="field-input-box">
                                         <input type="date" name="check_in" id="checkInInput">
@@ -2090,7 +2493,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                 <!-- Field 3: Check-out Date -->
                                 <div class="search-field-group">
                                     <label class="field-label" for="checkOutInput">
-                                        <span>📅</span> Check-Out
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        Check-Out
                                     </label>
                                     <div class="field-input-box">
                                         <input type="date" name="check_out" id="checkOutInput">
@@ -2100,10 +2504,13 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                 <!-- Field 4: Guests & Rooms Selector -->
                                 <div class="search-field-group">
                                     <label class="field-label" for="guestTriggerBtn">
-                                        <span>👥</span> Guests & Rooms
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                                        Guests &amp; Rooms
                                     </label>
                                     <div class="field-input-box" id="guestTriggerBtn" style="cursor: pointer;">
-                                        <span class="field-icon">🧳</span>
+                                        <span class="field-icon">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+                                        </span>
                                         <input 
                                             type="text" 
                                             id="guestSummaryInput" 
@@ -2154,60 +2561,82 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                         </button>
                                     </div>
                                 </div>
+                                </div><!-- end .secondary-fields-row -->
                             </div>
 
-                            <!-- Quick Popular Destination Filter Chips -->
+                            <!-- Quick Popular Destination Filter Chips (No Emojis) -->
                             <div class="quick-destinations-row">
                                 <span class="quick-dest-label">Popular Corridors:</span>
-                                <button class="dest-chip active" type="button" onclick="selectDestination('Agra')">🕌 Agra</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Goa')">🏖️ Goa</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Mumbai')">🏛️ Mumbai</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Singapore')">🏙️ Singapore</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Munnar')">🌿 Munnar</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Manali')">🏔️ Manali</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Kyoto')">🎋 Kyoto</button>
+                                <button class="dest-chip active" type="button" onclick="selectDestination('Agra')">Agra</button>
+                                <button class="dest-chip" type="button" onclick="selectDestination('Goa')">Goa</button>
+                                <button class="dest-chip" type="button" onclick="selectDestination('Mumbai')">Mumbai</button>
+                                <button class="dest-chip" type="button" onclick="selectDestination('Singapore')">Singapore</button>
+                                <button class="dest-chip" type="button" onclick="selectDestination('Munnar')">Munnar</button>
+                                <button class="dest-chip" type="button" onclick="selectDestination('Manali')">Manali</button>
+                                <button class="dest-chip" type="button" onclick="selectDestination('Kyoto')">Kyoto</button>
                             </div>
 
-                            <!-- Amenities & Accessibility Toggles -->
+                            <!-- Amenities & Accessibility Toggles (No Emojis) -->
                             <div class="search-amenities-row">
                                 <div class="eco-filters-group">
                                     <label class="checkbox-pill">
                                         <input type="checkbox" name="accessible" value="1" id="checkWheelchair" checked>
-                                        <span>♿ Wheelchair Accessible</span>
+                                        <span>Wheelchair Accessible</span>
                                     </label>
                                     <label class="checkbox-pill">
                                         <input type="checkbox" name="solar" value="1" id="checkSolar" checked>
-                                        <span>☀️ 100% Solar Powered</span>
+                                        <span>100% Solar Powered</span>
                                     </label>
                                     <label class="checkbox-pill">
                                         <input type="checkbox" name="zero_plastic" value="1" id="checkPlasticFree" checked>
-                                        <span>🌱 Zero Single-Use Plastics</span>
+                                        <span>Zero Single-Use Plastics</span>
                                     </label>
                                 </div>
-                                <span style="font-size: 0.78rem; font-weight: 700; color: var(--seaweed-mid);">
-                                    ⚡ Connected to Official Transit & Stays Engine
+                                <span style="font-size: 0.78rem; font-weight: 700; color: var(--seaweed-mid); display: inline-flex; align-items: center; gap: 5px;">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    Connected to Official Transit &amp; Stays Engine
                                 </span>
                             </div>
                         </div>
 
-                        <!-- Action Buttons Group: Vertically Stacked with Breathing Room & No Overlap -->
+                        <!-- Action Buttons Group -->
                         <div class="search-actions-group">
                             <!-- Top Transit Calculator Pill -->
                             <div class="search-secondary-action">
                                 <a href="travel.php?dest=Agra" id="transitPlannerHeroLink" class="link-transit-calc">
-                                    <span>🚆 Want route emissions first? Open Phase 1 Transit Calculator ➔</span>
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22"/></svg>
+                                    <span>Want route emissions first? Open Phase 1 Transit Calculator</span>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                                 </a>
                             </div>
 
                             <!-- Main Search Button Submitting to hotels.php -->
                             <div class="search-btn-container">
                                 <button type="submit" class="btn-search-large" id="mainSearchBtn">
-                                    <span>Search Eco-Stays</span>
-                                    <span class="search-btn-icon">➔</span>
+                                    <span>SEARCH</span>
+                                    <span class="search-btn-icon">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                    </span>
                                 </button>
                             </div>
                         </div>
                     </form>
+
+                    <!-- Bottom Trust Features Strip (Clean SVGs, No Emojis) -->
+                    <div class="trust-features-strip">
+                        <div class="trust-feature">
+                            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                            <span>GST Certified Eco-Stays</span>
+                        </div>
+                        <div class="trust-feature">
+                            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            <span>Real-Time Carbon Audit</span>
+                        </div>
+                        <div class="trust-feature">
+                            <svg class="svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <span>100% Verified Accessible</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -2217,7 +2646,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                     <!-- Boarding Pass Header -->
                     <div class="pass-header">
                         <div class="pass-airline-brand">
-                            <span style="font-size: 1.3rem;">🌱</span>
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
                             <div>
                                 <div style="line-height: 1.1;">WAY2GREEN</div>
                                 <span style="font-size: 0.65rem; opacity: 0.85; font-weight: 600; text-transform: uppercase;">Bio-Transit Network</span>
@@ -2228,22 +2657,25 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 
                     <!-- Boarding Pass Main Body -->
                     <div class="pass-main-body">
-                        <!-- Origin ➔ Destination Route Block (Dynamically Synchronized) -->
+                        <!-- Origin to Destination Route Block -->
                         <div class="pass-route-block">
                             <div class="route-stop">
-                                <span class="stop-code">DEL</span>
-                                <span class="stop-city">New Delhi</span>
+                                <span class="stop-code" id="ticket-origin-code">DEL</span>
+                                <span class="stop-city" id="ticket-origin-name">New Delhi</span>
                             </div>
 
                             <div class="route-connector">
-                                <span class="route-transport-mode" id="passTransitMode">⚡ Solar High-Speed</span>
+                                <span class="route-transport-mode" id="passTransitMode">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    Solar High-Speed
+                                </span>
                                 <div class="connector-line"></div>
-                                <span style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);" id="passDistance">195 km • 0kg CO₂</span>
+                                <span style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);" id="ticket-transit-info">195 km &bull; Solar Express</span>
                             </div>
 
                             <div class="route-stop" style="text-align: right;">
-                                <span class="stop-code" id="passDestCode">AGR</span>
-                                <span class="stop-city" id="passDestCity">Agra</span>
+                                <span class="stop-code" id="ticket-dest-code">AGR</span>
+                                <span class="stop-city" id="ticket-dest-name">Agra</span>
                             </div>
                         </div>
 
@@ -2270,9 +2702,10 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                         <!-- Carbon Savings Live Strip -->
                         <div class="pass-carbon-strip">
                             <div class="carbon-strip-title">
-                                <span>🌿 Avoided Footprint:</span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--seaweed-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                                <span>Avoided Footprint:</span>
                             </div>
-                            <span class="carbon-savings-badge" id="passSavingsBadge">-84% CO₂ Emissions</span>
+                            <span class="carbon-savings-badge" id="passSavingsBadge">-84% CO2 Emissions</span>
                         </div>
                     </div>
 
@@ -2287,14 +2720,17 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                     <div class="pass-stub">
                         <div class="stub-row">
                             <div class="stub-seal-badge">
-                                <div class="seal-stamp">✓</div>
+                                <div class="seal-stamp">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                </div>
                                 <div class="seal-text">
                                     <span class="seal-title">Verified Green Passport</span>
                                     <span class="seal-subtitle" id="passLandmarkText">Taj Mahal Sanctuary</span>
                                 </div>
                             </div>
-                            <span style="font-size: 0.8rem; font-weight: 800; color: var(--seaweed-primary);">
-                                ACCESSIBLE ♿
+                            <span style="font-size: 0.8rem; font-weight: 800; color: var(--seaweed-primary); display: inline-flex; align-items: center; gap: 4px;">
+                                ACCESSIBLE
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8a2 2 0 100-4 2 2 0 000 4zM10 12h4l-1 6M14 14h-4"/></svg>
                             </span>
                         </div>
 
@@ -2321,17 +2757,18 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                 <div class="barcode-line" style="width: 2px;"></div>
                             </div>
                             <div class="qr-placeholder" title="Digital Passport Token">
-                                📱
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--seaweed-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                             </div>
                         </div>
 
                         <div class="pass-serial" id="passSerialCode">
-                            PASS #W2G-9842-AGR-2026 • CARBON NEUTRAL TICKET
+                            PASS #W2G-9842-AGR-2026 &bull; CARBON NEUTRAL TICKET
                         </div>
 
                         <!-- Action Button on Pass Stub -->
                         <a href="<?= $user ? 'my-trips.php' : 'travel.php?dest=Agra' ?>" id="stubPassActionBtn" class="btn-stub-passport">
-                            <?= $user ? 'View My Saved Passports ➔' : 'Plan Low-Carbon Transit ➔' ?>
+                            <?= $user ? 'View My Saved Passports' : 'Plan Low-Carbon Transit' ?>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                         </a>
                     </div>
                 </div>
@@ -2345,41 +2782,52 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             <!-- Step 1 -->
             <div class="roadmap-card">
                 <div>
-                    <span class="roadmap-badge">Phase 1 • Low Carbon Transit</span>
-                    <div class="roadmap-icon">🚆</div>
-                    <h3 class="roadmap-title">Calculate & Cut Emissions</h3>
+                    <span class="roadmap-badge">Phase 1 &bull; Low Carbon Transit</span>
+                    <div class="roadmap-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                    </div>
+                    <h3 class="roadmap-title">Calculate &amp; Cut Emissions</h3>
                     <p class="roadmap-desc">
                         Compare trains, coaches, electric vehicles, and driving. See exact carbon footprints in kilograms and get AI recommendations.
                     </p>
                 </div>
-                <a href="travel.php" class="roadmap-btn">Open Transit Calculator ➔</a>
+                <a href="travel.php" class="roadmap-btn">Open Transit Calculator
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
             </div>
 
             <!-- Step 2 -->
             <div class="roadmap-card">
                 <div>
-                    <span class="roadmap-badge">Phase 2 • Inclusive Hospitality</span>
-                    <div class="roadmap-icon">🏨</div>
+                    <span class="roadmap-badge">Phase 2 &bull; Inclusive Hospitality</span>
+                    <div class="roadmap-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 7v14M21 7v14M6 11h4v4H6zM14 11h4v4h-4zM9 3h6v4H9z"/></svg>
+                    </div>
                     <h3 class="roadmap-title">Stay at Verified Eco-Resorts</h3>
                     <p class="roadmap-desc">
                         Handpicked solar-powered properties with greywater recycling, zero single-use plastics, and physical step-free wheelchair access.
                     </p>
                 </div>
-                <a href="hotels.php" class="roadmap-btn">Browse Eco-Stays Catalog ➔</a>
+                <a href="hotels.php" class="roadmap-btn">Browse Eco-Stays Catalog
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
             </div>
 
             <!-- Step 3 -->
             <div class="roadmap-card">
                 <div>
-                    <span class="roadmap-badge">Phase 3 • Digital Green Passport</span>
-                    <div class="roadmap-icon">📜</div>
+                    <span class="roadmap-badge">Phase 3 &bull; Digital Green Passport</span>
+                    <div class="roadmap-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    </div>
                     <h3 class="roadmap-title">Earn Your Eco-Passport</h3>
                     <p class="roadmap-desc">
                         Lock in your reservation to receive a verified, downloadable Carbon-Offset Passport showing liters of water saved and clean energy used.
                     </p>
                 </div>
                 <a href="<?= $user ? 'my-trips.php' : 'login.php' ?>" class="roadmap-btn">
-                    <?= $user ? 'View My Trips & Passports ➔' : 'Sign In to View Passports ➔' ?>
+                    <?= $user ? 'View My Trips & Passports' : 'Sign In to View Passports' ?>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
             </div>
         </div>
@@ -2392,12 +2840,13 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 <span class="section-tag">Featured Stays</span>
                 <h2 class="section-heading" id="staysHeading">Verified Inclusive Eco-Resorts</h2>
                 <p class="section-subtext" id="staysSubtext">
-                    Solar-powered, barrier-free certified accommodations across India with real-time transit & reservation links.
+                    Solar-powered, barrier-free certified accommodations across India with real-time transit &amp; reservation links.
                 </p>
             </div>
             <div>
                 <a href="hotels.php" class="btn-nav-primary">
-                    View All 26 Stays in Catalog ➔
+                    View All 26 Stays in Catalog
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
             </div>
         </div>
@@ -2410,39 +2859,56 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             <div class="stay-card">
                 <div class="stay-thumb-box">
                     <img src="<?= htmlspecialchars($h['image_url']) ?>" alt="<?= htmlspecialchars($h['name']) ?>" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'">
-                    <div class="stay-rating-tag">★ <?= htmlspecialchars($h['eco_rating']) ?></div>
-                    <div class="stay-eco-badge">🌱 <?= htmlspecialchars($badges[0] ?? 'Eco Certified') ?></div>
+                    <div class="stay-rating-tag">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        <?= htmlspecialchars($h['eco_rating']) ?>
+                    </div>
+                    <div class="stay-eco-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:3px;"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg>
+                        <?= htmlspecialchars($badges[0] ?? 'Eco Certified') ?>
+                    </div>
                 </div>
                 <div class="stay-card-body">
-                    <div class="stay-loc">📍 <?= htmlspecialchars($h['destination_name']) ?></div>
+                    <div class="stay-loc">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <?= htmlspecialchars($h['destination_name']) ?>
+                    </div>
                     <h3 class="stay-title"><?= htmlspecialchars($h['name']) ?></h3>
                     <p class="stay-description"><?= htmlspecialchars($h['description']) ?></p>
 
                     <div class="stay-metrics-row">
-                        <span>💧 <?= number_format($h['water_saved_liters'] ?? 120000) ?>L Saved</span>
-                        <span>⚡ <?= number_format($h['power_saved_kwh'] ?? 25000) ?> kWh Solar</span>
+                        <span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:3px;"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg>
+                            <?= number_format($h['water_saved_liters'] ?? 120000) ?>L Saved
+                        </span>
+                        <span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:3px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <?= number_format($h['power_saved_kwh'] ?? 25000) ?> kWh Solar
+                        </span>
                     </div>
 
                     <div class="stay-tags-row">
                         <?php foreach (array_slice($badges, 0, 2) as $b): ?>
-                            <span class="eco-tag">🌱 <?= htmlspecialchars($b) ?></span>
+                            <span class="eco-tag"><?= htmlspecialchars($b) ?></span>
                         <?php endforeach; ?>
                         <?php foreach (array_slice($access, 0, 2) as $a): ?>
-                            <span class="eco-tag" style="background:#ecfdf5; border-color:#a7f3d0;">♿ <?= htmlspecialchars($a) ?></span>
+                            <span class="eco-tag" style="background:#ecfdf5; border-color:#a7f3d0;"><?= htmlspecialchars($a) ?></span>
                         <?php endforeach; ?>
                     </div>
 
                     <div class="stay-card-bottom">
                         <div class="stay-price-box">
                             <span class="price-label">Eco Rate</span>
-                            <span class="price-val">₹<?= number_format($h['price_per_night'] ?? 3500) ?> <span style="font-size:0.8rem; font-weight:500;">/ night</span></span>
+                            <span class="price-val"><?= number_format($h['price_per_night'] ?? 3500) ?> <span style="font-size:0.8rem; font-weight:500;">/ night</span></span>
                         </div>
                         <div class="stay-action-group">
                             <a href="travel.php?dest=<?= urlencode($h['destination_name']) ?>" class="btn-plan-transit" title="Calculate Route Transit">
-                                🚆 Transit
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-right:2px;"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22"/></svg>
+                                Transit
                             </a>
                             <a href="checkout.php?hotel_id=<?= $h['id'] ?>&hotel_name=<?= urlencode($h['name']) ?>&dest_name=<?= urlencode($h['destination_name']) ?>&price=<?= $h['price_per_night'] ?>" class="btn-view-stay">
-                                Book Stay ➔
+                                Book Stay
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-left:3px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                             </a>
                         </div>
                     </div>
@@ -2487,38 +2953,42 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             </p>
             <div class="cta-actions">
                 <a href="travel.php" class="btn-cta-white">
-                    Start Transit Calculator ➔
+                    Start Transit Calculator
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline;vertical-align:middle;margin-left:4px;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
                 <a href="hotels.php" class="btn-cta-outline">
                     Explore All Eco-Stays
                 </a>
                 <a href="about.php" class="btn-cta-outline">
-                    Our Mission & Impact
+                    Our Mission &amp; Impact
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Site Footer with Full Cross-Page Connectivity -->
+    <!-- Site Footer with Full Cross-Page Connectivity (No Emojis) -->
     <footer class="site-footer">
         <div class="footer-inner">
             <div class="footer-brand">
-                <h3>🌱 Way_2_Green</h3>
+                <h3>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                    Way_2_Green
+                </h3>
                 <p>
                     A conscious travel ecosystem designed to eliminate environmental degradation and create barrier-free travel for everyone.
                 </p>
                 <div style="margin-top: 14px; font-size: 0.82rem; color: rgba(240, 248, 255, 0.65);">
-                    Palette: Strict Seaweed Green (<code>#0b3b24</code>) & Alice Blue (<code>#F0F8FF</code>).
+                    Palette: Strict Seaweed Green (<code>#0b3b24</code>) &amp; Alice Blue (<code>#F0F8FF</code>).
                 </div>
             </div>
             <div class="footer-col">
-                <h4>Pages & Tools</h4>
+                <h4>Pages &amp; Tools</h4>
                 <ul class="footer-links">
                     <li><a href="index.php">Home Overview</a></li>
                     <li><a href="travel.php">Phase 1: Transit Emissions Calculator</a></li>
                     <li><a href="hotels.php">Phase 2: Eco-Hotels Catalog</a></li>
-                    <li><a href="about.php">About Our Mission & Inclusivity</a></li>
-                    <li><a href="my-trips.php">My Eco-Passports & Trips</a></li>
+                    <li><a href="about.php">About Our Mission &amp; Inclusivity</a></li>
+                    <li><a href="my-trips.php">My Eco-Passports &amp; Trips</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -2532,7 +3002,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Account & Portal</h4>
+                <h4>Account &amp; Portal</h4>
                 <ul class="footer-links">
                     <?php if ($user): ?>
                         <li><a href="my-trips.php">Profile (<?= htmlspecialchars($user['name']) ?>)</a></li>
@@ -2541,59 +3011,72 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                         <li><a href="login.php">Traveler Sign In</a></li>
                         <li><a href="register.php">Create Account</a></li>
                     <?php endif; ?>
-                    <li><a href="admin/login.php" style="color: var(--seaweed-mint);">Admin Control Panel 🔒</a></li>
+                    <li><a href="admin/login.php" style="color: var(--seaweed-mint);">Admin Control Panel</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
-            <span>© 2026 Way_2_Green Platform • Green & Inclusive Travel Hackathon Challenge.</span>
-            <span>Connected Multi-Page Architecture • PHP / MySQL / Vanilla JS</span>
+            <span>&copy; 2026 Way_2_Green Platform &bull; Green &amp; Inclusive Travel Hackathon Challenge.</span>
+            <span>Connected Multi-Page Architecture &bull; PHP / MySQL / Vanilla JS</span>
         </div>
     </footer>
 
-    <!-- Mobile Bottom Navigation Dock -->
+    <!-- Mobile Bottom Navigation Dock (No Emojis — SVG Icons) -->
     <nav class="mobile-bottom-bar">
         <a href="index.php" class="mobile-nav-item active">
-            <span class="icon">🏡</span>
+            <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1"/></svg>
+            </span>
             <span class="label">Home</span>
         </a>
         <a href="travel.php" class="mobile-nav-item">
-            <span class="icon">🚆</span>
+            <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="22" height="12" rx="2"/><path d="M1 10h22"/></svg>
+            </span>
             <span class="label">Transit</span>
         </a>
         <a href="hotels.php" class="mobile-nav-item">
-            <span class="icon">🏨</span>
+            <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 7v14M21 7v14M6 11h4v4H6zM14 11h4v4h-4zM9 3h6v4H9z"/></svg>
+            </span>
             <span class="label">Stays</span>
         </a>
         <a href="about.php" class="mobile-nav-item">
-            <span class="icon">🌿</span>
+            <span class="icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4M12 16h.01"/></svg>
+            </span>
             <span class="label">Mission</span>
         </a>
         <?php if ($user): ?>
             <a href="my-trips.php" class="mobile-nav-item">
-                <span class="icon">📜</span>
+                <span class="icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </span>
                 <span class="label">Passports</span>
             </a>
         <?php else: ?>
             <a href="login.php" class="mobile-nav-item">
-                <span class="icon">👤</span>
+                <span class="icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </span>
                 <span class="label">Sign In</span>
             </a>
         <?php endif; ?>
     </nav>
 
-    <!-- Interactive Toast Notification -->
+    <!-- Interactive Toast Notification (No Emojis) -->
     <div class="toast-notification" id="toastNotification">
-        <span style="font-size: 1.3rem;">🌱</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         <span id="toastMsg">Ready to travel light...</span>
     </div>
 
     <!-- ==========================================================================
-       INLINE JAVASCRIPT: Dynamic Location Backgrounds & Synchronized Boarding Pass
+       INLINE JAVASCRIPT: Dynamic Inline Input Backgrounds, GPS Dropdown, Synchronized Boarding Pass
+       NO global background changing JS — beach is permanently locked via CSS.
        ========================================================================== -->
     <script>
-        // 1. JS Dictionary/Mapping of popular destinations to high-quality placeholder image URLs
+        // 1. JS Dictionary of popular cities to high-quality image URLs
         const destinationsCatalog = {
             "agra": {
                 name: "Agra",
@@ -2601,8 +3084,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "AGR",
                 landmark: "Taj Mahal Eco Sanctuary",
                 imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1920&q=80",
-                savings: "-84% CO₂ Emissions",
-                distance: "195 km • Solar Express"
+                savings: "-84% CO2 Emissions",
+                distance: "195 km \u2022 Solar Express"
             },
             "goa": {
                 name: "Goa",
@@ -2610,8 +3093,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "GOI",
                 landmark: "Palolem & Mandrem Eco-Beaches",
                 imageUrl: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1920&q=80",
-                savings: "-88% CO₂ Emissions",
-                distance: "580 km • Coastal Electric"
+                savings: "-88% CO2 Emissions",
+                distance: "580 km \u2022 Coastal Electric"
             },
             "mumbai": {
                 name: "Mumbai",
@@ -2619,8 +3102,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "BOM",
                 landmark: "Gateway of India & Marine Drive",
                 imageUrl: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1920&q=80",
-                savings: "-76% CO₂ Emissions",
-                distance: "320 km • High-Speed Electric"
+                savings: "-76% CO2 Emissions",
+                distance: "320 km \u2022 High-Speed Electric"
             },
             "singapore": {
                 name: "Singapore",
@@ -2628,8 +3111,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "SIN",
                 landmark: "Marina Bay & Supertrees",
                 imageUrl: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80",
-                savings: "-92% CO₂ Emissions",
-                distance: "Global Corridor • Carbon Offset"
+                savings: "-92% CO2 Emissions",
+                distance: "Global Corridor \u2022 Carbon Offset"
             },
             "munnar": {
                 name: "Munnar",
@@ -2637,8 +3120,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "KER",
                 landmark: "Western Ghats Tea Sanctuary",
                 imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
-                savings: "-89% CO₂ Emissions",
-                distance: "450 km • Electric Transit"
+                savings: "-89% CO2 Emissions",
+                distance: "450 km \u2022 Electric Transit"
             },
             "kerala": {
                 name: "Kerala",
@@ -2646,8 +3129,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "KER",
                 landmark: "Western Ghats Tea Sanctuary",
                 imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
-                savings: "-89% CO₂ Emissions",
-                distance: "450 km • Electric Transit"
+                savings: "-89% CO2 Emissions",
+                distance: "450 km \u2022 Electric Transit"
             },
             "manali": {
                 name: "Manali",
@@ -2655,8 +3138,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "KUU",
                 landmark: "Solang Alpine Valley",
                 imageUrl: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1920&q=80",
-                savings: "-81% CO₂ Emissions",
-                distance: "540 km • Himalayan Eco-Coach"
+                savings: "-81% CO2 Emissions",
+                distance: "540 km \u2022 Himalayan Eco-Coach"
             },
             "kyoto": {
                 name: "Kyoto",
@@ -2664,7 +3147,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "UKY",
                 landmark: "Arashiyama Bamboo Grove",
                 imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=80",
-                savings: "-90% CO₂ Emissions",
+                savings: "-90% CO2 Emissions",
                 distance: "Bullet Train Shinkansen Eco-Link"
             },
             "bali": {
@@ -2673,19 +3156,150 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 code: "DPS",
                 landmark: "Ubud Rice Terraces",
                 imageUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=80",
-                savings: "-83% CO₂ Emissions",
+                savings: "-83% CO2 Emissions",
                 distance: "Island Biosphere Reserve"
+            },
+            "new delhi": {
+                name: "New Delhi",
+                fullName: "New Delhi, India",
+                code: "DEL",
+                landmark: "India Gate & Lotus Temple",
+                imageUrl: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1920&q=80",
+                savings: "-70% CO2 Emissions",
+                distance: "Capital Hub"
+            },
+            "bangalore": {
+                name: "Bangalore",
+                fullName: "Bangalore, Karnataka",
+                code: "BLR",
+                landmark: "Garden City Tech Hub",
+                imageUrl: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1920&q=80",
+                savings: "-78% CO2 Emissions",
+                distance: "Metro Express"
+            },
+            "chennai": {
+                name: "Chennai",
+                fullName: "Chennai, Tamil Nadu",
+                code: "MAA",
+                landmark: "Marina Beach Promenade",
+                imageUrl: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=1920&q=80",
+                savings: "-74% CO2 Emissions",
+                distance: "Southern Rail"
+            },
+            "kolkata": {
+                name: "Kolkata",
+                fullName: "Kolkata, West Bengal",
+                code: "CCU",
+                landmark: "Victoria Memorial & Howrah",
+                imageUrl: "https://images.unsplash.com/photo-1558431382-27e303142255?auto=format&fit=crop&w=1920&q=80",
+                savings: "-75% CO2 Emissions",
+                distance: "Eastern Express"
+            },
+            "hyderabad": {
+                name: "Hyderabad",
+                fullName: "Hyderabad, Telangana",
+                code: "HYD",
+                landmark: "Charminar & Hussain Sagar",
+                imageUrl: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=1920&q=80",
+                savings: "-77% CO2 Emissions",
+                distance: "Deccan Link"
+            },
+            "pune": {
+                name: "Pune",
+                fullName: "Pune, Maharashtra",
+                code: "PNQ",
+                landmark: "Shaniwar Wada & Sinhagad",
+                imageUrl: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1920&q=80",
+                savings: "-72% CO2 Emissions",
+                distance: "Western Express"
+            },
+            "jaipur": {
+                name: "Jaipur",
+                fullName: "Jaipur, Rajasthan",
+                code: "JAI",
+                landmark: "Hawa Mahal & Amber Fort",
+                imageUrl: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1920&q=80",
+                savings: "-80% CO2 Emissions",
+                distance: "260 km \u2022 Rajasthan Solar Rail"
+            },
+            "delhi": {
+                name: "New Delhi",
+                fullName: "New Delhi, India",
+                code: "DEL",
+                landmark: "India Gate & Lotus Temple",
+                imageUrl: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1920&q=80",
+                savings: "-70% CO2 Emissions",
+                distance: "Capital Hub \u2022 Solar Express"
+            },
+            "bengaluru": {
+                name: "Bangalore",
+                fullName: "Bangalore, Karnataka",
+                code: "BLR",
+                landmark: "Garden City Tech Hub",
+                imageUrl: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1920&q=80",
+                savings: "-78% CO2 Emissions",
+                distance: "350 km \u2022 Metro Express"
+            },
+            "varanasi": {
+                name: "Varanasi",
+                fullName: "Varanasi, Uttar Pradesh",
+                code: "VNS",
+                landmark: "Ganga Ghats & Kashi",
+                imageUrl: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1920&q=80",
+                savings: "-85% CO2 Emissions",
+                distance: "780 km \u2022 Vande Bharat Solar"
+            },
+            "amritsar": {
+                name: "Amritsar",
+                fullName: "Amritsar, Punjab",
+                code: "ATQ",
+                landmark: "Golden Temple Eco Sanctuary",
+                imageUrl: "https://images.unsplash.com/photo-1588096344356-9a49cf9fa8d1?auto=format&fit=crop&w=1920&q=80",
+                savings: "-79% CO2 Emissions",
+                distance: "450 km \u2022 Solar Express"
+            },
+            "udaipur": {
+                name: "Udaipur",
+                fullName: "Udaipur, Rajasthan",
+                code: "UDR",
+                landmark: "Lake Pichola & City Palace",
+                imageUrl: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=1920&q=80",
+                savings: "-82% CO2 Emissions",
+                distance: "660 km \u2022 Royal Eco-Link"
+            },
+            "shimla": {
+                name: "Shimla",
+                fullName: "Shimla, Himachal Pradesh",
+                code: "SLV",
+                landmark: "Mall Road & Ridge Pine Sanctuary",
+                imageUrl: "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1920&q=80",
+                savings: "-83% CO2 Emissions",
+                distance: "350 km \u2022 Himalayan Heritage Rail"
+            },
+            "kochi": {
+                name: "Kochi",
+                fullName: "Kochi, Kerala",
+                code: "COK",
+                landmark: "Fort Kochi & Marine Drive",
+                imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
+                savings: "-86% CO2 Emissions",
+                distance: "210 km \u2022 Water Metro Solar Link"
             }
         };
 
         // DOM Element Cache
-        const heroBgLayer = document.getElementById('heroBgLayer');
         const locationInput = document.getElementById('locationInput');
+        const originInput = document.getElementById('originInput');
         const heroDestIndicatorName = document.getElementById('heroDestIndicatorName');
-        const passDestCode = document.getElementById('passDestCode');
-        const passDestCity = document.getElementById('passDestCity');
+
+        // Right-Side Boarding Pass Ticket Route Display Elements
+        const ticketOriginCode = document.getElementById('ticket-origin-code');
+        const ticketOriginName = document.getElementById('ticket-origin-name');
+        const ticketDestCode = document.getElementById('ticket-dest-code');
+        const ticketDestName = document.getElementById('ticket-dest-name');
+        const ticketTransitInfo = document.getElementById('ticket-transit-info');
+
         const passSavingsBadge = document.getElementById('passSavingsBadge');
-        const passDistance = document.getElementById('passDistance');
         const passLandmarkText = document.getElementById('passLandmarkText');
         const passSerialCode = document.getElementById('passSerialCode');
         const checkInInput = document.getElementById('checkInInput');
@@ -2699,36 +3313,101 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         const toastNotification = document.getElementById('toastNotification');
         const toastMsg = document.getElementById('toastMsg');
 
+        // Location Wrapper Elements & Corner Labels
+        const originWrapper = document.getElementById('originWrapper');
+        const originCornerLabel = document.getElementById('originCornerLabel');
+        const destWrapper = document.getElementById('destWrapper');
+        const destCornerLabel = document.getElementById('destCornerLabel');
+
+        // Dropdown menus
+        const gpsDropdown = document.getElementById('gpsDropdown');
+        const destDropdown = document.getElementById('destDropdown');
+
         // State variables
         let currentDestKey = 'agra';
         let guests = { adults: 2, children: 0, rooms: 1 };
 
-        // 2. Function to change background image with Seaweed Green / Alice Blue Gradient Overlay & sync Boarding Pass
+        // ============================================================
+        // DYNAMIC TOURIST SPOT BACKGROUND — NO OVERLAY (ORIGINAL COLORS)
+        // ============================================================
+
+        function setLocationWrapperBackground(wrapper, label, dest) {
+            if (!wrapper) return;
+            if (!dest || !dest.imageUrl) {
+                wrapper.style.backgroundImage = 'none';
+                wrapper.style.backgroundColor = '#ffffff';
+                wrapper.classList.remove('has-bg');
+                if (label) {
+                    label.textContent = '';
+                    label.style.display = 'none';
+                }
+                return;
+            }
+
+            // Apply dynamic background image directly — NO green/dark gradient overlay
+            wrapper.style.backgroundImage = `url('${dest.imageUrl}')`;
+            wrapper.style.backgroundSize = 'cover';
+            wrapper.style.backgroundPosition = 'center center';
+            wrapper.style.backgroundRepeat = 'no-repeat';
+            wrapper.classList.add('has-bg');
+
+            if (label) {
+                label.textContent = dest.name;
+                label.style.display = 'inline-block';
+            }
+        }
+
+        // Helper to match queries against catalog
+        function findMatchingDestination(query) {
+            if (!query) return null;
+            const cleaned = query.trim().toLowerCase();
+            if (!cleaned) return null;
+
+            for (const key in destinationsCatalog) {
+                if (key === cleaned || destinationsCatalog[key].name.toLowerCase() === cleaned) {
+                    return key;
+                }
+            }
+            // Partial match fallback
+            for (const key in destinationsCatalog) {
+                if (key.includes(cleaned) || cleaned.includes(key) || destinationsCatalog[key].name.toLowerCase().includes(cleaned)) {
+                    return key;
+                }
+            }
+            return null;
+        }
+
+        // 2. Sync boarding pass + update destination wrapper background & ticket destination
         function updateLocationTheme(key) {
             const dest = destinationsCatalog[key];
-            if (!dest) return;
+            if (!dest) {
+                // Fallback: unmapped city
+                setLocationWrapperBackground(destWrapper, destCornerLabel, null);
+                if (ticketDestCode) ticketDestCode.textContent = '---';
+                if (ticketDestName) ticketDestName.textContent = '---';
+                if (ticketTransitInfo) ticketTransitInfo.textContent = '---';
+                return;
+            }
 
             currentDestKey = key;
 
-            // Smooth crossfade dynamic background image
-            heroBgLayer.style.opacity = '0';
-            setTimeout(() => {
-                heroBgLayer.style.backgroundImage = `url('${dest.imageUrl}')`;
-                heroBgLayer.style.opacity = '1';
-            }, 180);
+            // Update DESTINATION wrapper background & bottom-right label
+            setLocationWrapperBackground(destWrapper, destCornerLabel, dest);
+
+            // Update right-side boarding pass ticket destination & transit info
+            if (ticketDestCode) ticketDestCode.textContent = dest.code || '---';
+            if (ticketDestName) ticketDestName.textContent = dest.name || '---';
+            if (ticketTransitInfo) ticketTransitInfo.textContent = dest.distance || '---';
 
             // Update Hero Destination Indicator
             if (heroDestIndicatorName) {
-                heroDestIndicatorName.textContent = `${dest.name} • ${dest.landmark}`;
+                heroDestIndicatorName.textContent = `${dest.name} \u2022 ${dest.landmark}`;
             }
 
             // Sync Vertical Boarding Pass Fields
-            if (passDestCode) passDestCode.textContent = dest.code;
-            if (passDestCity) passDestCity.textContent = dest.name;
             if (passSavingsBadge) passSavingsBadge.textContent = dest.savings;
-            if (passDistance) passDistance.textContent = dest.distance;
             if (passLandmarkText) passLandmarkText.textContent = dest.landmark;
-            if (passSerialCode) passSerialCode.textContent = `PASS #W2G-${Math.floor(1000 + Math.random() * 9000)}-${dest.code}-2026 • CARBON NEUTRAL TICKET`;
+            if (passSerialCode) passSerialCode.textContent = `PASS #W2G-${Math.floor(1000 + Math.random() * 9000)}-${dest.code}-2026 \u2022 CARBON NEUTRAL TICKET`;
 
             // Sync links connecting to travel.php
             if (transitPlannerHeroLink) {
@@ -2740,7 +3419,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 
             // Update Active Chip
             document.querySelectorAll('.dest-chip').forEach(chip => {
-                if (chip.textContent.toLowerCase().includes(key)) {
+                if (chip.textContent.toLowerCase().trim() === key) {
                     chip.classList.add('active');
                 } else {
                     chip.classList.remove('active');
@@ -2748,23 +3427,36 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             });
         }
 
-        // 3. Listen for input changes in the "Location" field of the search widget
-        function findMatchingDestination(query) {
-            const cleaned = query.trim().toLowerCase();
-            if (!cleaned) return null;
+        // Update origin wrapper background & ticket origin when a city is selected or typed
+        function updateOriginBackground(cityName) {
+            const matchKey = findMatchingDestination(cityName);
+            const originCity = matchKey ? destinationsCatalog[matchKey] : null;
 
-            for (const key in destinationsCatalog) {
-                if (key.includes(cleaned) || cleaned.includes(key) || destinationsCatalog[key].name.toLowerCase().includes(cleaned)) {
-                    return key;
-                }
+            // Update wrapper background & bottom-right label
+            setLocationWrapperBackground(originWrapper, originCornerLabel, originCity);
+
+            // Update right-side boarding pass ticket origin details
+            if (originCity) {
+                if (ticketOriginCode) ticketOriginCode.textContent = originCity.code || '---';
+                if (ticketOriginName) ticketOriginName.textContent = originCity.name || '---';
+            } else {
+                // Fallback: If user clears input or types an unmapped city, revert to placeholder
+                if (ticketOriginCode) ticketOriginCode.textContent = '---';
+                if (ticketOriginName) ticketOriginName.textContent = '---';
             }
-            return null;
         }
 
+        // 3. Listen for input changes in both fields
         locationInput.addEventListener('input', function (e) {
             const match = findMatchingDestination(e.target.value);
-            if (match && match !== currentDestKey) {
+            if (match) {
                 updateLocationTheme(match);
+            } else {
+                // Fallback: If user clears input or types an unmapped city, revert ticket and wrapper
+                setLocationWrapperBackground(destWrapper, destCornerLabel, null);
+                if (ticketDestCode) ticketDestCode.textContent = '---';
+                if (ticketDestName) ticketDestName.textContent = '---';
+                if (ticketTransitInfo) ticketTransitInfo.textContent = '---';
             }
         });
 
@@ -2772,15 +3464,87 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             const match = findMatchingDestination(e.target.value);
             if (match) {
                 updateLocationTheme(match);
+            } else {
+                setLocationWrapperBackground(destWrapper, destCornerLabel, null);
+                if (ticketDestCode) ticketDestCode.textContent = '---';
+                if (ticketDestName) ticketDestName.textContent = '---';
+                if (ticketTransitInfo) ticketTransitInfo.textContent = '---';
             }
+        });
+
+        locationInput.addEventListener('focus', function () {
+            if (destDropdown) destDropdown.classList.add('show');
+            if (gpsDropdown) gpsDropdown.classList.remove('show');
+        });
+
+        // Origin input changes — update origin wrapper background & ticket origin
+        originInput.addEventListener('input', function (e) {
+            updateOriginBackground(e.target.value);
+        });
+
+        originInput.addEventListener('change', function (e) {
+            updateOriginBackground(e.target.value);
+        });
+
+        originInput.addEventListener('focus', function () {
+            if (gpsDropdown) gpsDropdown.classList.add('show');
+            if (destDropdown) destDropdown.classList.remove('show');
         });
 
         // Quick chip click handler
         function selectDestination(name) {
             const key = name.toLowerCase();
             locationInput.value = name;
+            if (destDropdown) destDropdown.classList.remove('show');
             updateLocationTheme(key);
             showToast(`Selected destination: ${name}`);
+        }
+
+        // ============================================================
+        // GPS & DESTINATION DROPDOWNS
+        // ============================================================
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function (e) {
+            const originGroup = originInput.closest('.search-field-group');
+            if (originGroup && !originGroup.contains(e.target)) {
+                if (gpsDropdown) gpsDropdown.classList.remove('show');
+            }
+            const destGroup = locationInput.closest('.search-field-group');
+            if (destGroup && !destGroup.contains(e.target)) {
+                if (destDropdown) destDropdown.classList.remove('show');
+            }
+        });
+
+        function selectOriginCity(city) {
+            originInput.value = city;
+            if (gpsDropdown) gpsDropdown.classList.remove('show');
+            updateOriginBackground(city);
+            showToast(`Starting place set: ${city}`);
+        }
+
+        function useGPSLocation() {
+            if (gpsDropdown) gpsDropdown.classList.remove('show');
+            if (navigator.geolocation) {
+                originInput.value = 'Locating...';
+                navigator.geolocation.getCurrentPosition(
+                    function (pos) {
+                        originInput.value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+                        if (ticketOriginCode) ticketOriginCode.textContent = 'GPS';
+                        if (ticketOriginName) ticketOriginName.textContent = 'Current Loc';
+                        showToast('GPS location detected!');
+                    },
+                    function () {
+                        originInput.value = 'New Delhi';
+                        updateOriginBackground('New Delhi');
+                        showToast('GPS unavailable. Defaulting to New Delhi.');
+                    },
+                    { timeout: 8000 }
+                );
+            } else {
+                originInput.value = 'New Delhi';
+                updateOriginBackground('New Delhi');
+                showToast('GPS not supported. Defaulting to New Delhi.');
+            }
         }
 
         // 4. Guest Stepper Logic
@@ -2823,6 +3587,27 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             guestsHiddenInput.value = guests.adults + guests.children;
         }
 
+        // Swap Origin <-> Destination
+        function swapLocations() {
+            const tempVal = originInput.value;
+            originInput.value = locationInput.value;
+            locationInput.value = tempVal;
+
+            // Update both wrappers and ticket details
+            updateOriginBackground(originInput.value);
+            const match = findMatchingDestination(locationInput.value);
+            if (match) {
+                updateLocationTheme(match);
+            } else {
+                setLocationWrapperBackground(destWrapper, destCornerLabel, null);
+                if (ticketDestCode) ticketDestCode.textContent = '---';
+                if (ticketDestName) ticketDestName.textContent = '---';
+                if (ticketTransitInfo) ticketTransitInfo.textContent = '---';
+            }
+
+            showToast(`Swapped: ${originInput.value} \u21C4 ${locationInput.value}`);
+        }
+
         // Mobile drawer toggle
         function toggleDrawer() {
             const drawer = document.getElementById('mobileDrawer');
@@ -2855,8 +3640,11 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             checkOutInput.min = formatYMD(today);
             checkOutInput.value = formatYMD(afterTomorrow);
 
-            // Set initial Agra theme
+            // Set initial Agra destination theme (inline background + boarding pass)
             updateLocationTheme('agra');
+
+            // Set initial New Delhi origin background
+            updateOriginBackground('New Delhi');
         });
     </script>
 </body>

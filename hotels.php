@@ -522,43 +522,54 @@ if ($destId === 0 && !empty($allDests)) {
                 </div>`;
         }
 
-        // ── Mock renderer — finds best-matching key in MOCK_DB ────────────
+        // ── Mock renderer — checks strictly lowercase keys in MOCK_DB ────
         function renderMockCards(destName, filter) {
             const container = document.getElementById('staysContainer');
-            const destLower = (destName || '').trim().toLowerCase();
-            let matchKey = null;
-            for (const key of Object.keys(MOCK_DB)) {
-                if (destLower.includes(key) || key.includes(destLower)) { matchKey = key; break; }
-            }
-            const hotels  = MOCK_DB[matchKey] || MOCK_DB['manali'];
-            const filtered = hotels.filter(h => hotelMatchesFilter(h, filter));
+            if (!container) return;
 
-            if (filtered.length === 0) {
+            const destKey = (destName || '').toLowerCase().trim();
+
+            // Check if destination key exists in database
+            if (MOCK_DB[destKey]) {
+                const hotels  = MOCK_DB[destKey];
+                const filtered = hotels.filter(h => hotelMatchesFilter(h, filter || 'all'));
+
+                if (filtered.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align:center;grid-column:1/-1;padding:3.5rem 2rem;background:rgba(255,255,255,0.85);border-radius:24px;border:1.5px dashed rgba(34,197,94,0.3);">
+                            <div style="font-size:2.5rem;margin-bottom:8px;">🌿</div>
+                            <h3 style="color:var(--primary);font-size:1.3rem;">No certified properties found for this filter</h3>
+                            <p style="color:var(--text-muted);font-size:0.92rem;margin-top:6px;">Try switching to <strong>"All Eco-Stays"</strong> or select another destination above.</p>
+                        </div>`;
+                    return;
+                }
+                container.innerHTML = filtered.map(buildCardHTML).join('');
+                if (typeof init3DTilt === 'function') init3DTilt();
+                if (typeof initScrollReveal === 'function') initScrollReveal();
+            } else {
+                // Exact fallback message required when destination is not found in database
                 container.innerHTML = `
                     <div style="text-align:center;grid-column:1/-1;padding:3.5rem 2rem;background:rgba(255,255,255,0.85);border-radius:24px;border:1.5px dashed rgba(34,197,94,0.3);">
                         <div style="font-size:2.5rem;margin-bottom:8px;">🌿</div>
-                        <h3 style="color:var(--primary);font-size:1.3rem;">No certified properties found for this filter</h3>
-                        <p style="color:var(--text-muted);font-size:0.92rem;margin-top:6px;">Try switching to <strong>"All Eco-Stays"</strong> or select another destination above.</p>
+                        <h3 style="color:var(--primary);font-size:1.3rem;">No verified eco-stays found for this location yet.</h3>
+                        <p style="color:var(--text-muted);font-size:0.92rem;margin-top:6px;">We are actively auditing and certifying sustainable sanctuaries in this region.</p>
                     </div>`;
-                return;
             }
-            container.innerHTML = filtered.map(buildCardHTML).join('');
-            if (typeof init3DTilt === 'function') init3DTilt();
-            if (typeof initScrollReveal === 'function') initScrollReveal();
         }
 
         // ── Main loader: real API → mock fallback ─────────────────────────
         async function loadStays() {
             const container = document.getElementById('staysContainer');
+            if (!container) return;
             container.innerHTML = '<div style="text-align:center;grid-column:1/-1;padding:3rem;color:var(--text-muted);font-size:1.05rem;">🌱 Loading verified eco-stays for this sanctuary...</div>';
-            const destForMock = currentDestName || 'Manali';
+            const destForMock = (currentDestName || 'manali').toLowerCase().trim();
 
             try {
                 const res  = await fetch(`api/get_hotels.php?destination_id=${currentDestId}&filter=${encodeURIComponent(currentFilter)}`);
                 const data = await res.json();
 
                 if (data.status === 'success' && data.hotels && data.hotels.length > 0) {
-                    // Real DB data available — render it (keeps DB integration alive)
+                    // Real DB data available — render it
                     container.innerHTML = data.hotels.map(h => {
                         const badges = (h.eco_badges || 'Solar Powered, Zero Plastic').split(',').map(b => `<span class="tag-badge">🌱 ${b.trim()}</span>`).join('');
                         const access = (h.accessibility_tags || 'Wheelchair Friendly').split(',').map(a => `<span class="tag-badge tag-access">♿ ${a.trim()}</span>`).join('');
@@ -599,7 +610,7 @@ if ($destId === 0 && !empty($allDests)) {
                     renderMockCards(destForMock, currentFilter);
                 }
             } catch (_err) {
-                // Network / API unavailable — always show mock cards
+                // Network / API unavailable — fallback to mock cards
                 renderMockCards(destForMock, currentFilter);
             }
         }
@@ -608,8 +619,8 @@ if ($destId === 0 && !empty($allDests)) {
         function changeDestination(newDestId) {
             currentDestId = parseInt(newDestId);
             const select   = document.getElementById('destinationFilterSelect');
-            const destName = select.selectedOptions[0].getAttribute('data-name') || select.selectedOptions[0].text.trim();
-            currentDestName = destName;
+            const destName = select.selectedOptions[0].getAttribute('data-name') || select.selectedOptions[0].text.replace(/^📍\s*/, '').trim();
+            currentDestName = destName.toLowerCase().trim();
 
             const label = document.getElementById('currentDestLabel');
             if (label) label.textContent = destName;
@@ -629,46 +640,40 @@ if ($destId === 0 && !empty($allDests)) {
             loadStays();
         }
 
-        // ── DOMContentLoaded: read localStorage handoff from homepage ─────
+        // ── DOMContentLoaded: Data Receiver from homepage ────────────────
         window.addEventListener('DOMContentLoaded', () => {
-            const savedOrigin = localStorage.getItem('w2g_origin') || 'New Delhi';
-            const savedDest   = localStorage.getItem('w2g_dest')   || 'Manali';
+            // Retrieve destination from localStorage using key 'way2green_dest'
+            const dest = localStorage.getItem('way2green_dest') || localStorage.getItem('w2g_dest') || 'manali';
+            const origin = localStorage.getItem('way2green_origin') || localStorage.getItem('w2g_origin') || 'New Delhi';
 
-            originCity      = savedOrigin;
-            currentDestName = savedDest;
+            // Console log for developer verification
+            console.log("Received Destination:", dest);
 
-            // Update route-bar origin text
+            originCity      = origin;
+            currentDestName = dest;
+
+            // Update route-bar origin & destination labels
             const routeOriginEl = document.getElementById('route-origin-text');
-            if (routeOriginEl) routeOriginEl.textContent = savedOrigin;
+            if (routeOriginEl) routeOriginEl.textContent = origin.charAt(0).toUpperCase() + origin.slice(1);
 
-            // Match destination in dropdown by partial name (case-insensitive)
+            const destLabel = document.getElementById('currentDestLabel');
+            if (destLabel) destLabel.textContent = dest.charAt(0).toUpperCase() + dest.slice(1);
+
+            // Sync dropdown if option matches
             const destSelect = document.getElementById('destinationFilterSelect');
             if (destSelect) {
-                const savedLower = savedDest.trim().toLowerCase();
-                let matchedId = null, matchedName = savedDest;
-
+                const searchLower = dest.toLowerCase().trim();
                 Array.from(destSelect.options).forEach(opt => {
-                    const optName = (opt.getAttribute('data-name') || opt.text).trim().toLowerCase();
-                    if (optName.includes(savedLower) || savedLower.includes(optName)) {
-                        matchedId   = opt.value;
-                        matchedName = opt.getAttribute('data-name') || opt.text.trim();
+                    const optName = (opt.getAttribute('data-name') || opt.text).replace(/^📍\s*/, '').toLowerCase().trim();
+                    if (optName.includes(searchLower) || searchLower.includes(optName)) {
+                        currentDestId = parseInt(opt.value);
                         opt.selected = true;
+                        if (destLabel) destLabel.textContent = opt.getAttribute('data-name') || opt.text.replace(/^📍\s*/, '').trim();
                     }
                 });
-
-                if (matchedId) { currentDestId = parseInt(matchedId); }
-                currentDestName = matchedName;
-
-                const destLabel = document.getElementById('currentDestLabel');
-                if (destLabel) destLabel.textContent = matchedName;
             }
 
-            // Sync URL silently
-            const url = new URL(window.location);
-            url.searchParams.set('dest_id', currentDestId);
-            url.searchParams.set('origin',  savedOrigin);
-            window.history.replaceState({}, '', url);
-
+            // Load verified eco-stays (checks MOCK_DB lowercase keys)
             loadStays();
         });
     </script>

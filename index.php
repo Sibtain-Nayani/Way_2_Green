@@ -3650,28 +3650,42 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         // ============================================================
         // SEARCH HANDOFF: Save origin + destination to localStorage,
         // then redirect to the Eco-Stays page (hotels.php).
-        // The eco-stays page can read these values with:
-        //   localStorage.getItem('w2g_origin')
-        //   localStorage.getItem('w2g_dest')
         // ============================================================
-        document.getElementById('heroSearchForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Stop default form submission
+        function handleSearchSubmit(e) {
+            if (e) e.preventDefault(); // Stop any form submission or page reloads
 
-            const originValue = originInput.value.trim();
-            const destValue   = locationInput.value.trim();
+            const destinationInputEl = document.getElementById('locationInput');
+            const originInputEl      = document.getElementById('originInput');
 
-            // Persist selections for the eco-stays page
+            // Grab text values and convert to lowercase using .toLowerCase().trim()
+            const destinationValue = (destinationInputEl ? destinationInputEl.value : '').toLowerCase().trim();
+            const originValue      = (originInputEl ? originInputEl.value : '').toLowerCase().trim();
+
+            // Store using way2green_dest as required
+            localStorage.setItem('way2green_dest', destinationValue);
+            localStorage.setItem('way2green_origin', originValue);
+
+            // Backward compatibility keys
+            localStorage.setItem('w2g_dest', destinationValue);
             localStorage.setItem('w2g_origin', originValue);
-            localStorage.setItem('w2g_dest',   destValue);
 
-            // Also keep check-in / check-out and guest counts for hotel filters
-            if (checkInInput)  localStorage.setItem('w2g_checkin',  checkInInput.value);
+            if (checkInInput)  localStorage.setItem('w2g_checkin', checkInInput.value);
             if (checkOutInput) localStorage.setItem('w2g_checkout', checkOutInput.value);
             localStorage.setItem('w2g_guests', JSON.stringify(guests));
 
-            // Navigate to eco-stays page
+            // Redirect to eco-stays page
             window.location.href = 'hotels.php';
-        });
+        }
+
+        const heroForm = document.getElementById('heroSearchForm');
+        if (heroForm) {
+            heroForm.addEventListener('submit', handleSearchSubmit);
+        }
+
+        const searchBtn = document.getElementById('mainSearchBtn');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', handleSearchSubmit);
+        }
     </script>
 </body>
 </html>

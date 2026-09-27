@@ -2307,9 +2307,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                     Select your low-emission corridor, pick verified wheelchair-accessible solar sanctuaries, and generate your instant verified eco-boarding pass.
                 </p>
 
-                <!-- THE COMPLEX SEARCH WIDGET (Direct Form Submission to hotels.php) -->
+                <!-- THE COMPLEX SEARCH WIDGET (Native GET Form Submission to eco-stays.php) -->
                 <div class="search-widget-wrapper">
-                    <form method="GET" action="hotels.php" id="heroSearchForm">
+                    <form action="eco-stays.php" method="GET" id="heroSearchForm">
                         <div class="search-widget-card">
                             <div class="search-fields-grid">
                                 
@@ -3646,46 +3646,6 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             // Set initial New Delhi origin background
             updateOriginBackground('New Delhi');
         });
-
-        // ============================================================
-        // SEARCH HANDOFF: Save origin + destination to localStorage,
-        // then redirect to the Eco-Stays page (hotels.php).
-        // ============================================================
-        function handleSearchSubmit(e) {
-            if (e) e.preventDefault(); // Stop any form submission or page reloads
-
-            const destinationInputEl = document.getElementById('locationInput');
-            const originInputEl      = document.getElementById('originInput');
-
-            // Grab text values and convert to lowercase using .toLowerCase().trim()
-            const destinationValue = (destinationInputEl ? destinationInputEl.value : '').toLowerCase().trim();
-            const originValue      = (originInputEl ? originInputEl.value : '').toLowerCase().trim();
-
-            // Store using way2green_dest as required
-            localStorage.setItem('way2green_dest', destinationValue);
-            localStorage.setItem('way2green_origin', originValue);
-
-            // Backward compatibility keys
-            localStorage.setItem('w2g_dest', destinationValue);
-            localStorage.setItem('w2g_origin', originValue);
-
-            if (checkInInput)  localStorage.setItem('w2g_checkin', checkInInput.value);
-            if (checkOutInput) localStorage.setItem('w2g_checkout', checkOutInput.value);
-            localStorage.setItem('w2g_guests', JSON.stringify(guests));
-
-            // Redirect to eco-stays page
-            window.location.href = 'hotels.php';
-        }
-
-        const heroForm = document.getElementById('heroSearchForm');
-        if (heroForm) {
-            heroForm.addEventListener('submit', handleSearchSubmit);
-        }
-
-        const searchBtn = document.getElementById('mainSearchBtn');
-        if (searchBtn) {
-            searchBtn.addEventListener('click', handleSearchSubmit);
-        }
     </script>
 </body>
 </html>

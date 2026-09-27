@@ -1,5 +1,5 @@
 <?php
-// travel.php - Phase 1: Trip Search Foundation
+// travel.php - Phase 2: Navigation & Transit Redesign
 require_once 'db.php';
 require_once 'user_auth.php';
 
@@ -9,6 +9,9 @@ $user = get_logged_in_user();
 
 // Handle form submission
 $errors = [];
+$searchPerformed = false;
+$tripData = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $origin = trim($_POST['origin'] ?? '');
     $destination = trim($_POST['destination'] ?? '');
@@ -16,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $return_date = trim($_POST['return_date'] ?? '');
     $trip_type = trim($_POST['trip_type'] ?? 'one-way');
     $travellers = (int)($_POST['travellers'] ?? 1);
-    $preference = trim($_POST['preference'] ?? 'Way2Green Pick');
 
     $today = date('Y-m-d');
 
@@ -48,21 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        $_SESSION['trip_search'] = [
+        $searchPerformed = true;
+        $tripData = [
             'origin' => $origin,
             'destination' => $destination,
             'departure_date' => $departure_date,
             'return_date' => $return_date,
             'trip_type' => $trip_type,
-            'travellers' => $travellers,
-            'preference' => $preference
+            'travellers' => $travellers
         ];
-
+        $_SESSION['trip_search'] = $tripData;
+        
         // FUTURE API INTEGRATION — PHASE 7
-        // Save search history and trigger partner API pre-fetch
-
-        header("Location: journey.php");
-        exit;
+        // Route generation logic would fetch real APIs here
     }
 }
 
@@ -82,90 +82,308 @@ $preselectedDest = $_GET['dest'] ?? '';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Step 1: Low-Carbon Transit Planner — Way2Green</title>
-    <meta name="description" content="Calculate your travel carbon footprint and discover cleaner routes with Gemini AI.">
+    <title>Plan Transit — Way2Green</title>
+    <meta name="description" content="Discover premium, eco-friendly transit options.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* Phase 2: Premium Transit Redesign Specific Styles */
+        .transit-hero {
+            position: relative;
+            width: 100%;
+            height: 75vh;
+            min-height: 600px;
+            background: url('assets/img/hero-bg.jpg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .transit-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+            z-index: 1;
+        }
+        
+        .transit-hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 20px;
+        }
+        
+        .transit-title {
+            font-size: 5rem;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin: 0 0 10px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .transit-subtitle {
+            font-size: 1.2rem;
+            font-weight: 500;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .search-widget {
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            z-index: 3;
+        }
+        
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto;
+            gap: 16px;
+            align-items: end;
+            color: var(--text-color);
+        }
+        
+        .search-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+        }
+        
+        .search-field label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        
+        .search-field input, .search-field select {
+            padding: 12px 16px;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.95rem;
+            background: #fff;
+            color: var(--text-color);
+            transition: border-color 0.2s;
+        }
+        
+        .search-field input:focus, .search-field select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .btn-search {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 14px 32px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            height: 48px;
+            transition: transform 0.2s, background 0.2s;
+        }
+        
+        .btn-search:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        .results-section {
+            padding: 120px 20px 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-header h2 {
+            font-size: 3rem;
+            color: var(--text-color);
+            margin: 0 0 10px;
+            letter-spacing: -1px;
+        }
+        
+        .route-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .route-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-subtle);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        
+        .route-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-card);
+        }
+        
+        .route-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: #f0fdf4;
+            color: #166534;
+        }
+        
+        .route-card.recommended {
+            border: 2px solid var(--primary);
+        }
+        
+        .route-card.recommended .route-badge {
+            background: var(--primary);
+            color: #fff;
+        }
+        
+        .route-image {
+            height: 160px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        
+        .route-content {
+            padding: 24px;
+        }
+        
+        .route-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 0 8px;
+            color: var(--text-color);
+        }
+        
+        .route-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        
+        .route-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+        
+        .btn-select {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 12px;
+            background: #f8fcf8;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-select:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        
+        /* Transparent nav overrides for hero */
+        .header-top.transparent-header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            background: transparent;
+            border-bottom: none;
+            z-index: 10;
+        }
+        .header-top.transparent-header .desktop-nav a {
+            color: rgba(255,255,255,0.9);
+        }
+        .header-top.transparent-header .desktop-nav a.active {
+            color: white;
+            border-bottom-color: white;
+        }
+        .header-top.transparent-header .brand img {
+            filter: brightness(0) invert(1);
+        }
+    </style>
 </head>
 <body>
-
-    <!-- Ambient Glowing 3D Moving Scene Layer -->
-    <div class="ambient-scene">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
-
+    
     <!-- Drawer Overlay & Mobile Drawer -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <div class="mobile-drawer" id="mobileDrawer">
         <button class="drawer-close" onclick="toggleDrawer()">✕</button>
         <div style="font-weight: 800; font-size: 1.3rem; color: var(--primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.4rem;">🌱</span> Way2Green
+            <img src="assets/img/logo.png" alt="Way2Green Logo" style="height: 32px; width: auto;"> Way2Green
         </div>
         <a href="index.php" class="drawer-link">Home</a>
-        <a href="travel.php" class="drawer-link" style="color: var(--primary);">Plan Transit</a>
         <a href="hotels.php" class="drawer-link">Eco-Stays</a>
-        <a href="about.php" class="drawer-link">Our Mission</a>
+        <a href="travel.php" class="drawer-link" style="color: var(--primary);">Plan Transit</a>
+        <a href="about.php" class="drawer-link">About Us</a>
         <a href="my-trips.php" class="drawer-link">My Passports</a>
         <a href="logout.php" class="drawer-link" style="color: #dc2626;">Sign Out (<?= htmlspecialchars($user['name']) ?>)</a>
-        <hr style="border: none; border-top: 1px solid var(--border-subtle); margin: 0.5rem 0;">
-        <a href="admin/login.php" class="drawer-link" style="font-size: 0.9rem; color: var(--text-muted);">Admin Portal</a>
     </div>
 
-    <!-- Clean Header -->
-    <header class="header-top">
-        <a href="index.php" class="brand">
-            <span class="brand-leaf">🌱</span>
-            <span>Way2Green</span>
-        </a>
-        <nav class="desktop-nav">
+    <div class="transit-hero">
+        <!-- Clean Header (Overlay on Hero) -->
+        <header class="header-top transparent-header">
+            <a href="index.php" class="brand"><img src="assets/img/logo.png" alt="Way2Green Logo" style="height: 32px; width: auto;"></a>
+            <nav class="desktop-nav">
             <a href="index.php">Home</a>
-            <a href="travel.php" class="active">Plan Transit</a>
             <a href="hotels.php">Eco-Stays</a>
+            <a href="travel.php" class="active">Plan Transit</a>
             <a href="about.php">About Us</a>
             <a href="my-trips.php">My Passports</a>
-            <a href="logout.php" style="color: #dc2626;">Sign Out</a>
-        </nav>
-        <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
+            <a href="logout.php" style="color: #dc2626;">Sign Out</a></nav>
+            <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu" style="filter: brightness(0) invert(1);">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </header>
 
-    <main class="page-container" style="max-width: 980px;">
-        <!-- Visual Multi-Step Tracker -->
-        <div class="step-progress-bar">
-            <div class="step-bubble active">
-                <span class="step-num">1</span>
-                <span>Trip Search</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble">
-                <span class="step-num">2</span>
-                <span>Select Journey</span>
-            </div>
-            <span style="color: var(--text-muted);">➔</span>
-            <div class="step-bubble">
-                <span class="step-num">3</span>
-                <span>Eco-Passport</span>
-            </div>
+        <div class="transit-hero-content">
+            <h1 class="transit-title">Travel</h1>
+            <p class="transit-subtitle">Travel with intention. Discover active adventures and green transit options all in one place.</p>
         </div>
 
-        <div class="card-box card-3d reveal-on-scroll">
-            <span class="section-tag">Step 1 of 3</span>
-            <h1 style="color: var(--primary); font-size: 1.8rem; margin: 4px 0 6px;">Plan Your Trip</h1>
-            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.8rem;">
-                Hi <strong><?= htmlspecialchars($user['name']) ?></strong>! Enter your travel details to find the best routes.
-            </p>
-
+        <div class="search-widget">
             <?php if (!empty($errors)): ?>
-                <div style="background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; border: 1px solid #f87171;">
-                    <ul style="margin: 0; padding-left: 1.5rem;">
+                <div style="background: #fef2f2; color: #991b1b; padding: 10px; border-radius: var(--radius-md); margin-bottom: 1rem; border: 1px solid #f87171; text-align: left;">
+                    <ul style="margin: 0; padding-left: 1.5rem; font-size: 0.9rem;">
                         <?php foreach ($errors as $err): ?>
                             <li><?= htmlspecialchars($err) ?></li>
                         <?php endforeach; ?>
@@ -173,89 +391,177 @@ $preselectedDest = $_GET['dest'] ?? '';
                 </div>
             <?php endif; ?>
 
-            <form id="transitForm" method="POST" action="travel.php" onsubmit="return validateForm()">
-                <div class="transit-input-grid" style="grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-                    
-                    <!-- Trip Type -->
-                    <div style="grid-column: span 2;">
-                        <label class="field-label">Trip Type</label>
-                        <div style="display: flex; gap: 1rem;">
-                            <label><input type="radio" name="trip_type" value="one-way" <?= (empty($_POST['trip_type']) || $_POST['trip_type'] === 'one-way') ? 'checked' : '' ?> onchange="toggleReturnDate()"> One-way</label>
-                            <label><input type="radio" name="trip_type" value="round-trip" <?= (isset($_POST['trip_type']) && $_POST['trip_type'] === 'round-trip') ? 'checked' : '' ?> onchange="toggleReturnDate()"> Round-trip</label>
-                        </div>
+            <form method="POST" action="travel.php" onsubmit="return validateForm()">
+                <div class="search-grid">
+                    <div class="search-field">
+                        <label>Trip Type</label>
+                        <select name="trip_type" onchange="toggleReturnDate(this.value)">
+                            <option value="one-way" <?= (empty($_POST['trip_type']) || $_POST['trip_type'] === 'one-way') ? 'selected' : '' ?>>One-way</option>
+                            <option value="round-trip" <?= (isset($_POST['trip_type']) && $_POST['trip_type'] === 'round-trip') ? 'selected' : '' ?>>Round-trip</option>
+                        </select>
                     </div>
-
-                    <!-- Origin -->
-                    <div>
-                        <label class="field-label" for="origin">Origin</label>
-                        <input type="text" id="origin" name="origin" class="field-input" placeholder="e.g. Mumbai" value="<?= htmlspecialchars($_POST['origin'] ?? '') ?>" required>
+                    <div class="search-field">
+                        <label>Origin</label>
+                        <input type="text" id="origin" name="origin" placeholder="Where from?" value="<?= htmlspecialchars($_POST['origin'] ?? '') ?>" required>
                     </div>
-
-                    <!-- Destination -->
-                    <div>
-                        <label class="field-label" for="destination">Destination</label>
-                        <select id="destination" name="destination" class="field-select" required>
-                            <option value="">Select Destination...</option>
+                    <div class="search-field">
+                        <label>Destination</label>
+                        <select id="destination" name="destination" required>
+                            <option value="">Where to?</option>
                             <?php foreach ($destinations as $d): ?>
-                                <option value="<?= htmlspecialchars($d['name']) ?>" 
-                                        <?= ((isset($_POST['destination']) && $_POST['destination'] === $d['name']) || (!empty($preselectedDest) && stripos($d['name'], $preselectedDest) !== false)) ? 'selected' : '' ?>>
-                                    📍 <?= htmlspecialchars($d['name']) ?>
+                                <option value="<?= htmlspecialchars($d['name']) ?>" <?= ((isset($_POST['destination']) && $_POST['destination'] === $d['name']) || (!empty($preselectedDest) && stripos($d['name'], $preselectedDest) !== false)) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($d['name']) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-
-                    <!-- Departure Date -->
-                    <div>
-                        <label class="field-label" for="departure_date">Departure Date</label>
-                        <input type="date" id="departure_date" name="departure_date" class="field-input" value="<?= htmlspecialchars($_POST['departure_date'] ?? date('Y-m-d')) ?>" required>
+                    <div class="search-field">
+                        <label>Departure</label>
+                        <input type="date" id="departure_date" name="departure_date" value="<?= htmlspecialchars($_POST['departure_date'] ?? date('Y-m-d')) ?>" required>
                     </div>
-
-                    <!-- Return Date -->
-                    <div>
-                        <label class="field-label" for="return_date">Return Date</label>
-                        <input type="date" id="return_date" name="return_date" class="field-input" value="<?= htmlspecialchars($_POST['return_date'] ?? '') ?>" <?= (empty($_POST['trip_type']) || $_POST['trip_type'] === 'one-way') ? 'disabled' : 'required' ?>>
+                    <div class="search-field">
+                        <label>Return</label>
+                        <input type="date" id="return_date" name="return_date" value="<?= htmlspecialchars($_POST['return_date'] ?? '') ?>" <?= (empty($_POST['trip_type']) || $_POST['trip_type'] === 'one-way') ? 'disabled' : 'required' ?>>
                     </div>
-
-                    <!-- Travellers -->
-                    <div>
-                        <label class="field-label" for="travellers">Travellers</label>
-                        <input type="number" id="travellers" name="travellers" class="field-input" min="1" value="<?= htmlspecialchars($_POST['travellers'] ?? 1) ?>" required>
+                    <div class="search-field">
+                        <label>Travellers</label>
+                        <input type="number" id="travellers" name="travellers" min="1" value="<?= htmlspecialchars($_POST['travellers'] ?? 1) ?>" required style="width: 80px;">
                     </div>
-
-                    <!-- Preference -->
                     <div>
-                        <label class="field-label" for="preference">Preference</label>
-                        <select id="preference" name="preference" class="field-select">
-                            <option value="Way2Green Pick" <?= (isset($_POST['preference']) && $_POST['preference'] === 'Way2Green Pick') ? 'selected' : '' ?>>Way2Green Pick</option>
-                            <option value="Lowest Price" <?= (isset($_POST['preference']) && $_POST['preference'] === 'Lowest Price') ? 'selected' : '' ?>>Lowest Price</option>
-                            <option value="Fastest" <?= (isset($_POST['preference']) && $_POST['preference'] === 'Fastest') ? 'selected' : '' ?>>Fastest</option>
-                            <option value="Lower Impact" <?= (isset($_POST['preference']) && $_POST['preference'] === 'Lower Impact') ? 'selected' : '' ?>>Lower Impact</option>
-                        </select>
+                        <button type="submit" class="btn-search">Explore</button>
                     </div>
-
                 </div>
-
-                <button type="submit" class="btn-nature-primary" style="width: 100%; justify-content: center; padding: 15px;">
-                    Search Journeys ➔
-                </button>
             </form>
         </div>
+    </div>
+
+    <?php if ($searchPerformed && $tripData): ?>
+    <main class="results-section" id="results">
+        <div class="section-header">
+            <h2 style="font-size: 2.2rem; font-weight: 500;">Way2Green means <br><span style="font-weight: 800;">Going Places</span></h2>
+            <p style="color: var(--text-muted);">Here are the best options for your trip to <?= htmlspecialchars($tripData['destination']) ?>.</p>
+        </div>
+
+        <div class="route-options">
+            <!-- Cheapest -->
+            <div class="route-card">
+                <div class="route-badge" style="background: #f1f5f9; color: #475569;">Cheapest</div>
+                <div class="route-image">🚌</div>
+                <div class="route-content">
+                    <h3 class="route-title">Shared Coach</h3>
+                    <div class="route-details">
+                        <span>14h 30m</span>
+                        <span>Direct</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <span class="route-price">$24</span>
+                        <span style="font-size: 0.8rem; color: var(--leaf);">Moderate CO₂</span>
+                    </div>
+                    <a href="journey.php" class="btn-select">Select</a>
+                </div>
+            </div>
+
+            <!-- Fastest -->
+            <div class="route-card">
+                <div class="route-badge" style="background: #fef2f2; color: #b91c1c;">Fastest</div>
+                <div class="route-image">✈️</div>
+                <div class="route-content">
+                    <h3 class="route-title">Direct Flight</h3>
+                    <div class="route-details">
+                        <span>2h 15m</span>
+                        <span>Direct</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <span class="route-price">$145</span>
+                        <span style="font-size: 0.8rem; color: #ef4444;">High CO₂</span>
+                    </div>
+                    <a href="journey.php" class="btn-select">Select</a>
+                </div>
+            </div>
+
+            <!-- Most Eco-Friendly -->
+            <div class="route-card">
+                <div class="route-badge">Most Eco-Friendly</div>
+                <div class="route-image">🚆</div>
+                <div class="route-content">
+                    <h3 class="route-title">Electric Rail</h3>
+                    <div class="route-details">
+                        <span>18h 45m</span>
+                        <span>1 Transfer</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <span class="route-price">$42</span>
+                        <span style="font-size: 0.8rem; color: var(--leaf); font-weight: 700;">-85% CO₂</span>
+                    </div>
+                    <a href="journey.php" class="btn-select">Select</a>
+                </div>
+            </div>
+
+            <!-- Way2Green Recommended -->
+            <div class="route-card recommended">
+                <div class="route-badge">Way2Green Pick</div>
+                <div class="route-image">🚄</div>
+                <div class="route-content">
+                    <h3 class="route-title">High-Speed Rail</h3>
+                    <div class="route-details">
+                        <span>6h 20m</span>
+                        <span>Direct</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <span class="route-price">$85</span>
+                        <span style="font-size: 0.8rem; color: var(--leaf); font-weight: 700;">-70% CO₂</span>
+                    </div>
+                    <a href="journey.php" class="btn-select" style="background: var(--primary); color: white;">Select Recommended</a>
+                </div>
+            </div>
+            
+            <!-- Custom Constraints -->
+            <div class="route-card" style="border: 1px dashed var(--border-subtle); display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fafafa; padding: 30px; text-align: center;">
+                <div style="font-size: 2rem; margin-bottom: 10px;">⚙️</div>
+                <h3 class="route-title">Custom Priorities</h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Set specific limits for budget, time, and emissions.</p>
+                <a href="#" class="btn-select" style="background: transparent;">Configure</a>
+            </div>
+        </div>
+        
+        <!-- FUTURE API INTEGRATION — PHASE 7 -->
+        <div style="text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.85rem;">
+            // FUTURE API INTEGRATION — PHASE 7 <br> Route options will be populated dynamically via transit provider APIs.
+        </div>
     </main>
+    
+    <script>
+        // Scroll to results if search performed
+        window.addEventListener('DOMContentLoaded', () => {
+            const results = document.getElementById('results');
+            if (results) {
+                results.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    </script>
+    <?php else: ?>
+    <!-- Empty state before search -->
+    <main class="results-section">
+        <div class="section-header">
+            <h2 style="font-size: 2.2rem; font-weight: 500;">Way2Green means <br><span style="font-weight: 800;">Going Places</span></h2>
+            <p style="color: var(--text-muted);">Enter a destination above to find sustainable travel options.</p>
+        </div>
+    </main>
+    <?php endif; ?>
 
     <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-grid">
             <div>
-                <div class="footer-brand">🌍 Way2Green</div>
+                <div class="footer-brand"><img src="assets/img/logo.png" alt="Way2Green Logo" style="height: 24px; width: auto;"></div>
                 <p class="footer-text">Empowering travelers with honest carbon transparency and barrier-free stays.</p>
             </div>
             <div>
-                <h4 class="footer-heading">Steps</h4>
+                <h4 class="footer-heading">Navigation</h4>
                 <div class="footer-links">
-                    <a href="travel.php">Step 1: Transit Planner</a>
-                    <a href="hotels.php">Step 2: Eco-Hotels</a>
-                    <a href="my-trips.php">Step 3: Eco-Passports</a>
+                    <a href="index.php">Home</a>
+                    <a href="hotels.php">Eco-Stays</a>
+                    <a href="travel.php">Plan Transit</a>
                 </div>
             </div>
             <div>
@@ -277,13 +583,13 @@ $preselectedDest = $_GET['dest'] ?? '';
             <span class="icon">🏡</span>
             <span class="label">Home</span>
         </a>
-        <a href="travel.php" class="mobile-nav-item active">
-            <span class="icon">🚆</span>
-            <span class="label">Transit</span>
-        </a>
         <a href="hotels.php" class="mobile-nav-item">
             <span class="icon">🏨</span>
             <span class="label">Stays</span>
+        </a>
+        <a href="travel.php" class="mobile-nav-item active">
+            <span class="icon">🚆</span>
+            <span class="label">Transit</span>
         </a>
         <a href="about.php" class="mobile-nav-item">
             <span class="icon">🌿</span>
@@ -302,8 +608,8 @@ $preselectedDest = $_GET['dest'] ?? '';
             document.getElementById('drawerOverlay').classList.toggle('active');
         }
 
-        function toggleReturnDate() {
-            const isRoundTrip = document.querySelector('input[name="trip_type"][value="round-trip"]').checked;
+        function toggleReturnDate(val) {
+            const isRoundTrip = (val === 'round-trip');
             const returnDateInput = document.getElementById('return_date');
             returnDateInput.disabled = !isRoundTrip;
             if (isRoundTrip) {
@@ -319,7 +625,7 @@ $preselectedDest = $_GET['dest'] ?? '';
             const destination = document.getElementById('destination').value.trim();
             const departureDate = document.getElementById('departure_date').value;
             const returnDate = document.getElementById('return_date').value;
-            const isRoundTrip = document.querySelector('input[name="trip_type"][value="round-trip"]').checked;
+            const isRoundTrip = document.querySelector('select[name="trip_type"]').value === 'round-trip';
             const today = new Date().toISOString().split('T')[0];
 
             if (origin.toLowerCase() === destination.toLowerCase() && origin !== '') {
@@ -345,3 +651,4 @@ $preselectedDest = $_GET['dest'] ?? '';
     </script>
 </body>
 </html>
+

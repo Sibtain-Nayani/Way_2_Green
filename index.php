@@ -1,5 +1,5 @@
 <?php
-// index.php - Way2Green: Smart Sustainable & Accessible Hospitality Platform
+// index.php - Way2Green: Sustainable Travel Platform — Homepage
 require_once 'db.php';
 require_once 'user_auth.php';
 
@@ -25,7 +25,7 @@ try {
             FROM hotels h 
             JOIN destinations d ON h.destination_id = d.id 
             ORDER BY h.eco_rating DESC, h.id ASC 
-            LIMIT 6
+            LIMIT 4
         ");
         $featuredHotels = $stmtHotels->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -33,351 +33,230 @@ try {
     $featuredHotels = [];
 }
 
-// Curated high-res scenic photos for fallback & destination headers
+// Curated high-res scenic photos
 $destImages = [
-    'Agra' => 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1920&q=80',
-    'Goa' => 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1920&q=80',
-    'Mumbai' => 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1920&q=80',
-    'Singapore' => 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80',
-    'Munnar' => 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80',
-    'Manali' => 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1920&q=80',
-    'South Goa' => 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1920&q=80',
-    'Rishikesh' => 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80',
-    'Ooty' => 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1920&q=80'
+    'Agra' => 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=800&q=80',
+    'Goa' => 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80',
+    'Mumbai' => 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=800&q=80',
+    'Singapore' => 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=80',
+    'Munnar' => 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80',
+    'Manali' => 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80',
+    'South Goa' => 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80',
+    'Rishikesh' => 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    'Ooty' => 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80'
 ];
 
-// Rich fallback hotels in case the database is not yet seeded
+// Rich fallback hotels
 $fallbackHotels = [
     [
         'id' => 1,
-        'name' => 'The Solar Lotus Sanctuary',
-        'destination_name' => 'Agra, Uttar Pradesh',
+        'name' => 'Rainforest Canopy Retreat',
+        'destination_name' => 'Wayanad, Kerala',
         'eco_rating' => 4.9,
         'price_per_night' => 4200,
         'water_saved_liters' => 145000,
         'power_saved_kwh' => 28000,
         'image_url' => 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
-        'description' => '100% solar microgrid, electric monument shuttles, zero single-use plastics, and step-free wheelchair gardens.',
+        'description' => '100% solar microgrid, electric shuttles, zero single-use plastics, and step-free wheelchair gardens.',
         'eco_badges' => '100% Solar Powered, Zero Plastic, Greywater Recycling',
         'accessibility_tags' => 'Wheelchair Ramps, Roll-in Showers, Braille Markers'
     ],
     [
         'id' => 2,
-        'name' => 'Palolem Dune Bio-Cabins',
-        'destination_name' => 'South Goa (Eco-Coast)',
+        'name' => 'Mountain Village Homestay',
+        'destination_name' => 'Shimla, Himachal Pradesh',
         'eco_rating' => 4.88,
         'price_per_night' => 3800,
         'water_saved_liters' => 110000,
         'power_saved_kwh' => 22000,
-        'image_url' => 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80',
-        'description' => 'Reclaimed bamboo cottages supporting Olive Ridley turtle conservation, with beach wheelchair mats and solar showers.',
-        'eco_badges' => 'Solar Powered, Marine Reserve Partner, Zero Waste',
-        'accessibility_tags' => 'Beach Wheelchair, Step-free Boardwalk, Sensory Friendly'
+        'image_url' => 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+        'description' => 'Handcrafted local stone construction powered by micro-hydro with community-sourced sustainable living.',
+        'eco_badges' => 'Micro-Hydro, Community Farm, Zero Waste',
+        'accessibility_tags' => 'Ground Floor, Wide Doorways, Sensory Friendly'
     ],
     [
         'id' => 3,
-        'name' => 'Misty Mountain Eco-Resort',
-        'destination_name' => 'Munnar, Kerala',
+        'name' => 'Coastal Dune Sanctuary',
+        'destination_name' => 'Alleppey, Kerala',
         'eco_rating' => 4.95,
         'price_per_night' => 4500,
         'water_saved_liters' => 165000,
         'power_saved_kwh' => 32000,
-        'image_url' => 'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=800&q=80',
-        'description' => 'Organic tea plantation retreat running on micro-hydro & solar energy. Features wheelchair accessible forest skywalk.',
+        'image_url' => 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80',
+        'description' => 'Sustainable dune retreat with solar panels, organic farm-to-table dining and zero-plastic policy.',
         'eco_badges' => '100% Renewable, Rainwater Catchment, Organic Farm',
-        'accessibility_tags' => 'Skywalk Ramps, Visual Alerts, Wide Doorways'
+        'accessibility_tags' => 'Beach Access, Visual Alerts, Wide Doorways'
     ],
     [
         'id' => 4,
-        'name' => 'The Urban Mangrove Retreat',
+        'name' => 'Urban Mangrove Retreat',
         'destination_name' => 'Mumbai, Maharashtra',
         'eco_rating' => 4.82,
         'price_per_night' => 5200,
         'water_saved_liters' => 125000,
         'power_saved_kwh' => 26000,
         'image_url' => 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=800&q=80',
-        'description' => 'LEED Platinum certified property with vertical botanical gardens, universal accessibility elevators, and metro connections.',
+        'description' => 'LEED Platinum certified with vertical gardens, universal accessibility, and metro connections.',
         'eco_badges' => 'LEED Platinum, 100% Greywater, EV Charging Hub',
         'accessibility_tags' => 'Braille Signs, Auditory Cues, Level Access'
-    ],
-    [
-        'id' => 5,
-        'name' => 'Solang Himalayan Bio-Lodge',
-        'destination_name' => 'Manali, Himachal Pradesh',
-        'eco_rating' => 4.86,
-        'price_per_night' => 4100,
-        'water_saved_liters' => 98000,
-        'power_saved_kwh' => 21000,
-        'image_url' => 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
-        'description' => 'Passive solar-heated alpine timber lodge with triple-glazed windows and zero-food-waste community composting.',
-        'eco_badges' => 'Passive Solar, Composting Hub, Native Timber',
-        'accessibility_tags' => 'Wheelchair Ramps, Ground Floor Suites, Grab Bars'
-    ],
-    [
-        'id' => 6,
-        'name' => 'Marina Biophilic Sanctuary',
-        'destination_name' => 'Singapore Garden City',
-        'eco_rating' => 4.98,
-        'price_per_night' => 12500,
-        'water_saved_liters' => 280000,
-        'power_saved_kwh' => 74000,
-        'image_url' => 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=80',
-        'description' => 'World-class biophilic towers with universal access, smart rainwater cooling, zero plastics, and verified net-zero operations.',
-        'eco_badges' => 'Net-Zero Carbon, Rainwater Cooling, Zero Plastic',
-        'accessibility_tags' => 'Full Universal Access, Smart Elevators, Tactile Guides'
     ]
 ];
 
 $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
+
+// Fetch destinations for trip planner dropdown
+$destinations = [];
+try {
+    if (isset($pdo)) {
+        $stmt2 = $pdo->query("SELECT * FROM destinations ORDER BY name ASC");
+        $destinations = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (Exception $e) {
+    $destinations = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Way2Green — Travel Light. Leave Only Footprints.</title>
-    <meta name="description" content="A conscious travel platform combining low-carbon transit planning, verified barrier-free eco-lodges, dynamic vertical boarding passes, and official green passports.">
+    <title>W2G — Travel Further. Tread Lighter.</title>
+    <meta name="description" content="Way2Green connects conscious travelers with lower-emission routes, verified eco-stays, and meaningful experiences for a greener planet.">
     
-    <!-- Google Fonts: Modern Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* ==========================================================================
-           COLOR PALETTE & DESIGN TOKENS
-           Strict Color Palette: Seaweed Green & Alice Blue Dominance
-           ========================================================================== */
+        /* =============================================
+           W2G DESIGN SYSTEM
+           Seaweed Green #29AB87 + Alice Blue #F0F8FF
+           ============================================= */
         :root {
-            /* Seaweed Green Family */
-            --seaweed-deepest: #04160d;
-            --seaweed-dark: #072416;
-            --seaweed-primary: #0b3b24;
-            --seaweed-mid: #134e35;
-            --seaweed-light: #1b633d;
-            --seaweed-accent: #22c55e;
-            --seaweed-mint: #34d399;
-            --seaweed-glow: rgba(34, 197, 94, 0.4);
+            --green-900: #0a2e1c;
+            --green-800: #0f3d26;
+            --green-700: #155c3a;
+            --green-600: #1a7a4e;
+            --green-500: #29AB87;
+            --green-400: #3ec99b;
+            --green-300: #6edbb5;
+            --green-200: #a8ecd4;
+            --green-100: #d4f5e9;
+            --green-50: #eefbf5;
 
-            /* Alice Blue Family */
-            --alice-blue: #F0F8FF;
-            --alice-blue-light: #f7fbff;
-            --alice-blue-dark: #e1effc;
-            --alice-blue-deep: #cae3fb;
-            --alice-blue-card: rgba(240, 248, 255, 0.94);
-            --alice-blue-glass: rgba(240, 248, 255, 0.88);
-            --alice-blue-border: rgba(190, 220, 248, 0.65);
+            --alice: #F0F8FF;
+            --alice-warm: #fafcf9;
+            --off-white: #f5f7f4;
+            --white: #ffffff;
+            --cream: #f8f6f1;
 
-            /* Text & UI Semantics */
-            --text-on-seaweed: #F0F8FF;
-            --text-on-alice: #072416;
-            --text-muted: #4d6d5d;
-            --text-light-subtle: rgba(240, 248, 255, 0.82);
+            --text-dark: #0f1f17;
+            --text-body: #2d3d33;
+            --text-muted: #6b7c72;
+            --text-light: #94a39a;
 
-            /* Elevation & Shadows */
-            --shadow-sm: 0 4px 14px rgba(7, 36, 22, 0.08);
-            --shadow-md: 0 12px 32px rgba(7, 36, 22, 0.14);
-            --shadow-lg: 0 24px 50px rgba(7, 36, 22, 0.22);
-            --shadow-boarding-pass: 0 30px 60px -12px rgba(4, 22, 13, 0.45), 0 0 40px rgba(34, 197, 94, 0.15);
-            --shadow-search-btn: 0 14px 28px rgba(7, 36, 22, 0.35), 0 0 25px rgba(34, 211, 153, 0.3);
+            --border: #e2e8e4;
+            --border-light: #eef2ef;
 
-            /* Layout */
-            --radius-sm: 10px;
-            --radius-md: 18px;
-            --radius-lg: 26px;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
             --radius-full: 9999px;
-            --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.1);
+            --shadow-xl: 0 16px 48px rgba(0,0,0,0.12);
+
+            --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            --font-serif: 'Playfair Display', Georgia, serif;
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        /* Global Reset */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: var(--font-main);
-            background-color: var(--alice-blue);
-            color: var(--text-on-alice);
+            font-family: var(--font-sans);
+            background: var(--white);
+            color: var(--text-body);
             line-height: 1.6;
             overflow-x: hidden;
-            position: relative;
-            padding-bottom: 74px; /* Mobile bottom dock clearance */
+            -webkit-font-smoothing: antialiased;
         }
+        a { color: inherit; text-decoration: none; transition: var(--transition); }
+        img { max-width: 100%; display: block; }
 
-        @media (min-width: 900px) {
-            body {
-                padding-bottom: 0;
-            }
-        }
-
-        a {
-            color: var(--seaweed-primary);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        button, input, select {
-            font-family: inherit;
-        }
-
-        /* Ambient Glowing Background Elements */
-        .ambient-glow-1 {
+        /* =============================================
+           1. FLOATING NAVBAR
+           ============================================= */
+        .w2g-nav {
             position: fixed;
-            top: -120px;
-            right: -100px;
-            width: 480px;
-            height: 480px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(34, 197, 94, 0.12) 0%, rgba(240, 248, 255, 0) 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .ambient-glow-2 {
-            position: fixed;
-            bottom: -150px;
-            left: -100px;
-            width: 520px;
-            height: 520px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(11, 59, 36, 0.1) 0%, rgba(240, 248, 255, 0) 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        /* ==========================================================================
-           TOP NAVIGATION BAR (CONNECTED ACROSS WEBSITE)
-           ========================================================================== */
-        .site-header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(240, 248, 255, 0.90);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-bottom: 1px solid var(--alice-blue-border);
-            padding: 0.85rem 2rem;
-            transition: var(--transition);
-        }
-
-        .nav-inner {
-            max-width: 1320px;
-            margin: 0 auto;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 1280px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: var(--radius-full);
+            padding: 10px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 1.5rem;
+            z-index: 1000;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
         }
-
-        .brand-logo {
+        .nav-logo img { height: 32px; width: auto; }
+        .nav-links {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.45rem;
-            font-weight: 800;
-            color: var(--seaweed-primary);
-            letter-spacing: -0.02em;
+            gap: 4px;
         }
-
-        .brand-icon-box {
-            width: 38px;
-            height: 38px;
-            background: linear-gradient(135deg, var(--seaweed-primary), var(--seaweed-light));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--alice-blue);
-            font-size: 1.25rem;
-            box-shadow: 0 4px 12px rgba(11, 59, 36, 0.25);
-        }
-
-        .desktop-nav {
-            display: flex;
-            align-items: center;
-            gap: 1.6rem;
-            list-style: none;
-        }
-
-        .nav-link {
-            font-size: 0.94rem;
-            font-weight: 700;
-            color: var(--seaweed-mid);
-            padding: 6px 14px;
-            border-radius: var(--radius-sm);
+        .nav-links a {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-body);
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
             transition: var(--transition);
         }
-
-        .nav-link:hover, .nav-link.active {
-            color: var(--seaweed-primary);
-            background: var(--alice-blue-dark);
+        .nav-links a:hover, .nav-links a.active {
+            background: var(--green-50);
+            color: var(--green-700);
         }
-
-        .header-actions {
+        .nav-actions {
             display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .eco-status-pill {
-            display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: rgba(11, 59, 36, 0.08);
-            border: 1px solid rgba(11, 59, 36, 0.18);
-            padding: 6px 14px;
+        }
+        .btn-signin {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-body);
+            padding: 8px 20px;
             border-radius: var(--radius-full);
-            font-size: 0.82rem;
+            border: 1px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-signin:hover { border-color: var(--green-500); color: var(--green-600); }
+        .btn-signup {
+            font-size: 0.88rem;
             font-weight: 700;
-            color: var(--seaweed-primary);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--seaweed-accent);
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 10px var(--seaweed-accent);
-            animation: pulse-dot 2s infinite ease-in-out;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.45; transform: scale(0.85); }
-        }
-
-        .btn-nav-primary {
-            background: linear-gradient(135deg, var(--seaweed-primary), var(--seaweed-light));
-            color: var(--alice-blue);
-            padding: 8px 18px;
+            color: var(--white);
+            padding: 8px 20px;
             border-radius: var(--radius-full);
-            font-weight: 700;
-            font-size: 0.9rem;
+            background: var(--green-500);
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 14px rgba(11, 59, 36, 0.25);
             transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
         }
-
-        .btn-nav-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(11, 59, 36, 0.35);
-            color: #ffffff;
-        }
-
-        .btn-hamburger {
+        .btn-signup:hover { background: var(--green-600); transform: translateY(-1px); }
+        .nav-hamburger {
             display: none;
             flex-direction: column;
             gap: 5px;
@@ -386,2059 +265,1063 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             cursor: pointer;
             padding: 4px;
         }
-
-        .btn-hamburger span {
+        .nav-hamburger span {
             display: block;
-            width: 24px;
-            height: 2.5px;
-            background-color: var(--seaweed-primary);
+            width: 22px;
+            height: 2px;
+            background: var(--text-dark);
             border-radius: 2px;
             transition: var(--transition);
         }
 
-        /* Mobile Off-Canvas Drawer */
-        .drawer-overlay {
-            position: fixed;
+        /* =============================================
+           2. HERO SECTION
+           ============================================= */
+        .hero {
+            position: relative;
+            width: 100%;
+            min-height: 92vh;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding-bottom: 100px;
+        }
+        .hero-bg {
+            position: absolute;
             inset: 0;
-            background: rgba(4, 22, 13, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
+            background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            z-index: 0;
         }
-
-        .drawer-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(10,46,28,0.3) 0%, rgba(10,46,28,0.55) 70%, rgba(10,46,28,0.8) 100%);
         }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 40px;
+            width: 100%;
+        }
+        .hero-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.65);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .hero-breadcrumb span { opacity: 0.5; }
+        .hero-title {
+            font-family: var(--font-serif);
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.08;
+            margin-bottom: 20px;
+            max-width: 680px;
+            letter-spacing: -1px;
+        }
+        .hero-desc {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.8);
+            max-width: 540px;
+            line-height: 1.7;
+            margin-bottom: 32px;
+        }
+        .btn-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--green-500);
+            color: var(--white);
+            padding: 14px 28px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-hero:hover { background: var(--green-400); transform: translateY(-2px); }
 
-        .mobile-drawer {
-            position: fixed;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 300px;
-            max-width: 85%;
-            background: var(--alice-blue);
-            border-left: 2px solid var(--alice-blue-deep);
-            padding: 2rem 1.5rem;
-            z-index: 201;
-            transform: translateX(100%);
-            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Hero side info cards */
+        .hero-side-cards {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
             gap: 12px;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.15);
-        }
-
-        .mobile-drawer.open {
-            transform: translateX(0);
-        }
-
-        .drawer-close {
-            align-self: flex-end;
-            background: none;
-            border: none;
-            font-size: 1.4rem;
-            color: var(--seaweed-primary);
-            cursor: pointer;
-            margin-bottom: 1rem;
-        }
-
-        .drawer-link {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--seaweed-mid);
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .drawer-link:hover, .drawer-link.active {
-            color: var(--seaweed-primary);
-            background: var(--alice-blue-dark);
-        }
-
-        /* ==========================================================================
-           MAIN HERO SECTION WITH DYNAMIC LOCATION BACKGROUND
-           Strict UI Constraint: Semi-transparent Seaweed Green / Alice Blue Gradient Overlay
-           ========================================================================== */
-        .hero-section {
-            position: relative;
-            min-height: 94vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 4rem 1.5rem 6.5rem;
-            overflow: hidden;
-            background-color: var(--seaweed-dark);
-            transition: background 0.6s ease-in-out;
-        }
-
-        /* Dynamic Background Layer with Smooth Image Crossfading */
-        .hero-bg-layer {
-            position: absolute;
-            inset: 0;
-            background-size: cover;
-            background-position: center center;
-            background-repeat: no-repeat;
-            opacity: 1;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-            transform: scale(1.02);
-            z-index: 1;
-        }
-
-        /* Gradient Overlay: Semi-transparent Seaweed Green + Alice Blue */
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(7, 36, 22, 0.92) 0%,
-                rgba(11, 59, 36, 0.85) 45%,
-                rgba(19, 78, 53, 0.76) 75%,
-                rgba(240, 248, 255, 0.32) 100%
-            );
-            backdrop-filter: blur(1.5px);
-            -webkit-backdrop-filter: blur(1.5px);
             z-index: 2;
         }
-
-        .hero-ambient-mesh {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 80% 25%, rgba(52, 211, 153, 0.18) 0%, transparent 50%),
-                        radial-gradient(circle at 20% 85%, rgba(240, 248, 255, 0.15) 0%, transparent 45%);
-            mix-blend-mode: overlay;
-            z-index: 3;
-            pointer-events: none;
+        .hero-side-card {
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: var(--radius-md);
+            padding: 14px 18px;
+            min-width: 160px;
         }
-
-        .hero-container {
-            position: relative;
-            z-index: 10;
-            max-width: 1320px;
-            width: 100%;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1.15fr 0.85fr;
-            gap: 3.5rem;
-            align-items: center;
+        .hero-side-card .label {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
         }
-
-        /* Hero Left Content */
-        .hero-left {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .hero-badge-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .badge-eco-pill {
-            background: rgba(240, 248, 255, 0.15);
-            border: 1px solid rgba(240, 248, 255, 0.3);
-            color: var(--alice-blue);
-            padding: 6px 14px;
-            border-radius: var(--radius-full);
-            font-size: 0.84rem;
+        .hero-side-card .value {
+            font-size: 1rem;
             font-weight: 700;
-            letter-spacing: 0.03em;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            backdrop-filter: blur(8px);
+            color: var(--white);
         }
 
-        .badge-destination-indicator {
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid var(--seaweed-accent);
-            color: #d1fae5;
-            padding: 6px 14px;
-            border-radius: var(--radius-full);
-            font-size: 0.84rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: var(--transition);
-        }
-
-        .hero-title {
-            font-size: clamp(2.3rem, 4.2vw, 3.5rem);
-            font-weight: 800;
-            line-height: 1.12;
-            color: var(--alice-blue);
-            letter-spacing: -0.03em;
-            text-shadow: 0 3px 18px rgba(4, 22, 13, 0.4);
-        }
-
-        .hero-title .highlight {
-            background: linear-gradient(120deg, #6ee7b7, #a7f3d0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
-        }
-
-        .hero-subtitle {
-            font-size: 1.08rem;
-            color: var(--text-light-subtle);
-            line-height: 1.65;
-            max-width: 580px;
-        }
-
-        /* ==========================================================================
-           THE COMPLEX SEARCH WIDGET (SUBMITS TO hotels.php)
-           ========================================================================== */
-        .search-widget-wrapper {
-            position: relative;
-            margin-top: 1rem;
-            padding-bottom: 0;
-        }
-
-        .search-widget-card {
-            background: var(--alice-blue-card);
-            border: 2px solid rgba(240, 248, 255, 0.9);
-            border-radius: var(--radius-lg);
-            padding: 1.8rem;
-            box-shadow: 0 20px 45px -8px rgba(4, 22, 13, 0.35), 0 0 20px rgba(34, 197, 94, 0.12);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+        /* =============================================
+           3. TRIP PLANNER (overlapping hero)
+           ============================================= */
+        .planner-wrapper {
             position: relative;
             z-index: 5;
+            max-width: 1200px;
+            margin: -60px auto 0;
+            padding: 0 24px;
         }
-
-        .search-fields-grid {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
-            gap: 1rem;
-            align-items: start;
+        .planner-card {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            padding: 0;
+            overflow: hidden;
         }
-
-        .search-field-group {
+        .planner-tabs {
             display: flex;
-            flex-direction: column;
-            gap: 6px;
-            position: relative;
+            border-bottom: 1px solid var(--border-light);
         }
-
-        .field-label {
-            font-size: 0.76rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--seaweed-primary);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .field-input-box {
-            position: relative;
-            background: #ffffff;
-            border: 1.5px solid var(--alice-blue-deep);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            padding: 10px 12px;
-            gap: 8px;
-            transition: var(--transition);
-            box-shadow: 0 2px 6px rgba(7, 36, 22, 0.04);
-        }
-
-        .field-input-box:focus-within {
-            border-color: var(--seaweed-light);
-            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-            background: #ffffff;
-        }
-
-        .field-icon {
-            font-size: 1.15rem;
-            color: var(--seaweed-mid);
-            flex-shrink: 0;
-        }
-
-        .field-input-box input {
-            width: 100%;
-            border: none;
-            background: transparent;
-            outline: none;
-            font-size: 0.92rem;
-            font-weight: 600;
-            color: var(--seaweed-dark);
-        }
-
-        .field-input-box input::placeholder {
-            color: #8fa79b;
-            font-weight: 500;
-        }
-
-        /* Quick Destination Chips */
-        .quick-destinations-row {
-            margin-top: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .quick-dest-label {
-            font-size: 0.74rem;
-            font-weight: 700;
-            color: var(--seaweed-mid);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-right: 4px;
-        }
-
-        .dest-chip {
-            background: #ffffff;
-            border: 1px solid var(--alice-blue-deep);
-            color: var(--seaweed-primary);
-            padding: 4px 10px;
-            border-radius: var(--radius-full);
-            font-size: 0.78rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .dest-chip:hover, .dest-chip.active {
-            background: var(--seaweed-primary);
-            color: var(--alice-blue);
-            border-color: var(--seaweed-primary);
-            transform: translateY(-1px);
-        }
-
-        /* Guest Selector Dropdown */
-        .guest-dropdown-menu {
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            border: 1.5px solid var(--alice-blue-deep);
-            border-radius: var(--radius-md);
-            padding: 1rem;
-            box-shadow: var(--shadow-md);
-            z-index: 50;
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .guest-dropdown-menu.show {
-            display: flex;
-            animation: fadeInMenu 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes fadeInMenu {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .guest-counter-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .counter-info h4 {
+        .planner-tab {
+            flex: 1;
+            padding: 16px 20px;
+            text-align: center;
             font-size: 0.88rem;
-            color: var(--seaweed-dark);
-            font-weight: 700;
-        }
-
-        .counter-info p {
-            font-size: 0.74rem;
+            font-weight: 600;
             color: var(--text-muted);
-        }
-
-        .counter-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-counter {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1px solid var(--alice-blue-deep);
-            background: var(--alice-blue);
-            color: var(--seaweed-primary);
-            font-size: 1rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+        .planner-tab.active {
+            color: var(--green-600);
+            border-bottom-color: var(--green-500);
+        }
+        .planner-tab:hover { color: var(--green-500); }
+        .planner-body { padding: 28px 32px; }
+        .planner-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+        .planner-field label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .planner-field input,
+        .planner-field select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
+            font-size: 0.92rem;
+            color: var(--text-dark);
+            background: var(--white);
             transition: var(--transition);
         }
-
-        .btn-counter:hover:not(:disabled) {
-            background: var(--seaweed-primary);
-            color: var(--alice-blue);
+        .planner-field input:focus,
+        .planner-field select:focus {
+            outline: none;
+            border-color: var(--green-500);
+            box-shadow: 0 0 0 3px rgba(41,171,135,0.1);
         }
-
-        .btn-counter:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
-        .counter-val {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--seaweed-dark);
-            min-width: 18px;
-            text-align: center;
-        }
-
-        /* Amenities & Accessibility Toggles */
-        .search-amenities-row {
+        .planner-preferences {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 1.1rem;
-            padding-top: 0.9rem;
-            border-top: 1px dashed rgba(11, 59, 36, 0.16);
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .eco-filters-group {
-            display: flex;
-            align-items: center;
-            gap: 14px;
+            gap: 8px;
             flex-wrap: wrap;
         }
-
-        .checkbox-pill {
+        .pref-chip {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            cursor: pointer;
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: var(--seaweed-mid);
-            user-select: none;
-        }
-
-        .checkbox-pill input[type="checkbox"] {
-            accent-color: var(--seaweed-primary);
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
-
-        /* ==========================================================================
-           BUTTON AREA: VERTICAL STACK (NO OVERLAP, SPACIOUS BREATHING ROOM)
-           ========================================================================== */
-        .search-actions-group {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-            justify-content: center;
-            margin-top: 1.6rem;
-            width: 100%;
-            position: relative;
-            z-index: 15;
-        }
-
-        .search-secondary-action {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin: 0;
-            text-align: center;
-        }
-
-        .link-transit-calc {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            color: var(--alice-blue);
-            font-size: 0.92rem;
-            font-weight: 700;
-            background: rgba(11, 59, 36, 0.55);
-            border: 1.5px solid rgba(240, 248, 255, 0.35);
-            padding: 9px 22px;
+            padding: 10px 18px;
             border-radius: var(--radius-full);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: var(--transition);
-            text-align: center;
-            max-width: 100%;
-            box-shadow: 0 4px 14px rgba(7, 36, 22, 0.2);
-        }
-
-        .link-transit-calc:hover {
-            background: var(--seaweed-primary);
-            border-color: var(--seaweed-accent);
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(11, 59, 36, 0.35);
-        }
-
-        .search-btn-container {
-            position: static;
-            transform: none;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            margin: 0;
-        }
-
-        .btn-search-large {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            background: linear-gradient(135deg, var(--seaweed-primary) 0%, var(--seaweed-dark) 100%);
-            color: var(--alice-blue);
-            font-size: 1.12rem;
-            font-weight: 800;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            padding: 1.1rem 3.4rem;
-            border-radius: var(--radius-full);
-            border: 3px solid var(--alice-blue);
-            box-shadow: var(--shadow-search-btn);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            white-space: nowrap;
-        }
-
-        .btn-search-large:hover {
-            transform: scale(1.03) translateY(-2px);
-            background: linear-gradient(135deg, var(--seaweed-light) 0%, var(--seaweed-primary) 100%);
-            box-shadow: 0 20px 40px rgba(7, 36, 22, 0.45), 0 0 30px rgba(34, 197, 94, 0.5);
-            color: #ffffff;
-        }
-
-        .btn-search-large:active {
-            transform: scale(0.98) translateY(0);
-        }
-
-        .search-btn-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(240, 248, 255, 0.18);
-            color: var(--alice-blue);
-            transition: var(--transition);
-        }
-
-        .btn-search-large:hover .search-btn-icon {
-            transform: translateX(4px);
-            background: var(--seaweed-mint);
-            color: var(--seaweed-dark);
-        }
-
-        /* ==========================================================================
-           ECO-FRIENDLY VERTICAL BOARDING PASS DESIGN
-           ========================================================================== */
-        .hero-right {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px;
-        }
-
-        .boarding-pass-card {
-            width: 100%;
-            max-width: 410px;
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: var(--shadow-boarding-pass);
-            position: relative;
-            overflow: visible;
-            border: 2px solid rgba(240, 248, 255, 0.85);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            user-select: none;
-        }
-
-        .boarding-pass-card:hover {
-            transform: translateY(-6px) rotate(0.5deg);
-        }
-
-        .pass-header {
-            background: linear-gradient(135deg, var(--seaweed-dark) 0%, var(--seaweed-primary) 100%);
-            color: var(--alice-blue);
-            padding: 1.4rem 1.6rem 1.2rem;
-            border-radius: 22px 22px 0 0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-        }
-
-        .pass-airline-brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 1.05rem;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-            color: var(--alice-blue);
-        }
-
-        .pass-type-badge {
-            background: rgba(34, 197, 94, 0.22);
-            border: 1px solid var(--seaweed-accent);
-            color: #bbf7d0;
-            font-size: 0.72rem;
-            font-weight: 800;
-            padding: 3px 9px;
-            border-radius: var(--radius-full);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .pass-main-body {
-            padding: 1.5rem 1.8rem;
-            background: #ffffff;
-        }
-
-        .pass-route-block {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 1.2rem;
-            border-bottom: 1px solid rgba(11, 59, 36, 0.1);
-        }
-
-        .route-stop {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stop-code {
-            font-family: var(--font-mono);
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--seaweed-primary);
-            line-height: 1;
-        }
-
-        .stop-city {
             font-size: 0.85rem;
             font-weight: 600;
-            color: var(--text-muted);
-            margin-top: 4px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            color: var(--text-body);
+            cursor: pointer;
+            transition: var(--transition);
         }
-
-        .route-connector {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            flex-grow: 1;
-            padding: 0 1rem;
+        .pref-chip:hover { border-color: var(--green-400); color: var(--green-600); }
+        .pref-chip.active {
+            background: var(--green-500);
+            color: var(--white);
+            border-color: var(--green-500);
         }
-
-        .route-transport-mode {
-            font-size: 0.72rem;
-            font-weight: 800;
-            color: var(--seaweed-mid);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .connector-line {
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--seaweed-accent), var(--seaweed-primary));
-            position: relative;
-        }
-
-        .connector-line::after {
-            content: '🚆';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.95rem;
-            background: #ffffff;
-            padding: 0 4px;
-        }
-
-        .pass-details-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem 1.2rem;
-            margin-top: 1.2rem;
-        }
-
-        .pass-meta-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .meta-label {
-            font-size: 0.68rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #7b998a;
-            letter-spacing: 0.05em;
-        }
-
-        .meta-value {
-            font-size: 0.98rem;
-            font-weight: 700;
-            color: var(--seaweed-dark);
-            margin-top: 2px;
-        }
-
-        .meta-value.mono {
-            font-family: var(--font-mono);
-            letter-spacing: -0.02em;
-        }
-
-        .pass-carbon-strip {
-            margin-top: 1.3rem;
-            background: rgba(240, 248, 255, 0.85);
-            border: 1px solid var(--alice-blue-deep);
-            border-radius: var(--radius-sm);
-            padding: 10px 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .carbon-strip-title {
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--seaweed-primary);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .carbon-savings-badge {
-            background: var(--seaweed-primary);
-            color: var(--alice-blue);
-            font-size: 0.74rem;
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: var(--radius-full);
-            letter-spacing: 0.02em;
-        }
-
-        /* Perforated Notches & Tear Line */
-        .pass-perforation-divider {
-            position: relative;
-            height: 28px;
-            background: #ffffff;
-            display: flex;
-            align-items: center;
-        }
-
-        .tear-dashed-line {
-            width: 100%;
-            border-top: 2px dashed rgba(11, 59, 36, 0.24);
-        }
-
-        .notch-left, .notch-right {
-            position: absolute;
-            top: 50%;
-            width: 26px;
-            height: 26px;
-            background: var(--seaweed-dark);
-            border-radius: 50%;
-            transform: translateY(-50%);
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
-            z-index: 10;
-        }
-
-        .notch-left {
-            left: -13px;
-        }
-
-        .notch-right {
-            right: -13px;
-        }
-
-        /* Pass Stub (Bottom Segment) */
-        .pass-stub {
-            background: var(--alice-blue);
-            padding: 1.4rem 1.8rem 1.6rem;
-            border-radius: 0 0 22px 22px;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            position: relative;
-        }
-
-        .stub-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .stub-seal-badge {
-            display: flex;
+        .btn-search-routes {
+            display: inline-flex;
             align-items: center;
             gap: 8px;
+            background: var(--green-900);
+            color: var(--white);
+            padding: 12px 28px;
+            border-radius: var(--radius-full);
+            font-weight: 700;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
         }
+        .btn-search-routes:hover { background: var(--green-800); transform: translateY(-1px); }
 
-        .seal-stamp {
-            width: 36px;
-            height: 36px;
-            border: 2px dashed var(--seaweed-light);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            color: var(--seaweed-primary);
-        }
-
-        .seal-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .seal-title {
-            font-size: 0.74rem;
-            font-weight: 800;
-            color: var(--seaweed-primary);
-            text-transform: uppercase;
-        }
-
-        .seal-subtitle {
-            font-size: 0.68rem;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-        }
-
-        .pass-barcode-container {
+        .planner-footer {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            background: #ffffff;
-            padding: 10px 14px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--alice-blue-deep);
+            padding-top: 4px;
         }
 
-        .barcode-strip {
+        /* =============================================
+           4. VALUE STRIP
+           ============================================= */
+        .value-strip {
+            max-width: 1200px;
+            margin: 48px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+        .value-item {
             display: flex;
-            align-items: center;
-            gap: 3px;
-            height: 38px;
-            flex-grow: 1;
+            align-items: flex-start;
+            gap: 14px;
         }
-
-        .barcode-line {
-            background-color: var(--seaweed-dark);
-            height: 100%;
-            border-radius: 1px;
-        }
-
-        .qr-placeholder {
+        .value-icon {
             width: 44px;
             height: 44px;
-            background: var(--alice-blue-dark);
-            border: 1.5px solid var(--seaweed-primary);
-            border-radius: 6px;
+            border-radius: var(--radius-md);
+            background: var(--green-50);
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.2rem;
             flex-shrink: 0;
-            font-size: 1.4rem;
         }
-
-        .pass-serial {
-            font-family: var(--font-mono);
-            font-size: 0.68rem;
-            color: var(--text-muted);
-            text-align: center;
-            letter-spacing: 0.1em;
-        }
-
-        .btn-stub-passport {
-            background: var(--seaweed-primary);
-            color: var(--alice-blue);
-            text-align: center;
-            font-size: 0.82rem;
-            font-weight: 700;
-            padding: 8px 14px;
-            border-radius: var(--radius-full);
-            display: block;
-            transition: var(--transition);
-        }
-
-        .btn-stub-passport:hover {
-            background: var(--seaweed-light);
-            color: #ffffff;
-        }
-
-        /* ==========================================================================
-           SECTION: 3-STEP JOURNEY ROADMAP (CONNECTED FLOW)
-           ========================================================================== */
-        .roadmap-section {
-            max-width: 1320px;
-            margin: -2.5rem auto 3rem;
-            padding: 0 1.5rem;
-            position: relative;
-            z-index: 20;
-        }
-
-        .roadmap-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-            gap: 1.6rem;
-        }
-
-        .roadmap-card {
-            background: #ffffff;
-            border: 1.5px solid var(--alice-blue-deep);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: var(--transition);
-        }
-
-        .roadmap-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--seaweed-accent);
-        }
-
-        .roadmap-badge {
-            font-size: 0.76rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--seaweed-light);
-            background: var(--alice-blue);
-            padding: 4px 10px;
-            border-radius: var(--radius-full);
-            display: inline-block;
-            margin-bottom: 12px;
-        }
-
-        .roadmap-icon {
-            font-size: 2rem;
-            margin-bottom: 8px;
-        }
-
-        .roadmap-title {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--seaweed-dark);
-            margin-bottom: 8px;
-        }
-
-        .roadmap-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.55;
-            margin-bottom: 1.4rem;
-        }
-
-        .roadmap-btn {
-            background: var(--alice-blue);
-            color: var(--seaweed-primary);
-            border: 1px solid var(--alice-blue-deep);
-            padding: 10px 16px;
-            border-radius: var(--radius-full);
+        .value-text h4 {
             font-size: 0.88rem;
             font-weight: 700;
-            text-align: center;
-            display: inline-block;
-            transition: var(--transition);
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+        .value-text p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            line-height: 1.4;
         }
 
-        .roadmap-btn:hover {
-            background: var(--seaweed-primary);
-            color: var(--alice-blue);
-            border-color: var(--seaweed-primary);
-        }
-
-        /* ==========================================================================
-           SECTION 2: POPULAR GREEN CORRIDORS & FEATURED ECO-STAYS
-           ========================================================================== */
-        .section-container {
-            max-width: 1320px;
+        /* =============================================
+           Section shared patterns
+           ============================================= */
+        .section-wrapper {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 3.5rem 1.5rem 5rem;
+            padding: 80px 24px;
         }
-
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+        }
         .section-header-row {
             display: flex;
             align-items: flex-end;
             justify-content: space-between;
-            margin-bottom: 2.8rem;
-            gap: 1.5rem;
-            flex-wrap: wrap;
+            margin-bottom: 48px;
         }
-
-        .section-tag {
-            display: inline-block;
-            font-size: 0.8rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--seaweed-primary);
-            background: var(--alice-blue-dark);
-            padding: 4px 12px;
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 22px;
+            border: 1px solid var(--border);
             border-radius: var(--radius-full);
-            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-body);
+            transition: var(--transition);
         }
+        .btn-outline:hover { border-color: var(--green-500); color: var(--green-600); }
 
-        .section-heading {
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
-            font-weight: 800;
-            color: var(--seaweed-dark);
-            letter-spacing: -0.02em;
-        }
-
-        .section-subtext {
-            color: var(--text-muted);
-            font-size: 1.02rem;
-            max-width: 620px;
-            margin-top: 6px;
-        }
-
-        .stays-grid {
+        /* =============================================
+           5. DESTINATIONS SECTION
+           ============================================= */
+        .dest-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
         }
-
-        .stay-card {
-            background: #ffffff;
-            border: 1.5px solid var(--alice-blue-deep);
+        .dest-card {
             border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: var(--shadow-sm);
+            background: var(--white);
+            border: 1px solid var(--border-light);
             transition: var(--transition);
-            display: flex;
-            flex-direction: column;
+            cursor: pointer;
         }
-
-        .stay-card:hover {
-            transform: translateY(-7px);
-            box-shadow: var(--shadow-md);
-            border-color: var(--seaweed-accent);
+        .dest-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
         }
-
-        .stay-thumb-box {
+        .dest-card-img {
             position: relative;
-            height: 220px;
+            height: 200px;
             overflow: hidden;
         }
-
-        .stay-thumb-box img {
+        .dest-card-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s ease;
+            transition: transform 0.5s ease;
         }
-
-        .stay-card:hover .stay-thumb-box img {
-            transform: scale(1.06);
-        }
-
-        .stay-rating-tag {
+        .dest-card:hover .dest-card-img img { transform: scale(1.05); }
+        .dest-tag {
             position: absolute;
-            top: 14px;
-            right: 14px;
-            background: rgba(7, 36, 22, 0.88);
-            color: var(--alice-blue);
-            backdrop-filter: blur(8px);
-            padding: 4px 10px;
+            top: 12px;
+            left: 12px;
+            padding: 5px 12px;
             border-radius: var(--radius-full);
-            font-size: 0.8rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .stay-eco-badge {
-            position: absolute;
-            bottom: 14px;
-            left: 14px;
-            background: rgba(240, 248, 255, 0.95);
-            color: var(--seaweed-primary);
-            padding: 4px 12px;
-            border-radius: var(--radius-full);
-            font-size: 0.76rem;
-            font-weight: 800;
-        }
-
-        .stay-card-body {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .stay-loc {
-            font-size: 0.82rem;
+            font-size: 0.72rem;
             font-weight: 700;
-            color: var(--seaweed-light);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 6px;
+            background: var(--green-500);
+            color: var(--white);
         }
-
-        .stay-title {
-            font-size: 1.22rem;
-            font-weight: 800;
-            color: var(--seaweed-dark);
+        .dest-eco-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.72rem;
+            font-weight: 700;
+            background: rgba(255,255,255,0.9);
+            color: var(--green-700);
+        }
+        .dest-card-body { padding: 16px 18px; }
+        .dest-loc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .dest-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-dark);
             margin-bottom: 8px;
         }
+        .dest-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+        .dest-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-        .stay-description {
+        /* =============================================
+           6. GREENER ROUTE SECTION
+           ============================================= */
+        .route-section {
+            background: var(--off-white);
+        }
+        .route-content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+        .route-left h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+        .route-left p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.7;
+        }
+        .btn-explore {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--green-500);
+            color: var(--white);
+            border-radius: var(--radius-full);
+            font-weight: 700;
             font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.55;
-            margin-bottom: 1.2rem;
-            flex-grow: 1;
+            transition: var(--transition);
         }
-
-        .stay-metrics-row {
-            display: flex;
-            align-items: center;
+        .btn-explore:hover { background: var(--green-600); }
+        .route-gallery {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--seaweed-mid);
-            background: var(--alice-blue);
-            padding: 8px 12px;
-            border-radius: var(--radius-sm);
-            margin-bottom: 1rem;
         }
-
-        .stay-tags-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 1.3rem;
-        }
-
-        .eco-tag {
-            font-size: 0.74rem;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: var(--radius-full);
-            background: var(--alice-blue);
-            color: var(--seaweed-primary);
-            border: 1px solid var(--alice-blue-deep);
-        }
-
-        .stay-card-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-top: 1.1rem;
-            border-top: 1px solid var(--alice-blue-dark);
-            gap: 8px;
-        }
-
-        .stay-price-box {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .price-label {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        .price-val {
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: var(--seaweed-primary);
-        }
-
-        .stay-action-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-view-stay {
-            background: var(--seaweed-primary);
-            color: var(--alice-blue);
-            padding: 8px 16px;
-            border-radius: var(--radius-full);
-            font-size: 0.85rem;
-            font-weight: 700;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition);
-            display: inline-block;
-        }
-
-        .btn-view-stay:hover {
-            background: var(--seaweed-light);
-            color: #ffffff;
-            transform: translateY(-2px);
-        }
-
-        .btn-plan-transit {
-            background: var(--alice-blue);
-            color: var(--seaweed-primary);
-            border: 1px solid var(--alice-blue-deep);
-            padding: 7px 12px;
-            border-radius: var(--radius-full);
-            font-size: 0.8rem;
-            font-weight: 700;
-            display: inline-block;
-            transition: var(--transition);
-        }
-
-        .btn-plan-transit:hover {
-            background: var(--alice-blue-dark);
-            border-color: var(--seaweed-primary);
-        }
-
-        /* ==========================================================================
-           SECTION 3: SUSTAINABILITY & ACCESSIBILITY IMPACT METRICS
-           ========================================================================== */
-        .metrics-banner {
-            background: linear-gradient(135deg, var(--seaweed-primary) 0%, var(--seaweed-dark) 100%);
-            color: var(--alice-blue);
-            border-radius: var(--radius-lg);
-            padding: 3.5rem 2.5rem;
-            box-shadow: var(--shadow-lg);
+        .route-gallery-item {
             position: relative;
+            border-radius: var(--radius-lg);
             overflow: hidden;
+            height: 180px;
         }
-
-        .metrics-banner::before {
-            content: '';
+        .route-gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .route-gallery-label {
             position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 15% 30%, rgba(34, 197, 94, 0.22) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 2.5rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .metric-col {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .metric-number {
-            font-family: var(--font-mono);
-            font-size: clamp(2.2rem, 3.5vw, 3rem);
-            font-weight: 800;
-            color: #6ee7b7;
-            line-height: 1;
-        }
-
-        .metric-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--alice-blue);
-        }
-
-        .metric-desc {
-            font-size: 0.88rem;
-            color: var(--text-light-subtle);
-            line-height: 1.5;
-        }
-
-        /* CTA Section */
-        .cta-box {
-            background: linear-gradient(135deg, var(--seaweed-mid) 0%, var(--seaweed-primary) 100%);
-            color: #ffffff;
-            border-radius: var(--radius-lg);
-            padding: 3.5rem 2rem;
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            margin-top: 3.5rem;
-        }
-
-        .cta-title {
-            font-size: clamp(1.8rem, 3.5vw, 2.4rem);
-            font-weight: 800;
-            margin-bottom: 1rem;
-            color: #ffffff;
-        }
-
-        .cta-desc {
-            max-width: 600px;
-            margin: 0 auto 2.2rem;
-            font-size: 1.05rem;
-            color: rgba(240, 248, 255, 0.9);
-            line-height: 1.6;
-        }
-
-        .cta-actions {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .btn-cta-white {
-            background: #ffffff;
-            color: var(--seaweed-dark);
-            font-weight: 800;
-            padding: 12px 28px;
-            border-radius: var(--radius-full);
-            transition: var(--transition);
-        }
-
-        .btn-cta-white:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-            background: var(--alice-blue);
-        }
-
-        .btn-cta-outline {
-            border: 2px solid rgba(240, 248, 255, 0.8);
-            color: #ffffff;
-            font-weight: 700;
-            padding: 10px 24px;
-            border-radius: var(--radius-full);
-            transition: var(--transition);
-        }
-
-        .btn-cta-outline:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: #ffffff;
-        }
-
-        /* Toast Notifications */
-        .toast-notification {
-            position: fixed;
-            bottom: 84px;
-            right: 24px;
-            background: var(--seaweed-dark);
-            color: var(--alice-blue);
-            padding: 14px 22px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--seaweed-accent);
-            box-shadow: 0 16px 36px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            font-size: 0.94rem;
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            pointer-events: none;
-        }
-
-        .toast-notification.active {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-
-        /* Site Footer */
-        .site-footer {
-            background: var(--seaweed-deepest);
-            color: var(--alice-blue);
-            padding: 4.5rem 1.5rem 2.5rem;
-            border-top: 1px solid rgba(240, 248, 255, 0.1);
-        }
-
-        .footer-inner {
-            max-width: 1320px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-brand h3 {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--alice-blue);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .footer-brand p {
-            color: var(--text-light-subtle);
-            font-size: 0.92rem;
-            line-height: 1.6;
-            max-width: 380px;
-        }
-
-        .footer-col h4 {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: var(--alice-blue);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .footer-links a {
-            color: var(--text-light-subtle);
-            font-size: 0.88rem;
-            transition: var(--transition);
-        }
-
-        .footer-links a:hover {
-            color: var(--seaweed-mint);
-            transform: translateX(3px);
-        }
-
-        .footer-bottom {
-            max-width: 1320px;
-            margin: 0 auto;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(240, 248, 255, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.84rem;
-            color: rgba(240, 248, 255, 0.55);
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        /* Mobile Bottom Fixed Dock */
-        .mobile-bottom-bar {
-            position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 64px;
-            background: rgba(240, 248, 255, 0.95);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            border-top: 1px solid var(--alice-blue-deep);
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            z-index: 90;
-            box-shadow: 0 -4px 16px rgba(4, 22, 13, 0.08);
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 24px 14px 12px;
+        }
+        .route-gallery-label h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--white);
+        }
+        .route-gallery-label p {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.7);
         }
 
+        /* =============================================
+           7. IMPACT SECTION (full-width)
+           ============================================= */
+        .impact-section {
+            position: relative;
+            overflow: hidden;
+        }
+        .impact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 480px;
+        }
+        .impact-image {
+            position: relative;
+        }
+        .impact-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .impact-data {
+            background: var(--green-900);
+            color: var(--white);
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .impact-stat {
+            margin-bottom: 32px;
+        }
+        .impact-stat .number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--green-300);
+            letter-spacing: -1px;
+        }
+        .impact-stat .desc {
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 2px;
+        }
+        .impact-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--green-300);
+            margin-top: 8px;
+        }
+
+        /* =============================================
+           8. STEPS SECTION
+           ============================================= */
+        .steps-section {
+            background: var(--white);
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+        .step-card {
+            text-align: center;
+            padding: 32px 20px;
+        }
+        .step-num {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .step-card h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        .step-card p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* =============================================
+           9. MISSION SECTION
+           ============================================= */
+        .mission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+        .mission-image {
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            height: 400px;
+        }
+        .mission-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .mission-content h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 700;
+            color: var(--text-dark);
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+        .mission-content p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 24px;
+        }
+
+        /* =============================================
+           10. CTA SECTION
+           ============================================= */
+        .cta-section {
+            background: var(--green-900);
+            padding: 80px 24px;
+        }
+        .cta-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+        .cta-section h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1.2;
+        }
+        .cta-section h2 span { color: var(--green-300); }
+        .cta-email-form {
+            display: flex;
+            gap: 8px;
+        }
+        .cta-email-form input {
+            padding: 14px 20px;
+            border-radius: var(--radius-full);
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: var(--white);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            min-width: 280px;
+        }
+        .cta-email-form input::placeholder { color: rgba(255,255,255,0.4); }
+        .cta-email-form button {
+            padding: 14px 28px;
+            border-radius: var(--radius-full);
+            background: var(--green-500);
+            color: var(--white);
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        .cta-email-form button:hover { background: var(--green-400); }
+
+        /* =============================================
+           11. FOOTER
+           ============================================= */
+        .w2g-footer {
+            background: var(--green-800);
+            color: rgba(255,255,255,0.7);
+            padding: 64px 24px 32px;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+        .footer-brand img { height: 28px; margin-bottom: 16px; filter: brightness(0) invert(1); }
+        .footer-brand p {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.55);
+            margin-bottom: 16px;
+        }
+        .footer-social {
+            display: flex;
+            gap: 12px;
+        }
+        .footer-social a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            transition: var(--transition);
+        }
+        .footer-social a:hover { background: rgba(255,255,255,0.15); color: var(--white); }
+        .footer-col h4 {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--white);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+        .footer-col a {
+            display: block;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.55);
+            padding: 4px 0;
+            transition: var(--transition);
+        }
+        .footer-col a:hover { color: var(--white); }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.4);
+        }
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+        }
+        .footer-bottom-links a {
+            color: rgba(255,255,255,0.4);
+            transition: var(--transition);
+        }
+        .footer-bottom-links a:hover { color: var(--white); }
+
+        /* =============================================
+           MOBILE DRAWER
+           ============================================= */
+        .drawer-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .drawer-overlay.active { opacity: 1; pointer-events: auto; }
+        .mobile-drawer {
+            position: fixed;
+            top: 0; right: 0; bottom: 0;
+            width: 300px;
+            background: var(--white);
+            z-index: 1200;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        .mobile-drawer.open { transform: translateX(0); }
+        .drawer-close {
+            position: absolute;
+            top: 16px; right: 16px;
+            background: none; border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+        .drawer-link {
+            display: block;
+            padding: 12px 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-body);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .drawer-link:hover { color: var(--green-600); }
+
+        /* =============================================
+           MOBILE BOTTOM BAR
+           ============================================= */
+        .mobile-bottom-bar {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--white);
+            border-top: 1px solid var(--border);
+            z-index: 900;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+        }
+        .mobile-bottom-bar {
+            grid-template-columns: repeat(5, 1fr);
+        }
         .mobile-nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 2px;
-            color: var(--seaweed-mid);
-            font-size: 0.72rem;
-            font-weight: 700;
+            padding: 4px;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            text-decoration: none;
         }
+        .mobile-nav-item .icon { font-size: 1.2rem; }
+        .mobile-nav-item.active { color: var(--green-600); }
 
-        .mobile-nav-item .icon {
-            font-size: 1.25rem;
-        }
-
-        .mobile-nav-item.active, .mobile-nav-item:hover {
-            color: var(--seaweed-primary);
-        }
-
-        @media (min-width: 900px) {
-            .mobile-bottom-bar {
-                display: none;
-            }
-            .toast-notification {
-                bottom: 28px;
-            }
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 1100px) {
-            .hero-container {
-                grid-template-columns: 1fr;
-                gap: 4rem;
-            }
-
-            .hero-right {
-                order: 2;
-            }
-
-            .boarding-pass-card {
-                max-width: 460px;
-            }
-
-            .search-fields-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .footer-inner {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 899px) {
-            .desktop-nav {
-                display: none;
-            }
-            .btn-hamburger {
-                display: flex;
-            }
+        /* =============================================
+           RESPONSIVE
+           ============================================= */
+        @media (max-width: 1024px) {
+            .hero-side-cards { display: none; }
+            .planner-grid { grid-template-columns: 1fr 1fr; }
+            .dest-grid { grid-template-columns: 1fr 1fr; }
+            .steps-grid { grid-template-columns: 1fr 1fr; }
+            .impact-grid { grid-template-columns: 1fr; }
+            .impact-image { height: 300px; }
+            .mission-grid { grid-template-columns: 1fr; }
+            .mission-image { height: 300px; }
+            .route-content-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .cta-inner { flex-direction: column; text-align: center; }
         }
 
         @media (max-width: 768px) {
-            .hero-section {
-                padding: 3rem 1rem 5.5rem;
-            }
+            .w2g-nav { padding: 8px 16px; top: 8px; width: calc(100% - 16px); }
+            .nav-links { display: none; }
+            .nav-actions .btn-signin,
+            .nav-actions .btn-signup { display: none; }
+            .nav-hamburger { display: flex; }
+            .hero { min-height: 80vh; padding-bottom: 80px; }
+            .hero-title { font-size: 2.4rem; }
+            .hero-content { padding: 0 20px; }
+            .planner-wrapper { padding: 0 12px; }
+            .planner-grid { grid-template-columns: 1fr; }
+            .planner-body { padding: 20px 16px; }
+            .value-strip { grid-template-columns: 1fr 1fr; gap: 20px; }
+            .dest-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .route-gallery { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+            .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+            .cta-email-form { flex-direction: column; }
+            .cta-email-form input { min-width: auto; width: 100%; }
+            .mobile-bottom-bar { display: grid; }
+            body { padding-bottom: 72px; }
+            .section-wrapper { padding: 48px 16px; }
+        }
 
-            .search-fields-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .search-actions-group {
-                gap: 16px;
-                margin-top: 1.3rem;
-            }
-
-            .link-transit-calc {
-                font-size: 0.82rem;
-                padding: 8px 14px;
-                width: 100%;
-            }
-
-            .btn-search-large {
-                width: 100%;
-                padding: 1rem 1.4rem;
-                font-size: 0.98rem;
-                white-space: normal;
-            }
-
-            .footer-inner {
-                grid-template-columns: 1fr;
-            }
+        /* Subtle entrance animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
 
-    <!-- Ambient Glowing Backdrop -->
-    <div class="ambient-glow-1"></div>
-    <div class="ambient-glow-2"></div>
-
-    <!-- Mobile Drawer Overlay -->
+    <!-- Mobile Drawer -->
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
-
-    <!-- Off-Canvas Mobile Drawer -->
     <div class="mobile-drawer" id="mobileDrawer">
         <button class="drawer-close" onclick="toggleDrawer()">✕</button>
-        <div style="font-weight: 800; font-size: 1.3rem; color: var(--seaweed-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.4rem;">🌱</span> Way2Green
-        </div>
-        <a href="index.php" class="drawer-link active">🏡 Home</a>
-        <a href="travel.php" class="drawer-link">🚆 Plan Transit</a>
-        <a href="hotels.php" class="drawer-link">🏨 Eco-Stays</a>
-        <a href="about.php" class="drawer-link">🌿 Our Mission</a>
+        <div style="font-weight: 800; font-size: 1.2rem; color: var(--green-700); margin-bottom: 20px;">W2G</div>
+        <a href="index.php" class="drawer-link" style="color: var(--green-600);">Home</a>
+        <a href="hotels.php" class="drawer-link">Eco-Stays</a>
+        <a href="travel.php" class="drawer-link">Transit</a>
+        <a href="about.php" class="drawer-link">About Us</a>
         <?php if ($user): ?>
-            <a href="my-trips.php" class="drawer-link">📜 My Passports</a>
-            <a href="logout.php" class="drawer-link" style="color: #dc2626;">🚪 Sign Out (<?= htmlspecialchars($user['name']) ?>)</a>
+            <a href="my-trips.php" class="drawer-link">My Passport</a>
+            <a href="logout.php" class="drawer-link" style="color: #dc2626;">Sign Out (<?= htmlspecialchars($user['name']) ?>)</a>
         <?php else: ?>
-            <a href="login.php" class="drawer-link">👤 Traveler Sign In</a>
-            <a href="register.php" class="drawer-link" style="color: var(--seaweed-light);">✨ Create Account</a>
+            <a href="login.php" class="drawer-link">Sign In</a>
+            <a href="register.php" class="drawer-link">Get Started</a>
         <?php endif; ?>
-        <hr style="border: none; border-top: 1px solid var(--alice-blue-deep); margin: 0.5rem 0;">
-        <a href="admin/login.php" class="drawer-link" style="font-size: 0.9rem; color: var(--text-muted);">🔒 Admin Portal</a>
     </div>
 
-    <!-- Navigation Header -->
-    <header class="site-header">
-        <div class="nav-inner">
-            <a href="index.php" class="brand-logo">
-                <div class="brand-icon-box">🌱</div>
-                <span>Way_2_Green</span>
-            </a>
-
-            <!-- Desktop Nav Menu Connecting Whole Website -->
-            <nav class="desktop-nav">
+    <!-- 1. FLOATING NAVBAR -->
+    <nav class="w2g-nav">
+        <a href="index.php" class="nav-logo">
+            <img src="assets/img/logo.png" alt="W2G" onerror="this.outerHTML='<span style=\'font-weight:800;font-size:1.3rem;color:#155c3a\'>W2G</span>'">
+        </a>
+        <div class="nav-links">
             <a href="index.php" class="active">Home</a>
             <a href="hotels.php">Eco-Stays</a>
-            <a href="travel.php">Plan Transit</a>
+            <a href="travel.php">Transit</a>
             <a href="about.php">About Us</a>
-            <a href="my-trips.php">My Passports</a>
-            <a href="logout.php" style="color: #dc2626;">Sign Out</a></nav>
-
-            <div class="header-actions">
-                <div class="eco-status-pill">
-                    <span class="status-dot"></span>
-                    <span><?= $user ? 'Logged in: ' . htmlspecialchars($user['name']) : '100% Carbon Verified' ?></span>
-                </div>
-                <!-- Mobile Hamburger Button -->
-                <button class="btn-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
+            <?php if ($user): ?>
+                <a href="my-trips.php">My Passport</a>
+            <?php endif; ?>
         </div>
-    </header>
+        <div class="nav-actions">
+            <?php if ($user): ?>
+                <a href="my-trips.php" class="btn-signin"><?= htmlspecialchars($user['name']) ?></a>
+                <a href="logout.php" class="btn-signup" style="background: #dc2626;">Sign Out</a>
+            <?php else: ?>
+                <a href="login.php" class="btn-signin">Sign In</a>
+                <a href="register.php" class="btn-signup">Sign Up</a>
+            <?php endif; ?>
+            <button class="nav-hamburger" onclick="toggleDrawer()" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
 
-    <!-- Main Hero Section with Dynamic Location Backgrounds -->
-    <section class="hero-section" id="heroSection">
-        <!-- Dynamic Background Layer (Manipulated by Inline JS) -->
-        <div class="hero-bg-layer" id="heroBgLayer"></div>
-
-        <!-- Strict UI Constraint: Semi-transparent Seaweed Green / Alice Blue Gradient Overlay -->
-        <div class="hero-overlay"></div>
-        <div class="hero-ambient-mesh"></div>
-
-        <div class="hero-container">
-            <!-- Left Hero Content & The Complex Search Widget -->
-            <div class="hero-left">
-                <div class="hero-badge-row">
-                    <span class="badge-eco-pill">🌍 Sustainable & Barrier-Free Hospitality</span>
-                    <span class="badge-destination-indicator" id="heroDestIndicator">
-                        📍 Viewing: <strong id="heroDestIndicatorName" style="margin-left: 4px;">Agra • Taj Mahal Corridor</strong>
-                    </span>
-                </div>
-
-                <h1 class="hero-title">
-                    Travel Light. <br>
-                    <span class="highlight">Your Ticket</span> to a Greener Planet.
-                </h1>
-
-                <p class="hero-subtitle">
-                    Select your low-emission corridor, pick verified wheelchair-accessible solar sanctuaries, and generate your instant verified eco-boarding pass.
-                </p>
-
-                <!-- THE COMPLEX SEARCH WIDGET (Direct Form Submission to hotels.php) -->
-                <div class="search-widget-wrapper">
-                    <form method="GET" action="hotels.php" id="heroSearchForm">
-                        <div class="search-widget-card">
-                            <div class="search-fields-grid">
-                                
-                                <!-- Field 1: Destination / Location (Monitored by JS) -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="locationInput">
-                                        <span>📍</span> Destination
-                                    </label>
-                                    <div class="field-input-box">
-                                        <span class="field-icon">🗺️</span>
-                                        <input 
-                                            type="text" 
-                                            name="dest" 
-                                            id="locationInput" 
-                                            placeholder="Agra, Goa, Mumbai, Singapore, Munnar..." 
-                                            value="Agra"
-                                            autocomplete="off"
-                                            required
-                                        >
-                                    </div>
-                                </div>
-
-                                <!-- Field 2: Check-in Date -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="checkInInput">
-                                        <span>📅</span> Check-In
-                                    </label>
-                                    <div class="field-input-box">
-                                        <input type="date" name="check_in" id="checkInInput">
-                                    </div>
-                                </div>
-
-                                <!-- Field 3: Check-out Date -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="checkOutInput">
-                                        <span>📅</span> Check-Out
-                                    </label>
-                                    <div class="field-input-box">
-                                        <input type="date" name="check_out" id="checkOutInput">
-                                    </div>
-                                </div>
-
-                                <!-- Field 4: Guests & Rooms Selector -->
-                                <div class="search-field-group">
-                                    <label class="field-label" for="guestTriggerBtn">
-                                        <span>👥</span> Guests & Rooms
-                                    </label>
-                                    <div class="field-input-box" id="guestTriggerBtn" style="cursor: pointer;">
-                                        <span class="field-icon">🧳</span>
-                                        <input 
-                                            type="text" 
-                                            id="guestSummaryInput" 
-                                            value="2 Adults, 1 Room" 
-                                            readonly 
-                                            style="cursor: pointer;"
-                                        >
-                                        <input type="hidden" name="guests" id="guestsHiddenInput" value="2">
-                                    </div>
-
-                                    <!-- Interactive Guest Counter Popover -->
-                                    <div class="guest-dropdown-menu" id="guestDropdownMenu">
-                                        <div class="guest-counter-row">
-                                            <div class="counter-info">
-                                                <h4>Adults</h4>
-                                                <p>Ages 13 and above</p>
-                                            </div>
-                                            <div class="counter-controls">
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('adults', -1)">−</button>
-                                                <span class="counter-val" id="valAdults">2</span>
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('adults', 1)">+</button>
-                                            </div>
-                                        </div>
-                                        <div class="guest-counter-row">
-                                            <div class="counter-info">
-                                                <h4>Children</h4>
-                                                <p>Ages 0 to 12</p>
-                                            </div>
-                                            <div class="counter-controls">
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('children', -1)" id="btnMinusChildren" disabled>−</button>
-                                                <span class="counter-val" id="valChildren">0</span>
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('children', 1)">+</button>
-                                            </div>
-                                        </div>
-                                        <div class="guest-counter-row">
-                                            <div class="counter-info">
-                                                <h4>Rooms</h4>
-                                                <p>Eco-certified units</p>
-                                            </div>
-                                            <div class="counter-controls">
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('rooms', -1)" id="btnMinusRooms" disabled>−</button>
-                                                <span class="counter-val" id="valRooms">1</span>
-                                                <button class="btn-counter" type="button" onclick="adjustGuest('rooms', 1)">+</button>
-                                            </div>
-                                        </div>
-                                        <button class="btn-nav-primary" type="button" style="width: 100%; margin-top: 6px; justify-content: center;" onclick="closeGuestDropdown()">
-                                            Done
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Quick Popular Destination Filter Chips -->
-                            <div class="quick-destinations-row">
-                                <span class="quick-dest-label">Popular Corridors:</span>
-                                <button class="dest-chip active" type="button" onclick="selectDestination('Agra')">🕌 Agra</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Goa')">🏖️ Goa</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Mumbai')">🏛️ Mumbai</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Singapore')">🏙️ Singapore</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Munnar')">🌿 Munnar</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Manali')">🏔️ Manali</button>
-                                <button class="dest-chip" type="button" onclick="selectDestination('Kyoto')">🎋 Kyoto</button>
-                            </div>
-
-                            <!-- Amenities & Accessibility Toggles -->
-                            <div class="search-amenities-row">
-                                <div class="eco-filters-group">
-                                    <label class="checkbox-pill">
-                                        <input type="checkbox" name="accessible" value="1" id="checkWheelchair" checked>
-                                        <span>♿ Wheelchair Accessible</span>
-                                    </label>
-                                    <label class="checkbox-pill">
-                                        <input type="checkbox" name="solar" value="1" id="checkSolar" checked>
-                                        <span>☀️ 100% Solar Powered</span>
-                                    </label>
-                                    <label class="checkbox-pill">
-                                        <input type="checkbox" name="zero_plastic" value="1" id="checkPlasticFree" checked>
-                                        <span>🌱 Zero Single-Use Plastics</span>
-                                    </label>
-                                </div>
-                                <span style="font-size: 0.78rem; font-weight: 700; color: var(--seaweed-mid);">
-                                    ⚡ Connected to Official Transit & Stays Engine
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons Group: Vertically Stacked with Breathing Room & No Overlap -->
-                        <div class="search-actions-group">
-                            <!-- Top Transit Calculator Pill -->
-                            <div class="search-secondary-action">
-                                <a href="travel.php?dest=Agra" id="transitPlannerHeroLink" class="link-transit-calc">
-                                    <span>🚆 Want route emissions first? Open Phase 1 Transit Calculator ➔</span>
-                                </a>
-                            </div>
-
-                            <!-- Main Search Button Submitting to hotels.php -->
-                            <div class="search-btn-container">
-                                <button type="submit" class="btn-search-large" id="mainSearchBtn">
-                                    <span>Search Eco-Stays</span>
-                                    <span class="search-btn-icon">➔</span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+    <!-- 2. HERO SECTION -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-breadcrumb">
+                <span>Travel</span> <span>·</span> <span>Explore</span> <span>·</span> <span>Preserve</span>
             </div>
-
-            <!-- Right Hero Content: ECO-FRIENDLY VERTICAL BOARDING PASS -->
-            <div class="hero-right">
-                <div class="boarding-pass-card" id="boardingPassCard">
-                    <!-- Boarding Pass Header -->
-                    <div class="pass-header">
-                        <div class="pass-airline-brand">
-                            <span style="font-size: 1.3rem;">🌱</span>
-                            <div>
-                                <div style="line-height: 1.1;">WAY2GREEN</div>
-                                <span style="font-size: 0.65rem; opacity: 0.85; font-weight: 600; text-transform: uppercase;">Bio-Transit Network</span>
-                            </div>
-                        </div>
-                        <span class="pass-type-badge">First Class Eco</span>
-                    </div>
-
-                    <!-- Boarding Pass Main Body -->
-                    <div class="pass-main-body">
-                        <!-- Origin ➔ Destination Route Block (Dynamically Synchronized) -->
-                        <div class="pass-route-block">
-                            <div class="route-stop">
-                                <span class="stop-code">DEL</span>
-                                <span class="stop-city">New Delhi</span>
-                            </div>
-
-                            <div class="route-connector">
-                                <span class="route-transport-mode" id="passTransitMode">⚡ Solar High-Speed</span>
-                                <div class="connector-line"></div>
-                                <span style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);" id="passDistance">195 km • 0kg CO₂</span>
-                            </div>
-
-                            <div class="route-stop" style="text-align: right;">
-                                <span class="stop-code" id="passDestCode">AGR</span>
-                                <span class="stop-city" id="passDestCity">Agra</span>
-                            </div>
-                        </div>
-
-                        <!-- Passenger & Transit Metadata Grid -->
-                        <div class="pass-details-grid">
-                            <div class="pass-meta-item">
-                                <span class="meta-label">Passenger Name</span>
-                                <span class="meta-value"><?= $user ? htmlspecialchars($user['name']) : 'A. Vance / Voyager' ?></span>
-                            </div>
-                            <div class="pass-meta-item">
-                                <span class="meta-label">Seat / Unit</span>
-                                <span class="meta-value mono">04A (Quiet Zone)</span>
-                            </div>
-                            <div class="pass-meta-item">
-                                <span class="meta-label">Departure Date</span>
-                                <span class="meta-value mono" id="passDepartDate"><?= date('d M Y') ?></span>
-                            </div>
-                            <div class="pass-meta-item">
-                                <span class="meta-label">Boarding Gate</span>
-                                <span class="meta-value mono">G-12 (Solar Wing)</span>
-                            </div>
-                        </div>
-
-                        <!-- Carbon Savings Live Strip -->
-                        <div class="pass-carbon-strip">
-                            <div class="carbon-strip-title">
-                                <span>🌿 Avoided Footprint:</span>
-                            </div>
-                            <span class="carbon-savings-badge" id="passSavingsBadge">-84% CO₂ Emissions</span>
-                        </div>
-                    </div>
-
-                    <!-- Perforation Notches & Tear Dashed Line -->
-                    <div class="pass-perforation-divider">
-                        <div class="notch-left"></div>
-                        <div class="tear-dashed-line"></div>
-                        <div class="notch-right"></div>
-                    </div>
-
-                    <!-- Boarding Pass Stub (Bottom Segment) -->
-                    <div class="pass-stub">
-                        <div class="stub-row">
-                            <div class="stub-seal-badge">
-                                <div class="seal-stamp">✓</div>
-                                <div class="seal-text">
-                                    <span class="seal-title">Verified Green Passport</span>
-                                    <span class="seal-subtitle" id="passLandmarkText">Taj Mahal Sanctuary</span>
-                                </div>
-                            </div>
-                            <span style="font-size: 0.8rem; font-weight: 800; color: var(--seaweed-primary);">
-                                ACCESSIBLE ♿
-                            </span>
-                        </div>
-
-                        <!-- Barcode & QR Simulation -->
-                        <div class="pass-barcode-container">
-                            <div class="barcode-strip" id="barcodeStrip">
-                                <div class="barcode-line" style="width: 3px;"></div>
-                                <div class="barcode-line" style="width: 1px;"></div>
-                                <div class="barcode-line" style="width: 4px;"></div>
-                                <div class="barcode-line" style="width: 2px;"></div>
-                                <div class="barcode-line" style="width: 1px;"></div>
-                                <div class="barcode-line" style="width: 3px;"></div>
-                                <div class="barcode-line" style="width: 5px;"></div>
-                                <div class="barcode-line" style="width: 2px;"></div>
-                                <div class="barcode-line" style="width: 1px;"></div>
-                                <div class="barcode-line" style="width: 3px;"></div>
-                                <div class="barcode-line" style="width: 2px;"></div>
-                                <div class="barcode-line" style="width: 4px;"></div>
-                                <div class="barcode-line" style="width: 1px;"></div>
-                                <div class="barcode-line" style="width: 3px;"></div>
-                                <div class="barcode-line" style="width: 2px;"></div>
-                                <div class="barcode-line" style="width: 5px;"></div>
-                                <div class="barcode-line" style="width: 1px;"></div>
-                                <div class="barcode-line" style="width: 2px;"></div>
-                            </div>
-                            <div class="qr-placeholder" title="Digital Passport Token">
-                                📱
-                            </div>
-                        </div>
-
-                        <div class="pass-serial" id="passSerialCode">
-                            PASS #W2G-9842-AGR-2026 • CARBON NEUTRAL TICKET
-                        </div>
-
-                        <!-- Action Button on Pass Stub -->
-                        <a href="<?= $user ? 'my-trips.php' : 'travel.php?dest=Agra' ?>" id="stubPassActionBtn" class="btn-stub-passport">
-                            <?= $user ? 'View My Saved Passports ➔' : 'Plan Low-Carbon Transit ➔' ?>
-                        </a>
-                    </div>
-                </div>
+            <h1 class="hero-title">Travel Further.<br>Tread Lighter.</h1>
+            <p class="hero-desc">Plan your journeys with lower emissions, verified eco-stays, and meaningful experiences for a greener planet.</p>
+            <a href="travel.php" class="btn-hero">Start Planning →</a>
+        </div>
+        <div class="hero-side-cards">
+            <div class="hero-side-card">
+                <div class="label">Safety</div>
+                <div class="value">Verified<br>Checked</div>
+            </div>
+            <div class="hero-side-card">
+                <div class="label">Journey</div>
+                <div class="value">Carbon<br>Neutral</div>
+            </div>
+            <div class="hero-side-card">
+                <div class="label">Rating</div>
+                <div class="value">4.9 ★</div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION: THE 3-STEP JOURNEY ROADMAP (MULTI-PAGE CONNECTED FLOW) -->
-    <section class="roadmap-section">
-        <div class="roadmap-grid">
-            <!-- Step 1 -->
-            <div class="roadmap-card">
-                <div>
-                    <span class="roadmap-badge">Phase 1 • Low Carbon Transit</span>
-                    <div class="roadmap-icon">🚆</div>
-                    <h3 class="roadmap-title">Calculate & Cut Emissions</h3>
-                    <p class="roadmap-desc">
-                        Compare trains, coaches, electric vehicles, and driving. See exact carbon footprints in kilograms and get AI recommendations.
-                    </p>
-                </div>
-                <a href="travel.php" class="roadmap-btn">Open Transit Calculator ➔</a>
+    <!-- 3. TRIP PLANNER -->
+    <div class="planner-wrapper fade-up">
+        <div class="planner-card">
+            <div class="planner-tabs">
+                <button class="planner-tab active" onclick="setTab(this)">✈ Plan a Trip</button>
+                <button class="planner-tab" onclick="setTab(this)">🏨 Eco-Stays</button>
+                <button class="planner-tab" onclick="setTab(this)">🚆 Transit</button>
             </div>
-
-            <!-- Step 2 -->
-            <div class="roadmap-card">
-                <div>
-                    <span class="roadmap-badge">Phase 2 • Inclusive Hospitality</span>
-                    <div class="roadmap-icon">🏨</div>
-                    <h3 class="roadmap-title">Stay at Verified Eco-Resorts</h3>
-                    <p class="roadmap-desc">
-                        Handpicked solar-powered properties with greywater recycling, zero single-use plastics, and physical step-free wheelchair access.
-                    </p>
-                </div>
-                <a href="hotels.php" class="roadmap-btn">Browse Eco-Stays Catalog ➔</a>
-            </div>
-
-            <!-- Step 3 -->
-            <div class="roadmap-card">
-                <div>
-                    <span class="roadmap-badge">Phase 3 • Digital Green Passport</span>
-                    <div class="roadmap-icon">📜</div>
-                    <h3 class="roadmap-title">Earn Your Eco-Passport</h3>
-                    <p class="roadmap-desc">
-                        Lock in your reservation to receive a verified, downloadable Carbon-Offset Passport showing liters of water saved and clean energy used.
-                    </p>
-                </div>
-                <a href="<?= $user ? 'my-trips.php' : 'login.php' ?>" class="roadmap-btn">
-                    <?= $user ? 'View My Trips & Passports ➔' : 'Sign In to View Passports ➔' ?>
-                </a>
+            <div class="planner-body">
+                <form method="GET" action="travel.php">
+                    <div class="planner-grid">
+                        <div class="planner-field">
+                            <label for="plannerFrom">From</label>
+                            <input type="text" id="plannerFrom" name="origin" placeholder="Leaving from?" required>
+                        </div>
+                        <div class="planner-field">
+                            <label for="plannerTo">To</label>
+                            <select id="plannerTo" name="dest" required>
+                                <option value="">Where to?</option>
+                                <?php foreach ($destinations as $d): ?>
+                                    <option value="<?= htmlspecialchars($d['name']) ?>"><?= htmlspecialchars($d['name']) ?></option>
+                                <?php endforeach; ?>
+                                <?php if (empty($destinations)): ?>
+                                    <option value="Agra">Agra</option>
+                                    <option value="Goa">Goa</option>
+                                    <option value="Munnar">Munnar</option>
+                                    <option value="Manali">Manali</option>
+                                    <option value="Mumbai">Mumbai</option>
+                                <?php endif; ?>
+                            </select>
+                        </div>
+                        <div class="planner-field">
+                            <label for="plannerDate">Date</label>
+                            <input type="date" id="plannerDate" name="departure_date">
+                        </div>
+                        <div class="planner-field">
+                            <label for="plannerTravellers">Travellers</label>
+                            <select id="plannerTravellers" name="travellers">
+                                <option value="1">1 Traveller</option>
+                                <option value="2">2 Travellers</option>
+                                <option value="3">3 Travellers</option>
+                                <option value="4">4 Travellers</option>
+                                <option value="5">5+</option>
+                            </select>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn-search-routes">Search Routes →</button>
+                        </div>
+                    </div>
+                    <div class="planner-footer">
+                        <div class="planner-preferences">
+                            <span class="pref-chip" onclick="togglePref(this)">💰 Cheapest</span>
+                            <span class="pref-chip" onclick="togglePref(this)">⚡ Fastest</span>
+                            <span class="pref-chip active" onclick="togglePref(this)">🌿 Most Eco-Friendly</span>
+                            <span class="pref-chip" onclick="togglePref(this)">⚙️ Custom</span>
+                        </div>
+                        <span style="font-size: 0.78rem; color: var(--text-light);">1 Route · 4 Greener Options</span>
+                    </div>
+                </form>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- SECTION 2: POPULAR GREEN CORRIDORS & FEATURED ECO-STAYS -->
-    <section class="section-container" id="staysSection">
+    <!-- 4. VALUE STRIP -->
+    <div class="value-strip fade-up">
+        <div class="value-item">
+            <div class="value-icon">🍃</div>
+            <div class="value-text">
+                <h4>Lower Carbon Footprint</h4>
+                <p>Every route optimized for minimal emissions</p>
+            </div>
+        </div>
+        <div class="value-item">
+            <div class="value-icon">✅</div>
+            <div class="value-text">
+                <h4>Verified & Safe Eco-Stays</h4>
+                <p>Certified sustainable accommodations</p>
+            </div>
+        </div>
+        <div class="value-item">
+            <div class="value-icon">🤝</div>
+            <div class="value-text">
+                <h4>Support Local Communities</h4>
+                <p>Travel that empowers destinations</p>
+            </div>
+        </div>
+        <div class="value-item">
+            <div class="value-icon">📖</div>
+            <div class="value-text">
+                <h4>Sustainable Travel Resources</h4>
+                <p>Data-driven insights for greener trips</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. DESTINATIONS SECTION -->
+    <section class="section-wrapper fade-up">
         <div class="section-header-row">
             <div>
-                <span class="section-tag">Featured Stays</span>
-                <h2 class="section-heading" id="staysHeading">Verified Inclusive Eco-Resorts</h2>
-                <p class="section-subtext" id="staysSubtext">
-                    Solar-powered, barrier-free certified accommodations across India with real-time transit & reservation links.
-                </p>
+                <p class="section-label">Featured Destinations</p>
+                <h2 class="section-title">Journeys That<br>Give Back</h2>
+                <p style="color: var(--text-muted); margin-top: 12px; max-width: 480px;">Explore handpicked stays and experiences that protect nature and empower local communities.</p>
             </div>
-            <div>
-                <a href="hotels.php" class="btn-nav-primary">
-                    View All 26 Stays in Catalog ➔
-                </a>
-            </div>
+            <a href="hotels.php" class="btn-outline">View All Destinations →</a>
         </div>
-
-        <div class="stays-grid" id="staysGrid">
-            <?php foreach ($displayHotels as $h): 
-                $badges = array_filter(array_map('trim', explode(',', $h['eco_badges'] ?? 'Solar Powered, Zero Plastic')));
-                $access = array_filter(array_map('trim', explode(',', $h['accessibility_tags'] ?? 'Wheelchair Friendly')));
+        <div class="dest-grid">
+            <?php foreach (array_slice($displayHotels, 0, 4) as $i => $h):
+                $badges = array_filter(array_map('trim', explode(',', $h['eco_badges'] ?? 'Eco Certified')));
+                $tags = ['Eco Stay', 'Community Stay', 'Eco Stay', 'Eco Stay'];
+                $ecoTags = ['Plant-Free', 'Eco-Certified', 'Carbon-Neutral', 'LEED Certified'];
             ?>
-            <div class="stay-card">
-                <div class="stay-thumb-box">
+            <div class="dest-card">
+                <div class="dest-card-img">
                     <img src="<?= htmlspecialchars($h['image_url']) ?>" alt="<?= htmlspecialchars($h['name']) ?>" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'">
-                    <div class="stay-rating-tag">★ <?= htmlspecialchars($h['eco_rating']) ?></div>
-                    <div class="stay-eco-badge">🌱 <?= htmlspecialchars($badges[0] ?? 'Eco Certified') ?></div>
+                    <span class="dest-tag"><?= $tags[$i] ?? 'Eco Stay' ?></span>
+                    <span class="dest-eco-tag"><?= $ecoTags[$i] ?? 'Eco' ?></span>
                 </div>
-                <div class="stay-card-body">
-                    <div class="stay-loc">📍 <?= htmlspecialchars($h['destination_name']) ?></div>
-                    <h3 class="stay-title"><?= htmlspecialchars($h['name']) ?></h3>
-                    <p class="stay-description"><?= htmlspecialchars($h['description']) ?></p>
-
-                    <div class="stay-metrics-row">
-                        <span>💧 <?= number_format($h['water_saved_liters'] ?? 120000) ?>L Saved</span>
-                        <span>⚡ <?= number_format($h['power_saved_kwh'] ?? 25000) ?> kWh Solar</span>
-                    </div>
-
-                    <div class="stay-tags-row">
-                        <?php foreach (array_slice($badges, 0, 2) as $b): ?>
-                            <span class="eco-tag">🌱 <?= htmlspecialchars($b) ?></span>
-                        <?php endforeach; ?>
-                        <?php foreach (array_slice($access, 0, 2) as $a): ?>
-                            <span class="eco-tag" style="background:#ecfdf5; border-color:#a7f3d0;">♿ <?= htmlspecialchars($a) ?></span>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <div class="stay-card-bottom">
-                        <div class="stay-price-box">
-                            <span class="price-label">Eco Rate</span>
-                            <span class="price-val">₹<?= number_format($h['price_per_night'] ?? 3500) ?> <span style="font-size:0.8rem; font-weight:500;">/ night</span></span>
-                        </div>
-                        <div class="stay-action-group">
-                            <a href="travel.php?dest=<?= urlencode($h['destination_name']) ?>" class="btn-plan-transit" title="Calculate Route Transit">
-                                🚆 Transit
-                            </a>
-                            <a href="checkout.php?hotel_id=<?= $h['id'] ?>&hotel_name=<?= urlencode($h['name']) ?>&dest_name=<?= urlencode($h['destination_name']) ?>&price=<?= $h['price_per_night'] ?>" class="btn-view-stay">
-                                Book Stay ➔
-                            </a>
-                        </div>
+                <div class="dest-card-body">
+                    <p class="dest-loc">📍 <?= htmlspecialchars($h['destination_name']) ?></p>
+                    <h3 class="dest-name"><?= htmlspecialchars($h['name']) ?></h3>
+                    <div class="dest-meta">
+                        <span>🌱 <?= number_format($h['water_saved_liters'] ?? 100000) ?>L saved</span>
+                        <span>⚡ <?= htmlspecialchars($badges[0] ?? 'Eco Certified') ?></span>
                     </div>
                 </div>
             </div>
@@ -2446,128 +1329,216 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         </div>
     </section>
 
-    <!-- SECTION 3: SUSTAINABILITY & ACCESSIBILITY IMPACT METRICS -->
-    <section class="section-container" id="impactSection" style="padding-top: 1rem;">
-        <div class="metrics-banner">
-            <div class="metrics-grid">
-                <div class="metric-col">
-                    <span class="metric-number">1,420,000L</span>
-                    <h3 class="metric-title">Clean Water Conserved</h3>
-                    <p class="metric-desc">Rainwater harvesting and wetland greywater recycling at certified partner resorts.</p>
+    <!-- 6. GREENER ROUTE SECTION -->
+    <section class="route-section">
+        <div class="section-wrapper">
+            <p class="section-label">Greener Transit</p>
+            <div class="route-content-grid fade-up">
+                <div class="route-left">
+                    <h2>Choose a<br>Greener Route</h2>
+                    <p>Compare travel options and pick the best route based on cost, time, or environmental impact. Every journey on W2G helps reduce emissions.</p>
+                    <a href="travel.php" class="btn-explore">Explore Transit →</a>
                 </div>
-                <div class="metric-col">
-                    <span class="metric-number">94,500 kWh</span>
-                    <h3 class="metric-title">Solar Energy Generated</h3>
-                    <p class="metric-desc">Decarbonized stays operating on on-site solar, micro-hydro, and clean battery grids.</p>
+                <div class="route-gallery">
+                    <div class="route-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=600&q=80" alt="Train" loading="lazy">
+                        <div class="route-gallery-label">
+                            <h4>Trains</h4>
+                            <p>Lower Emissions</p>
+                        </div>
+                    </div>
+                    <div class="route-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80" alt="Buses" loading="lazy">
+                        <div class="route-gallery-label">
+                            <h4>Buses</h4>
+                            <p>Budget Friendly</p>
+                        </div>
+                    </div>
+                    <div class="route-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=600&q=80" alt="Carpool" loading="lazy">
+                        <div class="route-gallery-label">
+                            <h4>Carpool</h4>
+                            <p>Share the journey</p>
+                        </div>
+                    </div>
+                    <div class="route-gallery-item">
+                        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109db05?auto=format&fit=crop&w=600&q=80" alt="Cycling" loading="lazy">
+                        <div class="route-gallery-label">
+                            <h4>Cycling</h4>
+                            <p>Zero emissions</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="metric-col">
-                    <span class="metric-number">100%</span>
-                    <h3 class="metric-title">Barrier-Free Standards</h3>
-                    <p class="metric-desc">Physical step-free verification, tactile paths, quiet zones, and accessible showers.</p>
-                </div>
-                <div class="metric-col">
-                    <span class="metric-number">0 kg</span>
-                    <h3 class="metric-title">Single-Use Plastics</h3>
-                    <p class="metric-desc">Glass water refill stations, organic amenities, and zero-waste food composting.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Call to Action Banner -->
-        <div class="cta-box">
-            <h2 class="cta-title">Ready for a Journey That Gives Back?</h2>
-            <p class="cta-desc">
-                Calculate your transit carbon savings, select a verified barrier-free sanctuary, and receive your certified digital green passport.
-            </p>
-            <div class="cta-actions">
-                <a href="travel.php" class="btn-cta-white">
-                    Start Transit Calculator ➔
-                </a>
-                <a href="hotels.php" class="btn-cta-outline">
-                    Explore All Eco-Stays
-                </a>
-                <a href="about.php" class="btn-cta-outline">
-                    Our Mission & Impact
-                </a>
             </div>
         </div>
     </section>
 
-    <!-- Site Footer with Full Cross-Page Connectivity -->
-    <footer class="site-footer">
-        <div class="footer-inner">
-            <div class="footer-brand">
-                <h3>🌱 Way_2_Green</h3>
-                <p>
-                    A conscious travel ecosystem designed to eliminate environmental degradation and create barrier-free travel for everyone.
-                </p>
-                <div style="margin-top: 14px; font-size: 0.82rem; color: rgba(240, 248, 255, 0.65);">
-                    Palette: Strict Seaweed Green (<code>#0b3b24</code>) & Alice Blue (<code>#F0F8FF</code>).
+    <!-- 7. IMPACT SECTION -->
+    <section class="impact-section fade-up">
+        <div class="impact-grid">
+            <div class="impact-image">
+                <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80" alt="Green landscape" loading="lazy">
+            </div>
+            <div class="impact-data">
+                <p class="section-label" style="color: var(--green-300);">Real Impact</p>
+                <h2 style="font-family: var(--font-serif); font-size: 2rem; color: var(--white); margin-bottom: 40px; line-height: 1.2;">Travel Today.<br>A Healthier Tomorrow.</h2>
+                <div class="impact-stat">
+                    <div class="number">1,420,000L</div>
+                    <div class="desc">Clean Water Conserved</div>
                 </div>
-            </div>
-            <div class="footer-col">
-                <h4>Pages & Tools</h4>
-                <ul class="footer-links">
-                    <li><a href="index.php">Home Overview</a></li>
-                    <li><a href="travel.php">Phase 1: Transit Emissions Calculator</a></li>
-                    <li><a href="hotels.php">Phase 2: Eco-Hotels Catalog</a></li>
-                    <li><a href="about.php">About Our Mission & Inclusivity</a></li>
-                    <li><a href="my-trips.php">My Eco-Passports & Trips</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Popular Corridors</h4>
-                <ul class="footer-links">
-                    <li><a href="hotels.php?dest=Agra">Agra Heritage Corridor</a></li>
-                    <li><a href="hotels.php?dest=Goa">South Goa Bio-Reserve</a></li>
-                    <li><a href="hotels.php?dest=Munnar">Munnar Tea Hills</a></li>
-                    <li><a href="hotels.php?dest=Manali">Solang Alpine Sanctuary</a></li>
-                    <li><a href="hotels.php?dest=Mumbai">Mumbai Coastal Skyline</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Account & Portal</h4>
-                <ul class="footer-links">
-                    <?php if ($user): ?>
-                        <li><a href="my-trips.php">Profile (<?= htmlspecialchars($user['name']) ?>)</a></li>
-                        <li><a href="logout.php">Sign Out</a></li>
-                    <?php else: ?>
-                        <li><a href="login.php">Traveler Sign In</a></li>
-                        <li><a href="register.php">Create Account</a></li>
-                    <?php endif; ?>
-                    <li><a href="admin/login.php" style="color: var(--seaweed-mint);">Admin Control Panel 🔒</a></li>
-                </ul>
+                <div class="impact-stat">
+                    <div class="number">94,500 kWh</div>
+                    <div class="desc">Green Energy Supported</div>
+                </div>
+                <div class="impact-stat">
+                    <div class="number">12,800 kg</div>
+                    <div class="desc">CO₂ Emissions Avoided</div>
+                </div>
+                <div class="impact-stat" style="margin-bottom: 0;">
+                    <div class="number">100%</div>
+                    <div class="desc">Single-Use Plastic Free Match</div>
+                </div>
+                <div class="impact-badge">🌿 Verified Impact Data</div>
             </div>
         </div>
+    </section>
 
-        <div class="footer-bottom">
-            <span>© 2026 Way_2_Green Platform • Green & Inclusive Travel Hackathon Challenge.</span>
-            <span>Connected Multi-Page Architecture • PHP / MySQL / Vanilla JS</span>
+    <!-- 8. STEPS SECTION -->
+    <section class="steps-section">
+        <div class="section-wrapper">
+            <div class="section-header-row fade-up">
+                <div>
+                    <p class="section-label">How It Works</p>
+                    <h2 class="section-title">Simple Steps.<br>Greater Impact.</h2>
+                </div>
+                <a href="about.php" class="btn-outline">Our Mission →</a>
+            </div>
+            <div class="steps-grid fade-up">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <h3>Plan</h3>
+                    <p>Choose your destination and travel preferences for eco-friendliness.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <h3>Compare</h3>
+                    <p>Find eco-friendly options for transit and stays at verified partners.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <h3>Book</h3>
+                    <p>Secure your trip with verified partners and transparent pricing.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">4</div>
+                    <h3>Travel & Contribute</h3>
+                    <p>Explore responsibly and make a real impact on local communities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. MISSION SECTION -->
+    <section class="section-wrapper fade-up">
+        <p class="section-label">Our Mission</p>
+        <div class="mission-grid">
+            <div class="mission-image">
+                <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=80" alt="Nature" loading="lazy">
+            </div>
+            <div class="mission-content">
+                <h2>A World of<br>Greener Journeys</h2>
+                <p>Every journey on W2G connects travelers with experiences that protect the environment, uplift rural communities, and create a sustainable future.</p>
+                <p>We believe travel should leave places better than we found them. That's why we partner with locally-owned eco-stays and carbon-verified transit providers.</p>
+                <a href="about.php" class="btn-explore">Learn More →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. CTA SECTION -->
+    <section class="cta-section">
+        <div class="section-label" style="color: var(--green-300); text-align: center;">Join Our Journey</div>
+        <div class="cta-inner">
+            <h2>Be Part of a Cleaner,<br><span>Greener Planet.</span></h2>
+            <div class="cta-email-form">
+                <input type="email" placeholder="Enter your email">
+                <button type="button">Join Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. FOOTER -->
+    <footer class="w2g-footer">
+        <div class="footer-inner">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <img src="assets/img/logo.png" alt="W2G Logo" onerror="this.outerHTML='<span style=\'font-weight:800;font-size:1.3rem;color:white\'>W2G</span>'">
+                    <p>Way2Green connects conscious travelers with eco-verified routes, verified sustainable stays, and experiences that give back to the planet.</p>
+                    <div class="footer-social">
+                        <a href="#">𝕏</a>
+                        <a href="#">f</a>
+                        <a href="#">in</a>
+                        <a href="#">▶</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>Pages</h4>
+                    <a href="index.php">Home</a>
+                    <a href="hotels.php">Eco-Stays</a>
+                    <a href="travel.php">Transit</a>
+                    <a href="about.php">About Us</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <a href="hotels.php">Sustainable Guide</a>
+                    <a href="about.php">Our Mission</a>
+                    <a href="travel.php">Partner with Us</a>
+                    <a href="about.php">FAQ</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <?php if ($user): ?>
+                        <a href="my-trips.php">My Passport</a>
+                        <a href="logout.php">Sign Out</a>
+                    <?php else: ?>
+                        <a href="login.php">Sign In</a>
+                        <a href="register.php">Create Account</a>
+                    <?php endif; ?>
+                    <a href="about.php">Privacy Policy</a>
+                    <a href="about.php">Terms of Service</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 W2G. All rights reserved.</span>
+                <div class="footer-bottom-links">
+                    <span>Travel Lighter.</span>
+                    <span>Leave it Brighter.</span>
+                </div>
+            </div>
         </div>
     </footer>
 
-    <!-- Mobile Bottom Navigation Dock -->
+    <!-- Mobile Bottom Bar -->
     <nav class="mobile-bottom-bar">
         <a href="index.php" class="mobile-nav-item active">
             <span class="icon">🏡</span>
             <span class="label">Home</span>
         </a>
-        <a href="travel.php" class="mobile-nav-item">
-            <span class="icon">🚆</span>
-            <span class="label">Transit</span>
-        </a>
         <a href="hotels.php" class="mobile-nav-item">
             <span class="icon">🏨</span>
             <span class="label">Stays</span>
         </a>
+        <a href="travel.php" class="mobile-nav-item">
+            <span class="icon">🚆</span>
+            <span class="label">Transit</span>
+        </a>
         <a href="about.php" class="mobile-nav-item">
             <span class="icon">🌿</span>
-            <span class="label">Mission</span>
+            <span class="label">About</span>
         </a>
         <?php if ($user): ?>
             <a href="my-trips.php" class="mobile-nav-item">
                 <span class="icon">📜</span>
-                <span class="label">Passports</span>
+                <span class="label">Passport</span>
             </a>
         <?php else: ?>
             <a href="login.php" class="mobile-nav-item">
@@ -2577,281 +1548,45 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         <?php endif; ?>
     </nav>
 
-    <!-- Interactive Toast Notification -->
-    <div class="toast-notification" id="toastNotification">
-        <span style="font-size: 1.3rem;">🌱</span>
-        <span id="toastMsg">Ready to travel light...</span>
-    </div>
-
-    <!-- ==========================================================================
-       INLINE JAVASCRIPT: Dynamic Location Backgrounds & Synchronized Boarding Pass
-       ========================================================================== -->
     <script>
-        // 1. JS Dictionary/Mapping of popular destinations to high-quality placeholder image URLs
-        const destinationsCatalog = {
-            "agra": {
-                name: "Agra",
-                fullName: "Agra, Uttar Pradesh",
-                code: "AGR",
-                landmark: "Taj Mahal Eco Sanctuary",
-                imageUrl: "https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1920&q=80",
-                savings: "-84% CO₂ Emissions",
-                distance: "195 km • Solar Express"
-            },
-            "goa": {
-                name: "Goa",
-                fullName: "South & North Goa",
-                code: "GOI",
-                landmark: "Palolem & Mandrem Eco-Beaches",
-                imageUrl: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1920&q=80",
-                savings: "-88% CO₂ Emissions",
-                distance: "580 km • Coastal Electric"
-            },
-            "mumbai": {
-                name: "Mumbai",
-                fullName: "Mumbai, Maharashtra",
-                code: "BOM",
-                landmark: "Gateway of India & Marine Drive",
-                imageUrl: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1920&q=80",
-                savings: "-76% CO₂ Emissions",
-                distance: "320 km • High-Speed Electric"
-            },
-            "singapore": {
-                name: "Singapore",
-                fullName: "Singapore Garden City",
-                code: "SIN",
-                landmark: "Marina Bay & Supertrees",
-                imageUrl: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1920&q=80",
-                savings: "-92% CO₂ Emissions",
-                distance: "Global Corridor • Carbon Offset"
-            },
-            "munnar": {
-                name: "Munnar",
-                fullName: "Munnar, Kerala",
-                code: "KER",
-                landmark: "Western Ghats Tea Sanctuary",
-                imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
-                savings: "-89% CO₂ Emissions",
-                distance: "450 km • Electric Transit"
-            },
-            "kerala": {
-                name: "Kerala",
-                fullName: "Kerala Backwaters & Munnar",
-                code: "KER",
-                landmark: "Western Ghats Tea Sanctuary",
-                imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
-                savings: "-89% CO₂ Emissions",
-                distance: "450 km • Electric Transit"
-            },
-            "manali": {
-                name: "Manali",
-                fullName: "Manali, Himachal Pradesh",
-                code: "KUU",
-                landmark: "Solang Alpine Valley",
-                imageUrl: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1920&q=80",
-                savings: "-81% CO₂ Emissions",
-                distance: "540 km • Himalayan Eco-Coach"
-            },
-            "kyoto": {
-                name: "Kyoto",
-                fullName: "Kyoto Heritage Sanctuary",
-                code: "UKY",
-                landmark: "Arashiyama Bamboo Grove",
-                imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1920&q=80",
-                savings: "-90% CO₂ Emissions",
-                distance: "Bullet Train Shinkansen Eco-Link"
-            },
-            "bali": {
-                name: "Bali",
-                fullName: "Ubud & Canggu Eco Sanctuary",
-                code: "DPS",
-                landmark: "Ubud Rice Terraces",
-                imageUrl: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1920&q=80",
-                savings: "-83% CO₂ Emissions",
-                distance: "Island Biosphere Reserve"
+        // Drawer toggle
+        function toggleDrawer() {
+            document.getElementById('mobileDrawer').classList.toggle('open');
+            document.getElementById('drawerOverlay').classList.toggle('active');
+        }
+
+        // Planner tabs
+        function setTab(el) {
+            document.querySelectorAll('.planner-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // Preference chips
+        function togglePref(el) {
+            document.querySelectorAll('.pref-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // Set min date
+        window.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.getElementById('plannerDate');
+            if (dateInput) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.min = today;
+                dateInput.value = today;
             }
-        };
+        });
 
-        // DOM Element Cache
-        const heroBgLayer = document.getElementById('heroBgLayer');
-        const locationInput = document.getElementById('locationInput');
-        const heroDestIndicatorName = document.getElementById('heroDestIndicatorName');
-        const passDestCode = document.getElementById('passDestCode');
-        const passDestCity = document.getElementById('passDestCity');
-        const passSavingsBadge = document.getElementById('passSavingsBadge');
-        const passDistance = document.getElementById('passDistance');
-        const passLandmarkText = document.getElementById('passLandmarkText');
-        const passSerialCode = document.getElementById('passSerialCode');
-        const checkInInput = document.getElementById('checkInInput');
-        const checkOutInput = document.getElementById('checkOutInput');
-        const guestTriggerBtn = document.getElementById('guestTriggerBtn');
-        const guestDropdownMenu = document.getElementById('guestDropdownMenu');
-        const guestSummaryInput = document.getElementById('guestSummaryInput');
-        const guestsHiddenInput = document.getElementById('guestsHiddenInput');
-        const transitPlannerHeroLink = document.getElementById('transitPlannerHeroLink');
-        const stubPassActionBtn = document.getElementById('stubPassActionBtn');
-        const toastNotification = document.getElementById('toastNotification');
-        const toastMsg = document.getElementById('toastMsg');
-
-        // State variables
-        let currentDestKey = 'agra';
-        let guests = { adults: 2, children: 0, rooms: 1 };
-
-        // 2. Function to change background image with Seaweed Green / Alice Blue Gradient Overlay & sync Boarding Pass
-        function updateLocationTheme(key) {
-            const dest = destinationsCatalog[key];
-            if (!dest) return;
-
-            currentDestKey = key;
-
-            // Smooth crossfade dynamic background image
-            heroBgLayer.style.opacity = '0';
-            setTimeout(() => {
-                heroBgLayer.style.backgroundImage = `url('${dest.imageUrl}')`;
-                heroBgLayer.style.opacity = '1';
-            }, 180);
-
-            // Update Hero Destination Indicator
-            if (heroDestIndicatorName) {
-                heroDestIndicatorName.textContent = `${dest.name} • ${dest.landmark}`;
-            }
-
-            // Sync Vertical Boarding Pass Fields
-            if (passDestCode) passDestCode.textContent = dest.code;
-            if (passDestCity) passDestCity.textContent = dest.name;
-            if (passSavingsBadge) passSavingsBadge.textContent = dest.savings;
-            if (passDistance) passDistance.textContent = dest.distance;
-            if (passLandmarkText) passLandmarkText.textContent = dest.landmark;
-            if (passSerialCode) passSerialCode.textContent = `PASS #W2G-${Math.floor(1000 + Math.random() * 9000)}-${dest.code}-2026 • CARBON NEUTRAL TICKET`;
-
-            // Sync links connecting to travel.php
-            if (transitPlannerHeroLink) {
-                transitPlannerHeroLink.href = `travel.php?dest=${encodeURIComponent(dest.name)}`;
-            }
-            if (stubPassActionBtn && !stubPassActionBtn.href.includes('my-trips.php')) {
-                stubPassActionBtn.href = `travel.php?dest=${encodeURIComponent(dest.name)}`;
-            }
-
-            // Update Active Chip
-            document.querySelectorAll('.dest-chip').forEach(chip => {
-                if (chip.textContent.toLowerCase().includes(key)) {
-                    chip.classList.add('active');
-                } else {
-                    chip.classList.remove('active');
+        // Intersection Observer for fade-up animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
             });
-        }
+        }, { threshold: 0.1 });
 
-        // 3. Listen for input changes in the "Location" field of the search widget
-        function findMatchingDestination(query) {
-            const cleaned = query.trim().toLowerCase();
-            if (!cleaned) return null;
-
-            for (const key in destinationsCatalog) {
-                if (key.includes(cleaned) || cleaned.includes(key) || destinationsCatalog[key].name.toLowerCase().includes(cleaned)) {
-                    return key;
-                }
-            }
-            return null;
-        }
-
-        locationInput.addEventListener('input', function (e) {
-            const match = findMatchingDestination(e.target.value);
-            if (match && match !== currentDestKey) {
-                updateLocationTheme(match);
-            }
-        });
-
-        locationInput.addEventListener('change', function (e) {
-            const match = findMatchingDestination(e.target.value);
-            if (match) {
-                updateLocationTheme(match);
-            }
-        });
-
-        // Quick chip click handler
-        function selectDestination(name) {
-            const key = name.toLowerCase();
-            locationInput.value = name;
-            updateLocationTheme(key);
-            showToast(`Selected destination: ${name}`);
-        }
-
-        // 4. Guest Stepper Logic
-        function toggleGuestDropdown(e) {
-            if (e) e.stopPropagation();
-            guestDropdownMenu.classList.toggle('show');
-        }
-
-        function closeGuestDropdown() {
-            guestDropdownMenu.classList.remove('show');
-        }
-
-        guestTriggerBtn.addEventListener('click', toggleGuestDropdown);
-        document.addEventListener('click', function (e) {
-            if (!guestTriggerBtn.contains(e.target) && !guestDropdownMenu.contains(e.target)) {
-                closeGuestDropdown();
-            }
-        });
-
-        function adjustGuest(type, delta) {
-            if (type === 'adults') {
-                guests.adults = Math.max(1, Math.min(10, guests.adults + delta));
-                document.getElementById('valAdults').textContent = guests.adults;
-            } else if (type === 'children') {
-                guests.children = Math.max(0, Math.min(8, guests.children + delta));
-                document.getElementById('valChildren').textContent = guests.children;
-                document.getElementById('btnMinusChildren').disabled = guests.children === 0;
-            } else if (type === 'rooms') {
-                guests.rooms = Math.max(1, Math.min(6, guests.rooms + delta));
-                document.getElementById('valRooms').textContent = guests.rooms;
-                document.getElementById('btnMinusRooms').disabled = guests.rooms === 1;
-            }
-
-            let text = `${guests.adults} Adult${guests.adults > 1 ? 's' : ''}`;
-            if (guests.children > 0) {
-                text += `, ${guests.children} Child${guests.children > 1 ? 'ren' : ''}`;
-            }
-            text += `, ${guests.rooms} Room${guests.rooms > 1 ? 's' : ''}`;
-            guestSummaryInput.value = text;
-            guestsHiddenInput.value = guests.adults + guests.children;
-        }
-
-        // Mobile drawer toggle
-        function toggleDrawer() {
-            const drawer = document.getElementById('mobileDrawer');
-            const overlay = document.getElementById('drawerOverlay');
-            drawer.classList.toggle('open');
-            overlay.classList.toggle('active');
-        }
-
-        // Toast Helper
-        let toastTimeout = null;
-        function showToast(msg) {
-            toastMsg.textContent = msg;
-            toastNotification.classList.add('active');
-            if (toastTimeout) clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toastNotification.classList.remove('active');
-            }, 3200);
-        }
-
-        // 5. Initialize on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            const today = new Date();
-            const afterTomorrow = new Date();
-            afterTomorrow.setDate(today.getDate() + 2);
-
-            const formatYMD = d => d.toISOString().split('T')[0];
-            checkInInput.min = formatYMD(today);
-            checkInInput.value = formatYMD(today);
-
-            checkOutInput.min = formatYMD(today);
-            checkOutInput.value = formatYMD(afterTomorrow);
-
-            // Set initial Agra theme
-            updateLocationTheme('agra');
-        });
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>

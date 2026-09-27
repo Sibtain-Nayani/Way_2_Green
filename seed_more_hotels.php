@@ -269,3 +269,4 @@ foreach ($moreHotels as $h) {
 
 $totalHotels = $pdo->query("SELECT COUNT(*) FROM hotels")->fetchColumn();
 echo "Successfully added $added new eco-hotels! Total in database: $totalHotels\n";
+

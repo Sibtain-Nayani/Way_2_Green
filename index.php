@@ -1996,18 +1996,12 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 
             <!-- Desktop Nav Menu Connecting Whole Website -->
             <nav class="desktop-nav">
-                <a href="index.php" class="nav-link active">Home</a>
-                <a href="travel.php" class="nav-link">Plan Transit</a>
-                <a href="hotels.php" class="nav-link">Eco-Stays</a>
-                <a href="about.php" class="nav-link">Our Mission</a>
-                <?php if ($user): ?>
-                    <a href="my-trips.php" class="nav-link">My Passports</a>
-                    <a href="logout.php" class="nav-link" style="color: #dc2626;">Sign Out</a>
-                <?php else: ?>
-                    <a href="login.php" class="nav-link">Sign In</a>
-                    <a href="register.php" class="btn-nav-primary">Get Started ➔</a>
-                <?php endif; ?>
-            </nav>
+            <a href="index.php" class="active">Home</a>
+            <a href="hotels.php">Eco-Stays</a>
+            <a href="travel.php">Plan Transit</a>
+            <a href="about.php">About Us</a>
+            <a href="my-trips.php">My Passports</a>
+            <a href="logout.php" style="color: #dc2626;">Sign Out</a></nav>
 
             <div class="header-actions">
                 <div class="eco-status-pill">

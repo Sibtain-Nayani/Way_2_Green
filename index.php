@@ -202,7 +202,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             scroll-behavior: smooth;
         }
 
-        /* PERMANENT STATIC TROPICAL BEACH BACKGROUND */
+        /* PERMANENT STATIC TROPICAL BEACH BACKGROUND — ORIGINAL FULL BRIGHT COLORS (NO OVERLAY) */
         body {
             font-family: var(--font-main);
             color: var(--text-on-alice);
@@ -211,21 +211,6 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             position: relative;
             padding-bottom: 74px;
             background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=85') center center / cover no-repeat fixed;
-        }
-
-        /* Semi-transparent overlay over entire body so content is readable */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(
-                180deg,
-                rgba(240, 248, 255, 0.82) 0%,
-                rgba(240, 248, 255, 0.72) 40%,
-                rgba(240, 248, 255, 0.78) 100%
-            );
-            z-index: 0;
-            pointer-events: none;
         }
 
         body > * {
@@ -474,6 +459,9 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         /* ==========================================================================
            MAIN HERO SECTION — STATIC TROPICAL BEACH BG
            ========================================================================== */
+        /* ==========================================================================
+           MAIN HERO SECTION — STATIC TROPICAL BEACH BG (NO OVERLAY / PURE ORIGINAL COLORS)
+           ========================================================================== */
         .hero-section {
             position: relative;
             min-height: 94vh;
@@ -482,34 +470,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             justify-content: center;
             padding: 4rem 1.5rem 6.5rem;
             overflow: hidden;
-            /* Static tropical beach hero bg */
-            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2560&q=85') center center / cover no-repeat;
-        }
-
-        /* Gradient Overlay: Semi-transparent Seaweed Green + Alice Blue */
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                135deg,
-                rgba(7, 36, 22, 0.92) 0%,
-                rgba(11, 59, 36, 0.85) 45%,
-                rgba(19, 78, 53, 0.76) 75%,
-                rgba(240, 248, 255, 0.32) 100%
-            );
-            backdrop-filter: blur(1.5px);
-            -webkit-backdrop-filter: blur(1.5px);
-            z-index: 2;
-        }
-
-        .hero-ambient-mesh {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 80% 25%, rgba(52, 211, 153, 0.18) 0%, transparent 50%),
-                        radial-gradient(circle at 20% 85%, rgba(240, 248, 255, 0.15) 0%, transparent 45%);
-            mix-blend-mode: overlay;
-            z-index: 3;
-            pointer-events: none;
+            background: transparent;
         }
 
         .hero-container {
@@ -539,55 +500,61 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         .badge-eco-pill {
-            background: rgba(240, 248, 255, 0.15);
-            border: 1px solid rgba(240, 248, 255, 0.3);
-            color: var(--alice-blue);
+            background: rgba(7, 36, 22, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            color: #ffffff;
             padding: 6px 14px;
             border-radius: var(--radius-full);
             font-size: 0.84rem;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: 0.03em;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
             backdrop-filter: blur(8px);
         }
 
         .badge-destination-indicator {
-            background: rgba(34, 197, 94, 0.2);
-            border: 1px solid var(--seaweed-accent);
-            color: #d1fae5;
+            background: rgba(7, 36, 22, 0.78);
+            border: 1.5px solid var(--seaweed-accent);
+            color: #ffffff;
             padding: 6px 14px;
             border-radius: var(--radius-full);
             font-size: 0.84rem;
-            font-weight: 700;
+            font-weight: 800;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
             transition: var(--transition);
         }
 
         .hero-title {
             font-size: clamp(2.3rem, 4.2vw, 3.5rem);
-            font-weight: 800;
+            font-weight: 900;
             line-height: 1.12;
-            color: var(--alice-blue);
+            color: #ffffff;
             letter-spacing: -0.03em;
-            text-shadow: 0 3px 18px rgba(4, 22, 13, 0.4);
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.85);
         }
 
         .hero-title .highlight {
-            background: linear-gradient(120deg, #6ee7b7, #a7f3d0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #34d399;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 0, 0, 0.85);
             display: inline-block;
         }
 
         .hero-subtitle {
-            font-size: 1.08rem;
-            color: var(--text-light-subtle);
+            font-size: 1.1rem;
+            color: #ffffff;
             line-height: 1.65;
             max-width: 580px;
+            font-weight: 700;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 2px 10px rgba(0, 0, 0, 0.9);
         }
 
         /* ==========================================================================
@@ -675,10 +642,11 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         /* When dynamic background is active on the wrapper:
-           the text turns crisp white with subtle text-shadow for readability */
+           the text turns crisp white with STRONG text-shadow for readability over bright photos */
         .location-wrapper.has-bg input {
             color: #ffffff !important;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+            font-weight: 800;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 0 8px rgba(0, 0, 0, 0.9), 0 2px 10px rgba(0, 0, 0, 0.95) !important;
         }
 
         .location-wrapper input::placeholder {
@@ -687,7 +655,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         }
 
         .location-wrapper.has-bg input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.85);
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95);
         }
 
         .location-wrapper .field-icon {
@@ -703,7 +672,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
 
         .location-wrapper.has-bg .field-icon {
             color: #ffffff;
-            filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.9));
         }
 
         /* Bottom-Right Label inside the wrapper */
@@ -714,17 +683,17 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             font-size: 0.72rem;
             font-weight: 800;
             color: #ffffff;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.95), 0 0 8px rgba(0, 0, 0, 0.9);
             letter-spacing: 0.05em;
             text-transform: uppercase;
             z-index: 4;
             pointer-events: none;
             display: none;
-            background: rgba(7, 36, 22, 0.6);
+            background: rgba(0, 0, 0, 0.65);
             padding: 2px 7px;
             border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(2px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(4px);
         }
 
         .location-wrapper.has-bg .location-corner-label {
@@ -2313,12 +2282,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         </div>
     </header>
 
-    <!-- Main Hero Section with STATIC Tropical Beach Background -->
+    <!-- Main Hero Section with STATIC Tropical Beach Background (Unmodified Original Colors) -->
     <section class="hero-section" id="heroSection">
-        <!-- Strict UI Constraint: Semi-transparent Seaweed Green / Alice Blue Gradient Overlay -->
-        <div class="hero-overlay"></div>
-        <div class="hero-ambient-mesh"></div>
-
         <div class="hero-container">
             <!-- Left Hero Content & The Complex Search Widget -->
             <div class="hero-left">
@@ -2695,8 +2660,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                         <!-- Origin to Destination Route Block -->
                         <div class="pass-route-block">
                             <div class="route-stop">
-                                <span class="stop-code">DEL</span>
-                                <span class="stop-city">New Delhi</span>
+                                <span class="stop-code" id="ticket-origin-code">DEL</span>
+                                <span class="stop-city" id="ticket-origin-name">New Delhi</span>
                             </div>
 
                             <div class="route-connector">
@@ -2705,12 +2670,12 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                                     Solar High-Speed
                                 </span>
                                 <div class="connector-line"></div>
-                                <span style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);" id="passDistance">195 km &bull; 0kg CO2</span>
+                                <span style="font-size: 0.7rem; color: var(--seaweed-mid); font-family: var(--font-mono);" id="ticket-transit-info">195 km &bull; Solar Express</span>
                             </div>
 
                             <div class="route-stop" style="text-align: right;">
-                                <span class="stop-code" id="passDestCode">AGR</span>
-                                <span class="stop-city" id="passDestCity">Agra</span>
+                                <span class="stop-code" id="ticket-dest-code">AGR</span>
+                                <span class="stop-city" id="ticket-dest-name">Agra</span>
                             </div>
                         </div>
 
@@ -3255,7 +3220,70 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 landmark: "Hawa Mahal & Amber Fort",
                 imageUrl: "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1920&q=80",
                 savings: "-80% CO2 Emissions",
-                distance: "Rajasthan Rail"
+                distance: "260 km \u2022 Rajasthan Solar Rail"
+            },
+            "delhi": {
+                name: "New Delhi",
+                fullName: "New Delhi, India",
+                code: "DEL",
+                landmark: "India Gate & Lotus Temple",
+                imageUrl: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1920&q=80",
+                savings: "-70% CO2 Emissions",
+                distance: "Capital Hub \u2022 Solar Express"
+            },
+            "bengaluru": {
+                name: "Bangalore",
+                fullName: "Bangalore, Karnataka",
+                code: "BLR",
+                landmark: "Garden City Tech Hub",
+                imageUrl: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1920&q=80",
+                savings: "-78% CO2 Emissions",
+                distance: "350 km \u2022 Metro Express"
+            },
+            "varanasi": {
+                name: "Varanasi",
+                fullName: "Varanasi, Uttar Pradesh",
+                code: "VNS",
+                landmark: "Ganga Ghats & Kashi",
+                imageUrl: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1920&q=80",
+                savings: "-85% CO2 Emissions",
+                distance: "780 km \u2022 Vande Bharat Solar"
+            },
+            "amritsar": {
+                name: "Amritsar",
+                fullName: "Amritsar, Punjab",
+                code: "ATQ",
+                landmark: "Golden Temple Eco Sanctuary",
+                imageUrl: "https://images.unsplash.com/photo-1588096344356-9a49cf9fa8d1?auto=format&fit=crop&w=1920&q=80",
+                savings: "-79% CO2 Emissions",
+                distance: "450 km \u2022 Solar Express"
+            },
+            "udaipur": {
+                name: "Udaipur",
+                fullName: "Udaipur, Rajasthan",
+                code: "UDR",
+                landmark: "Lake Pichola & City Palace",
+                imageUrl: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=1920&q=80",
+                savings: "-82% CO2 Emissions",
+                distance: "660 km \u2022 Royal Eco-Link"
+            },
+            "shimla": {
+                name: "Shimla",
+                fullName: "Shimla, Himachal Pradesh",
+                code: "SLV",
+                landmark: "Mall Road & Ridge Pine Sanctuary",
+                imageUrl: "https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1920&q=80",
+                savings: "-83% CO2 Emissions",
+                distance: "350 km \u2022 Himalayan Heritage Rail"
+            },
+            "kochi": {
+                name: "Kochi",
+                fullName: "Kochi, Kerala",
+                code: "COK",
+                landmark: "Fort Kochi & Marine Drive",
+                imageUrl: "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?auto=format&fit=crop&w=1920&q=80",
+                savings: "-86% CO2 Emissions",
+                distance: "210 km \u2022 Water Metro Solar Link"
             }
         };
 
@@ -3263,10 +3291,15 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         const locationInput = document.getElementById('locationInput');
         const originInput = document.getElementById('originInput');
         const heroDestIndicatorName = document.getElementById('heroDestIndicatorName');
-        const passDestCode = document.getElementById('passDestCode');
-        const passDestCity = document.getElementById('passDestCity');
+
+        // Right-Side Boarding Pass Ticket Route Display Elements
+        const ticketOriginCode = document.getElementById('ticket-origin-code');
+        const ticketOriginName = document.getElementById('ticket-origin-name');
+        const ticketDestCode = document.getElementById('ticket-dest-code');
+        const ticketDestName = document.getElementById('ticket-dest-name');
+        const ticketTransitInfo = document.getElementById('ticket-transit-info');
+
         const passSavingsBadge = document.getElementById('passSavingsBadge');
-        const passDistance = document.getElementById('passDistance');
         const passLandmarkText = document.getElementById('passLandmarkText');
         const passSerialCode = document.getElementById('passSerialCode');
         const checkInInput = document.getElementById('checkInInput');
@@ -3295,9 +3328,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
         let guests = { adults: 2, children: 0, rooms: 1 };
 
         // ============================================================
-        // DYNAMIC TOURIST SPOT BACKGROUND & OVERLAY ON WRAPPER
+        // DYNAMIC TOURIST SPOT BACKGROUND — NO OVERLAY (ORIGINAL COLORS)
         // ============================================================
-        const SEAWEED_OVERLAY_GRADIENT = 'linear-gradient(135deg, rgba(7, 36, 22, 0.76) 0%, rgba(11, 59, 36, 0.68) 50%, rgba(19, 78, 53, 0.62) 100%)';
 
         function setLocationWrapperBackground(wrapper, label, dest) {
             if (!wrapper) return;
@@ -3312,8 +3344,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 return;
             }
 
-            // Apply dynamic background image with Seaweed Green gradient overlay
-            wrapper.style.backgroundImage = `${SEAWEED_OVERLAY_GRADIENT}, url('${dest.imageUrl}')`;
+            // Apply dynamic background image directly — NO green/dark gradient overlay
+            wrapper.style.backgroundImage = `url('${dest.imageUrl}')`;
             wrapper.style.backgroundSize = 'cover';
             wrapper.style.backgroundPosition = 'center center';
             wrapper.style.backgroundRepeat = 'no-repeat';
@@ -3345,15 +3377,27 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             return null;
         }
 
-        // 2. Sync boarding pass + update destination wrapper background
+        // 2. Sync boarding pass + update destination wrapper background & ticket destination
         function updateLocationTheme(key) {
             const dest = destinationsCatalog[key];
-            if (!dest) return;
+            if (!dest) {
+                // Fallback: unmapped city
+                setLocationWrapperBackground(destWrapper, destCornerLabel, null);
+                if (ticketDestCode) ticketDestCode.textContent = '---';
+                if (ticketDestName) ticketDestName.textContent = '---';
+                if (ticketTransitInfo) ticketTransitInfo.textContent = '---';
+                return;
+            }
 
             currentDestKey = key;
 
             // Update DESTINATION wrapper background & bottom-right label
             setLocationWrapperBackground(destWrapper, destCornerLabel, dest);
+
+            // Update right-side boarding pass ticket destination & transit info
+            if (ticketDestCode) ticketDestCode.textContent = dest.code || '---';
+            if (ticketDestName) ticketDestName.textContent = dest.name || '---';
+            if (ticketTransitInfo) ticketTransitInfo.textContent = dest.distance || '---';
 
             // Update Hero Destination Indicator
             if (heroDestIndicatorName) {
@@ -3361,10 +3405,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             }
 
             // Sync Vertical Boarding Pass Fields
-            if (passDestCode) passDestCode.textContent = dest.code;
-            if (passDestCity) passDestCity.textContent = dest.name;
             if (passSavingsBadge) passSavingsBadge.textContent = dest.savings;
-            if (passDistance) passDistance.textContent = dest.distance;
             if (passLandmarkText) passLandmarkText.textContent = dest.landmark;
             if (passSerialCode) passSerialCode.textContent = `PASS #W2G-${Math.floor(1000 + Math.random() * 9000)}-${dest.code}-2026 \u2022 CARBON NEUTRAL TICKET`;
 
@@ -3386,20 +3427,36 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             });
         }
 
-        // Update origin wrapper background when a city is selected for origin
+        // Update origin wrapper background & ticket origin when a city is selected or typed
         function updateOriginBackground(cityName) {
             const matchKey = findMatchingDestination(cityName);
-            const dest = matchKey ? destinationsCatalog[matchKey] : null;
-            setLocationWrapperBackground(originWrapper, originCornerLabel, dest);
+            const originCity = matchKey ? destinationsCatalog[matchKey] : null;
+
+            // Update wrapper background & bottom-right label
+            setLocationWrapperBackground(originWrapper, originCornerLabel, originCity);
+
+            // Update right-side boarding pass ticket origin details
+            if (originCity) {
+                if (ticketOriginCode) ticketOriginCode.textContent = originCity.code || '---';
+                if (ticketOriginName) ticketOriginName.textContent = originCity.name || '---';
+            } else {
+                // Fallback: If user clears input or types an unmapped city, revert to placeholder
+                if (ticketOriginCode) ticketOriginCode.textContent = '---';
+                if (ticketOriginName) ticketOriginName.textContent = '---';
+            }
         }
 
         // 3. Listen for input changes in both fields
         locationInput.addEventListener('input', function (e) {
             const match = findMatchingDestination(e.target.value);
-            if (match && match !== currentDestKey) {
+            if (match) {
                 updateLocationTheme(match);
-            } else if (!e.target.value.trim()) {
+            } else {
+                // Fallback: If user clears input or types an unmapped city, revert ticket and wrapper
                 setLocationWrapperBackground(destWrapper, destCornerLabel, null);
+                if (ticketDestCode) ticketDestCode.textContent = '---';
+                if (ticketDestName) ticketDestName.textContent = '---';
+                if (ticketTransitInfo) ticketTransitInfo.textContent = '---';
             }
         });
 
@@ -3407,6 +3464,11 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             const match = findMatchingDestination(e.target.value);
             if (match) {
                 updateLocationTheme(match);
+            } else {
+                setLocationWrapperBackground(destWrapper, destCornerLabel, null);
+                if (ticketDestCode) ticketDestCode.textContent = '---';
+                if (ticketDestName) ticketDestName.textContent = '---';
+                if (ticketTransitInfo) ticketTransitInfo.textContent = '---';
             }
         });
 
@@ -3415,7 +3477,7 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             if (gpsDropdown) gpsDropdown.classList.remove('show');
         });
 
-        // Origin input changes — update origin wrapper background
+        // Origin input changes — update origin wrapper background & ticket origin
         originInput.addEventListener('input', function (e) {
             updateOriginBackground(e.target.value);
         });
@@ -3467,6 +3529,8 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
                 navigator.geolocation.getCurrentPosition(
                     function (pos) {
                         originInput.value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+                        if (ticketOriginCode) ticketOriginCode.textContent = 'GPS';
+                        if (ticketOriginName) ticketOriginName.textContent = 'Current Loc';
                         showToast('GPS location detected!');
                     },
                     function () {
@@ -3529,13 +3593,16 @@ $displayHotels = !empty($featuredHotels) ? $featuredHotels : $fallbackHotels;
             originInput.value = locationInput.value;
             locationInput.value = tempVal;
 
-            // Update both wrappers
+            // Update both wrappers and ticket details
             updateOriginBackground(originInput.value);
             const match = findMatchingDestination(locationInput.value);
             if (match) {
                 updateLocationTheme(match);
             } else {
                 setLocationWrapperBackground(destWrapper, destCornerLabel, null);
+                if (ticketDestCode) ticketDestCode.textContent = '---';
+                if (ticketDestName) ticketDestName.textContent = '---';
+                if (ticketTransitInfo) ticketTransitInfo.textContent = '---';
             }
 
             showToast(`Swapped: ${originInput.value} \u21C4 ${locationInput.value}`);
